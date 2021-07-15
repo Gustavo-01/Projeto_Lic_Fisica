@@ -2,6 +2,7 @@ from numpy.random.mtrand import rand
 import GetNames
 import MedianOneGenerator
 import random
+import Prints
 from  Classes import Person,Factory
 
 #----todo----
@@ -54,7 +55,6 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
                         workerID = 0
                     worker = Person.all_persons[workerID]
                 if(counter < people_number):
-                    print("added "+worker.name+" to factory "+str(i))
                     workers.append(worker)
 
             #Create Factory
@@ -75,23 +75,8 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
 
 
 
-startSim(2)
+startSim(20000)
 
 #Prints
-print("PERSONS")
-print("{0:<20} - {1:<4} - {2:<10}".format("Name","Capital","Employed"))
-print("-"*45)
-for person in Person.all_persons:
-    employed = "not employed"
-    if(person.employer != None):
-        employed = "employed by "+str(person.employer.id)
-    if(person.ownedFactory != None):
-        employed += "-- Owns factory: " + str(person.ownedFactory.id)
-    print("{0:<20} - {1:<4} - {2:<10}".format(person.name,str(person.capital),employed))
-print("")
-print("-FACTORIES-")
-print("{3:<2} {0:<20} - {1:<9} - {2:<10}".format("Owner_Name","N_Workers","Essencial","ID"))
-print("-"*50)
-for factory in Factory.all_factories:
-    print("{3:<2} {0:<20} - {1:<9} - {2:<10}".format(factory.owner.name,str(len(factory.workers)),str(factory.product),factory.id))
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
 
