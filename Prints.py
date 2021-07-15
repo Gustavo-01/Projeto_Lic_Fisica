@@ -7,7 +7,7 @@ def printPersonsAndFactories(all_persons,all_factories):
         if(person.employer != None):
             employed = "employed by "+str(person.employer.id)
         if(person.ownedFactory != None):
-            employed += "-- Owns factory: " + str(person.ownedFactory.id)
+            employed = "Owns factory: " + str(person.ownedFactory.id)
         print("{0:<20} - {1:<4} - {2:<10}".format(person.name,str(person.capital),employed))
     print("")
     print("-FACTORIES-")

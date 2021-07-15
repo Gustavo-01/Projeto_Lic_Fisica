@@ -1,8 +1,3 @@
-from numpy.random.mtrand import rand
-import GetNames
-import MedianOneGenerator
-import random
-import Prints
 from  Classes import Person,Factory
 
 #----todo----
@@ -10,11 +5,12 @@ def trade(factory,person,ammount):
     print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product) + "with " + person.name)
 #------------
 
-
 def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capital = 0):
     #--GENERATE PERSONS--
+    import random
+    import GetRandomNames
     #Generate random name for every person
-    names = GetNames.getRandomName(people_number)
+    names = GetRandomNames.getRandomName(people_number)
     #Create person
     for i in range(0,people_number):
         person = Person(names[i], random.randint(min_capital, max_capital))
@@ -22,6 +18,7 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
 
     def CreateFactories(people_number,factory_number):
         #Randomize number of workers assigned to every factory
+        import MedianOneGenerator
         number_workers_list = MedianOneGenerator.generate(people_number,factory_number)
         for i in range(0,factory_number):
             #Find an Owner
@@ -72,11 +69,8 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
 
     CreateFactories(people_number,factory_number)
 
-
-
-
-startSim(20000)
+startSim(50)
 
 #Prints
+import Prints
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
-
