@@ -1,8 +1,12 @@
-def printPersonsAndFactories(all_persons,all_factories):
+from typing import List
+from Classes import Factory, Person
+
+
+def printPersonsAndFactories(all_persons: List[Person],all_factories: List[Factory]):
     print("PERSONS")
     print("{0:<20} - {1:<4} - {2:<10}".format("Name","Capital","Employed"))
     print("-"*45)
-    for person in all_persons:
+    for person in sorted(all_persons, key=lambda p: p.name):
         employed = "not employed"
         if(person.employer != None):
             employed = "employed by "+str(person.employer.id)
@@ -13,6 +17,6 @@ def printPersonsAndFactories(all_persons,all_factories):
     print("-FACTORIES-")
     print("{3:<2} {0:<20} - {1:<9} - {2:<10}".format("Owner_Name","N_Workers","Essencial","ID"))
     print("-"*50)
-    for factory in all_factories:
+    for factory in sorted(all_factories, key=lambda f: len(f.workers)):
         print("{3:<2} {0:<20} - {1:<9} - {2:<10}".format(factory.owner.name,str(len(factory.workers)),str(factory.product),factory.id))
 

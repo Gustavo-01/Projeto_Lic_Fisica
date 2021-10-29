@@ -1,0 +1,16 @@
+Elementos:
+- Agentes : trabalham, consomem e investem.
+- bens (Necessidades e luxo) 
+
+Todo agente compra: 
+    - Mínimo de necessidades
+    - Resto gasto em luxos OU invesimento
+    - 
+
+Sistema:
+- Procura e oferta:
+    - Controla produção e empregabilidade
+- Produtividade (Bens produzidos / tempo):
+    - Aumentada com investimento
+
+- invesimento gera mais renda (consumo)

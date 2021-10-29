@@ -1,11 +1,11 @@
 from  Classes import Person,Factory
 
 #----todo----
-def trade(factory,person,ammount):
+def trade(factory : Factory,person : Person ,ammount : int):
     print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product) + "with " + person.name)
 #------------
 
-def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capital = 0):
+def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 0):
     #--GENERATE PERSONS--
     import random
     import GetRandomNames
@@ -16,7 +16,7 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
         person = Person(names[i], random.randint(min_capital, max_capital))
         Person.all_persons.append(person)
 
-    def CreateFactories(people_number,factory_number):
+    def CreateFactories(people_number :int,factory_number :int):
         #Randomize number of workers assigned to every factory
         import MedianOneGenerator
         number_workers_list = MedianOneGenerator.generate(people_number,factory_number)
@@ -69,7 +69,7 @@ def startSim(people_number = 10,factory_number = 10,max_capital = 1000,min_capit
 
     CreateFactories(people_number,factory_number)
 
-startSim(50)
+startSim()
 
 #Prints
 import Prints

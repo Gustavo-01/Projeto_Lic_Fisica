@@ -1,7 +1,7 @@
-import requests
+import names
 
-def getRandomName(quantity):
-    URL = "http://names.drycodes.com/"+str(quantity)+"?nameOptions=boy_names"
-    response = requests.get(URL)
-    responseLst = eval(response.content.decode("utf-8"))
-    return(responseLst)
+def getRandomName(quantity : int):
+    nameLst = list()
+    for i in range(quantity):
+         nameLst.append(names.get_full_name())
+    return nameLst
