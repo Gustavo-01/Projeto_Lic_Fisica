@@ -5,7 +5,7 @@ Elementos:
 Todo agente compra: 
     - Mínimo de necessidades
     - Resto gasto em luxos OU invesimento
-    - 
+
 
 Sistema:
 - Procura e oferta:
@@ -14,3 +14,5 @@ Sistema:
     - Aumentada com investimento
 
 - invesimento gera mais renda (consumo)
+
+

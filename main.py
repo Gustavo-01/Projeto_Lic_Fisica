@@ -1,3 +1,4 @@
+from __future__ import annotations
 from  Classes import Person,Factory
 
 #----todo----
@@ -69,7 +70,17 @@ def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int =
 
     CreateFactories(people_number,factory_number)
 
+    
+
 startSim()
+
+def nextTimeStep():
+    for factory in Factory.all_factories:
+        for worker in factory.workers:
+            factory.paySalary(worker)
+        factory.produce()
+    for person in Person.all_persons:
+        person.consume() #person.consume handles consumption of essencial, luxury and if owner, invest
 
 #Prints
 import Prints
