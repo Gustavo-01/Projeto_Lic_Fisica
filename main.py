@@ -7,7 +7,7 @@ def trade(factory : Factory,person : Person ,ammount : int):
 #------------
 
 def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 0):
-    #--GENERATE PERSONS--
+    #--GENERATE PERSONS--#
     import random
     import GetRandomNames
     #Generate random name for every person
