@@ -3,7 +3,7 @@ from  Classes import Person,Factory
 
 #----todo----
 def trade(factory : Factory,person : Person ,ammount : int):
-    print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product) + "with " + person.name)
+    print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product_is_essential) + "with " + person.name)
 #------------
 
 def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 0):
@@ -23,17 +23,17 @@ def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int =
         number_workers_list = MedianOneGenerator.generate(people_number,factory_number)
         for i in range(0,factory_number):
             #Find an Owner
-            ownerID = random.randint(0,people_number-1)
+            owner_id = random.randint(0,people_number-1)
             counter = 0
-            owner = Person.all_persons[ownerID]
-            while(owner.ownedFactory != None and counter < people_number):
+            owner = Person.all_persons[owner_id]
+            while(owner.owned_factories is not None and counter < people_number):
                 counter+=1
-                ownerID+=1
-                if(ownerID >= people_number):
-                    ownerID = 0
-                owner = Person.all_persons[ownerID]
+                owner_id+=1
+                if owner_id >= people_number:
+                    owner_id = 0
+                owner = Person.all_persons[owner_id]
             #if everyone owns a factory
-            if(counter >= people_number):
+            if counter >= people_number:
                 print("Only created "+str(i)+" factories, everyone owns a factory!")
                 return
 
@@ -42,26 +42,26 @@ def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int =
             workers = []
             for k in range(0,number_workers):
                 #Grab random person
-                workerID = random.randint(0,people_number-1)
+                worker_id = random.randint(0,people_number-1)
                 #If worker already is employed or is factory owner, search another worker
                 counter = 0
-                worker = Person.all_persons[workerID]
-                while((worker.employer != None or worker.ownedFactory != None or worker.name == owner.name) and counter < people_number):
-                    workerID += 1
+                worker = Person.all_persons[worker_id]
+                while((worker.employer is not None or worker.owned_factories is not None or worker.name == owner.name) and counter < people_number):
+                    worker_id += 1
                     counter += 1
-                    if(workerID >= people_number):
-                        workerID = 0
-                    worker = Person.all_persons[workerID]
-                if(counter < people_number):
+                    if worker_id >= people_number:
+                        worker_id = 0
+                    worker = Person.all_persons[worker_id]
+                if counter < people_number:
                     workers.append(worker)
 
             #Create Factory
-            factory = Factory(Person.all_persons[ownerID],workers,bool(random.randint(0,1)),i)
+            factory = Factory(Person.all_persons[owner_id],workers,bool(random.randint(0,1)),i)
             Factory.all_factories.append(factory)
 
             #Employ every worker and set owner
-            owner.ownedFactory = factory
-            if(owner.employer != None):
+            owner.owned_factories = factory
+            if owner.employer is not None:
                 owner.employer.workers.remove(owner)
                 owner.employer = None
                 print("removed "+owner.name+" from factory "+str(i))
@@ -70,17 +70,20 @@ def startSim(people_number :int = 10,factory_number :int = 10,max_capital :int =
 
     CreateFactories(people_number,factory_number)
 
-    
+
 
 startSim()
 
 def nextTimeStep():
     for factory in Factory.all_factories:
-        for worker in factory.workers:
-            factory.paySalary(worker)
-        factory.produce()
+        factory.analyzeMarket() #find new stock ammount
+        factory.getNeededProductivity(len(factory.workers),factory.new_stock_value) #Find new workers and set new salaries
+        factory.getFunding() #If needed, sell factory ownership
+        factory.produce() #Pay salaries and produce new stock ammount
     for person in Person.all_persons:
         person.consume() #person.consume handles consumption of essencial, luxury and if owner, invest
+        if person.owned_factories is not None:
+            person.doBossStuff() #think later
 
 #Prints
 import Prints
