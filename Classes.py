@@ -1,31 +1,36 @@
 from __future__ import annotations
 from typing import List
-from numpy import NaN, log
+from numpy import log
 
 # necessary for pyton3 version < 10.0
 
 # essencial will always be one, this will define the price relative to essencial
 LUXURY_PRODUCE_PRICE: float = 1.5
 PRODUCTION_PER_PERSON_SCALE: float = 1
+PRODUCTION_PER_PRODUCT: float = 1
+
+def productCost(is_essential: bool):
+    cost = PRODUCTION_PER_PRODUCT
+    if is_essential:
+        cost *= LUXURY_PRODUCE_PRICE
+    return cost
 
 class Factory:
     '''Controls production, salary payment, stockValues, and investment'''
     
     all_factories: List[Factory] = []
 
-    def __init__(self, owner: Person, workers: List[Person], product_is_essential: bool, fact_id: int, productivity: int = 1):
+    def __init__(self, owner: Person, workers: List[Person], product_is_essential: bool, fact_id: int):
         self.fact_id: int = fact_id
-        self.owner: Person = owner
+        self.owner: Person = owner #TODO change this
         self.workers: List[Person] = workers
         self.product_is_essential: bool = product_is_essential
-        self.productivity: int = productivity
         self.product_ammount: int = None
-        self.salary: int = None #TODO (find salaries or hire)
+        self.salary: int = None #TODO change this
         self.stock: int = int(owner.capital/2)
         self.last_stock: int = self.stock
         self.avaliable_stock: int = self.stock
-        self.avaliable_productivity: int = self.__updateAvaliableProductivity()
-        self.new_stock_value:int = NaN
+        self.new_stock_value:int = None
 
         if product_is_essential:  # Is esential
             GoodsMarket.essencial_factories.append(self)
@@ -38,13 +43,15 @@ class Factory:
 
     def analyzeMarket(self):
         ''' Find new stock ammount '''
-        Factory.findNewStockValue(self,self.stock,self.last_stock,self.avaliable_stock)
+        self.new_stock_value = Factory.findNewStockValue(self.stock,self.last_stock,self.avaliable_stock)
         
-        pass
     
-    def getNeededProductivity(self,worker_ammount: int,new_stock_value: int):
+    def getNeededProductivity(self):
         ''' With new stock value, create or destroy productivity (raise,lower) worker wages, (hire,fire) workers '''
-        
+        needed_productivity: float = self.new_stock_value * productCost(self.product_is_essential)
+        #new_salary is the salary offered for working in this factory
+        #will be recalculated again once the workers market ends
+        projected_salary = Factory.salary_with_productivity(len(self.workers),needed_productivity)
         pass
     
     def getFunding(self):
@@ -70,6 +77,11 @@ class Factory:
         return  log((salary+1)) * 50 * PRODUCTION_PER_PERSON_SCALE
     
     @staticmethod
+    def salary_with_productivity(N: int, productivity: float):
+        exp = productivity/(N * PRODUCTION_PER_PERSON_SCALE * 50)
+        return 10**(exp) -1
+    
+    @staticmethod
     def findNewStockValue(stock: int, last_stock: int, leftover_stock: int):
         # Use last two stock values and leftOverStock to decide production
         last_two_mean = stock + (last_stock - stock)/2
@@ -93,8 +105,9 @@ class Factory:
             self.__fire(worker)
             # worker.capital += self.salary #?
 
-    def __updateAvaliableProductivity(self):
-        return 10 + Factory.productivity_with_salary(self.salary) * len(self.workers) #Base productivity from owner is 10
+    def avaliableProductivity(self):
+        productivity: float = 10 + Factory.productivity_with_salary(self.salary) * len(self.workers) #Base productivity from owner is 10
+        return productivity
 
 
     #--Production

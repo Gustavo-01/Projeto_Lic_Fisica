@@ -77,13 +77,25 @@ startSim()
 def nextTimeStep():
     for factory in Factory.all_factories:
         factory.analyzeMarket() #find new stock ammount
-        factory.getNeededProductivity(len(factory.workers),factory.new_stock_value) #Find new workers and set new salaries
+        factory.getNeededProductivity() #Set new salary and search for new workers
+        #WOKERS MARKET TIMESTEP
+        #---------------------
+        #
+        #---------------------
         factory.getFunding() #If needed, sell factory ownership
+        #SHARES MARKET TIMESTEP
+        #---------------------
+        #
+        #---------------------
         factory.produce() #Pay salaries and produce new stock ammount
     for person in Person.all_persons:
         person.consume() #person.consume handles consumption of essencial, luxury and if owner, invest
-        if person.owned_factories is not None:
-            person.doBossStuff() #think later
+        #CONSUMERS MARKET TIMESTEP
+        #-------------------------
+        #
+        #-------------------------
+
+nextTimeStep()
 
 #Prints
 import Prints
