@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List
-from  Classes import Person,Factory, WorkersMarket
+from  Classes import Person,Factory, SharesMarket, WorkersMarket
 
 #----todo----
 def trade(factory : Factory,person : Person ,ammount : int):
@@ -84,23 +84,28 @@ def startSim(people_number :int = 2,factory_number :int = 10,max_capital :int = 
 
     CreateFactories(people_number,factory_number)
 
-
-
 startSim()
+
 print("done starting sim")
 
 def nextTimeStep():
+    #WORKERS MARKET TIMESTEP
+    #---------------------
     for factory in Factory.all_factories:
         factory.analyzeMarket() #find new stock ammount
         projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
         WorkersMarket.factory_salary_projection[factory] = projected_salary
-    WorkersMarket.RunWorkersMarket()
+    WorkersMarket.RunWorkersMarket()        
+    #---------------------
+
+    #SHARES MARKET TIMESTEP
+    #---------------------
     for factory in Factory.all_factories:
-        factory.getFunding() #If needed, sell factory ownership
-        #SHARES MARKET TIMESTEP
-        #---------------------
-        #
-        #---------------------
+        factory.getFunding()
+    SharesMarket.runSharesMarket()
+    #---------------------
+    
+    for factory in Factory.all_factories:
         factory.produce() #Pay salaries and produce new stock ammount
     for person in Person.all_persons:
         person.consume() #person.consume handles consumption of essencial, luxury and if owner, invest
@@ -112,6 +117,7 @@ def nextTimeStep():
 #nextTimeStep()
 
 def testWorkersMarket():
+    from Classes import WorkersMarket, SharesMarket
     for factory in Factory.all_factories:
         factory.analyzeMarket() #find new stock ammount
         projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
