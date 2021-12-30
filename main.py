@@ -71,7 +71,6 @@ def startSim(people_number :int = 2,factory_number :int = 10,max_capital :int = 
             Factory.all_factories.append(factory)
 
             #Employ every worker and set owner
-            owner.owned_factories = factory
             factory.owner = owner
             for worker in workers:
                 factory.workers = workers
