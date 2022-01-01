@@ -2,7 +2,10 @@ import numpy as np
 import matplotlib.pyplot as pyplot
 
 def generate(max_number,numbers_size,decay_speed = 0.8):
+    '''Generate numbers between 0 and max_number (included)'''
     numbers = []
+    if(max_number == 0):
+        return [0] * numbers_size
     for i in range(0,numbers_size):
         number = abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number))
         while(number > max_number):

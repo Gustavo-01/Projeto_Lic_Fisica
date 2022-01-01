@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import List
-from  Classes import Person,Factory, SharesMarket, WorkersMarket
+
+from numpy.random.mtrand import f
+from Classes import *
 
 #----todo----
 def trade(factory : Factory,person : Person ,ammount : int):
@@ -22,18 +24,20 @@ def startSim(people_number :int = 2,factory_number :int = 10,max_capital :int = 
         #Randomize number of workers assigned to every factory
         from MedianOneGenerator import generate
         number_workers_list = generate(people_number,factory_number)
-        for i in range(0,factory_number):
+        for i in range(factory_number):
 
             #Find an Owner
             owner_id = random.randint(0,people_number-1)
             counter = 0
             owner = Person.all_persons[owner_id]
-            while(owner.owned_factories is not None and counter < people_number):
+            while(len(owner.owned_factories) > 0):
                 counter+=1
                 owner_id+=1
                 if owner_id >= people_number:
                     owner_id = 0
                 owner = Person.all_persons[owner_id]
+                if counter >= people_number:
+                    break
             #if everyone owns a factory
             if counter >= people_number:
                 print("Only created "+str(i)+" factories, everyone owns a factory!")
@@ -69,17 +73,12 @@ def startSim(people_number :int = 2,factory_number :int = 10,max_capital :int = 
             #Create Factory
             factory = Factory(bool(random.randint(0,1)),i,workers, owner)
             Factory.all_factories.append(factory)
-
-            #Employ every worker and set owner
-            factory.owner = owner
-            for worker in workers:
-                factory.workers = workers
-                worker.employer = factory
+            owner.owned_factories.append(factory)
+            owner.share_catalog[factory] = 1
             
             #Check if factory has no workers
             if len(factory.workers) == 0:
-                Factory.all_factories.remove(factory)
-
+                Factory.destroy(factory)
 
     CreateFactories(people_number,factory_number)
 
@@ -115,17 +114,30 @@ def nextTimeStep():
 
 #nextTimeStep()
 
+import Prints
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
+
 def testWorkersMarket():
-    from Classes import WorkersMarket, SharesMarket
     for factory in Factory.all_factories:
         factory.analyzeMarket() #find new stock ammount
         projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
         WorkersMarket.factory_salary_projection[factory] = projected_salary
     print("running workersMarket")
-    WorkersMarket.RunWorkersMarket(True)
+    WorkersMarket.RunWorkersMarket(False)
 
+testWorkersMarket()
+print("WorkersMarket End")
 
+def testShareMarket():
+    for factory in Factory.all_factories:
+        factory.getFunding()
+    print("running sharesMarket")
+    SharesMarket.runSharesMarket()
+testShareMarket()
+ 
 #Prints
+print("--------------- End State: ----------") 
+
 import Prints
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
 
