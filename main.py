@@ -9,7 +9,7 @@ def trade(factory : Factory,person : Person ,ammount : int):
     print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product_is_essential) + "with " + person.name)
 #------------
 
-def startSim(people_number :int = 2,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10):
+def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10):
     #--GENERATE PERSONS--#
     import random
     import GetRandomNames
@@ -93,26 +93,28 @@ def nextTimeStep():
         factory.analyzeMarket() #find new stock ammount
         projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
         WorkersMarket.factory_salary_projection[factory] = projected_salary
-    WorkersMarket.RunWorkersMarket()        
+    WorkersMarket.runMarket()
+    print("done with workersMarket")
     #---------------------
 
     #SHARES MARKET TIMESTEP
     #---------------------
     for factory in Factory.all_factories:
         factory.getFunding()
-    SharesMarket.runSharesMarket()
+    SharesMarket.runMarket()
+    print("done with sharesMarket")
     #---------------------
-    
+
+    #CONSUMERS MARKET TIMESTEP
+    #-------------------------
     for factory in Factory.all_factories:
         factory.produce() #Pay salaries and produce new stock ammount
-    for person in Person.all_persons:
-        person.consume() #person.consume handles consumption of essencial, luxury and if owner, invest
-        #CONSUMERS MARKET TIMESTEP
-        #-------------------------
-        #
-        #-------------------------
+    GoodsMarket.runMarket()
+    print("done with GoodsMarket")
+    #-------------------------
 
-#nextTimeStep()
+GoodsMarket.runMarket()
+nextTimeStep()
 
 import Prints
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
@@ -123,17 +125,26 @@ def testWorkersMarket():
         projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
         WorkersMarket.factory_salary_projection[factory] = projected_salary
     print("running workersMarket")
-    WorkersMarket.RunWorkersMarket(False)
+    WorkersMarket.runMarket(False)
 
-testWorkersMarket()
-print("WorkersMarket End")
+#testWorkersMarket()
+#print("WorkersMarket End")
 
 def testShareMarket():
     for factory in Factory.all_factories:
         factory.getFunding()
     print("running sharesMarket")
-    SharesMarket.runSharesMarket()
-testShareMarket()
+    SharesMarket.runMarket()
+#testShareMarket()
+ 
+for i in range(0,10):
+    print("----- i = " + str(i) + "-------")
+    testWorkersMarket()
+    print("WorkersMarket End")
+    testShareMarket()
+    print("ShareMarket End")
+    Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories)
+     
  
 #Prints
 print("--------------- End State: ----------") 

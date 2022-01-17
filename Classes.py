@@ -2,18 +2,29 @@ from __future__ import annotations
 from typing import Dict, List, Tuple
 from numpy import log
 
-LUXURY_PRODUCE_PRICE_MULTIPLIER: float = 1.5 # essencial will always be one, this will define the price relative to essencial
+LUXURY_PRODUCION_COST_MULTIPLIER: float = 1.5 # essencial will always be one, this will define the price relative to essencial
 
 PRODUCTION_PER_PERSON_SCALE: float = 1.0
 PRODUCTION_PER_PRODUCT: float = 1.0
-FACTORY_STOCK_AGRESSIVENESS: float = 0.3
+
+FACTORY_STOCK_AGRESSIVENESS: float = 0.3 #could be dynamic for every factory
 
 #- GLOBAL FUNCTIONS -
 
-def productCost(is_essential: bool):
+def transfer_capital(sender: Person|Factory,capital: float,recipient: Person|Factory):
+    if sender.capital < capital:
+        raise Exception("ATTEMPTED TRANSFER WITH INVALID CAPITAL")
+    if type(recipient) != Factory and type(recipient) != Person:
+        raise Exception("ATTEMPTED TRANSFER WITH INVALID RECIPIENT")
+    if type(sender) != Factory and type(sender) != Person:
+        raise Exception("ATTEMPTED TRANSFER WITH INVALID SENDER")        
+    recipient.capital += capital
+    sender.capital -= capital
+
+def productProductivityCost(is_essential: bool):
     cost = PRODUCTION_PER_PRODUCT
     if is_essential:
-        cost *= LUXURY_PRODUCE_PRICE_MULTIPLIER
+        cost *= LUXURY_PRODUCION_COST_MULTIPLIER
     return cost
 
 #--------------------
@@ -34,7 +45,8 @@ class Factory:
         self.workers: List[Person] = workers
         for worker in workers:
             worker.employer = self
-        self.salary: int = len(self.workers) * productCost(product_is_essential)
+        self.salary: int = len(self.workers) * productProductivityCost(product_is_essential)
+        self.product_price: float = (self.salary * len(self.workers)) + 0 
         #Stock_variables
         self.stock: int = int(owner.capital/2)
         self.last_stock: int = self.stock
@@ -44,6 +56,9 @@ class Factory:
         self.share_holders: Dict[Person,float] = {owner: 1} #at creation, owner owns 100% of factory
 
         self.capital: int = 0
+
+        self.profit_margin_per_product = 0.1 #determined by leftover stock and factory aggressiveness
+
 
         if product_is_essential:  # Is esential
             GoodsMarket.essencial_factories.append(self)
@@ -57,45 +72,25 @@ class Factory:
     def analyzeMarket(self):
         ''' Find new stock value '''
         self.new_stock_value = Factory.findNewStockValue(self.stock,self.last_stock,self.avaliable_stock)
+        self.profit_margin_per_product = (self.stock - self.last_stock) * (FACTORY_STOCK_AGRESSIVENESS/self.stock)
 
-    def calculateNeededProductivity(self):
-        ''' With new stock value, create or destroy productivity '''
-        
-        needed_productivity: float = self.new_stock_value * productCost(self.product_is_essential)
-        return needed_productivity
-    
-    def project_salary(self, needed_productivity, test_mode):
-        ''' Define new projected salary (attract more workers if bigger salary) '''
-        last_productivity = self.stock * productCost(self.product_is_essential)
-
-        #new_salary is the salary offered assuming no new workers
-        #will be recalculated again once the workers market ends
-        projected_salary = (needed_productivity / last_productivity) * self.salary
-
-        if(test_mode):
-            print("\n- FACTORY: " + str(self.fact_id) + "\n"+
-                "last_productivity: " + str(last_productivity) + " -- needed_productivity: " + str(needed_productivity) +"\n"+
-                "last_stock: " + str(self.stock) + " -- new_stock: " + str(self.new_stock_value))
-
-        return projected_salary
-    
     def getFunding(self):
         ''' Get funding from owner or put factory shares on the SharesMarket '''
         total_cost = self.salary * len(self.workers)
         max_owner_capital_invest = self.owner.max_capital_investment_per_factory()
-        if(max_owner_capital_invest < total_cost):
+        if max_owner_capital_invest < total_cost:
             #ENTER SHARESMARKET
             share_value = SharesMarket.calculateShareValue(self)
             def get_needed_shares_number(shares_number):
                 ''' Recursive function that finds maximum shares number sold such that (total_cost-shares_revenue) < max_owner_capital_invest '''
                 owner_cost = total_cost - (shares_number * share_value)
-                if owner_cost < max_owner_capital_invest:
+                if owner_cost > max_owner_capital_invest:
                     return get_needed_shares_number(shares_number+1)
                 else:
-                    return shares_number-1
+                    return shares_number
 
             needed_shares_number = get_needed_shares_number(0)
-            if(needed_shares_number > 100):
+            if needed_shares_number > 100:
                 #TODO what if factory needs to sell more than all of itself??
                 pass
 
@@ -105,17 +100,59 @@ class Factory:
         else:
             #Owner has the needed capital, factory will not enter SharesMarket
             owner_capital_investment = total_cost
-            #TODO
-            #OFFER OWNER TO BUY BACK SHARES FROM FACTORY
-            #
-            #---------------
-        self.owner.transfer_capital(owner_capital_investment,self)
+        transfer_capital(self.owner,owner_capital_investment,self)
 
     def produce(self):
-        ''' Pay salaries, create products '''
+        ''' Pay salaries, create products and set price '''
+        #last stock is this timestep stock
+        self.last_stock = self.stock
         
-        pass
+        #define product price
+        cost_per_product = self.capital / self.stock
+        self.product_price = cost_per_product + self.profit_margin_per_product
+        
+        #Pay salaries
+        def pay_salary(person: Person):
+            if person.employer != self:
+                raise Exception("Factory is paying salary of a non-worker person!")
+            transfer_capital(self,self.salary,person)
+
+        for person in self.workers:
+            pay_salary(person)
+
+        #produce
+        new_stock = int(self.productivity_with_salary(self.salary) * len(self.workers) * productProductivityCost(self.product_is_essential))
+        self.stock = new_stock + self.avaliable_stock
+        self.avaliable_stock = self.stock
+
+    #-------------------------------
+    #------ General Methods --------
+    #-------------------------------
     
+    def calculateNeededProductivity(self):
+        ''' With new stock value, create or destroy productivity '''
+        
+        stock_to_produce = self.new_stock_value-self.avaliable_stock
+        if stock_to_produce < 0:
+            stock_to_produce = 0
+        needed_productivity: float = stock_to_produce * productProductivityCost(self.product_is_essential)
+        return needed_productivity
+
+    def project_salary(self, needed_productivity, test_mode):
+        ''' Define new projected salary (attract more workers if bigger salary) '''
+        last_productivity = self.stock * productProductivityCost(self.product_is_essential)
+
+        #new_salary is the salary offered assuming no new workers
+        #will be recalculated again once the workers market ends
+        projected_salary = (needed_productivity / last_productivity) * self.salary
+
+        if test_mode:
+            print("\n- FACTORY: " + str(self.fact_id) + "\n"+
+                "last_productivity: " + str(last_productivity) + " -- needed_productivity: " + str(needed_productivity) +"\n"+
+                "last_stock: " + str(self.stock) + " -- new_stock: " + str(self.new_stock_value))
+
+        return projected_salary
+
     def refreshOwner(self):
         '''Find maximum share holder, set that as owner'''
         #Find max share holder
@@ -129,7 +166,11 @@ class Factory:
             self.owner.owned_factories.pop(self)
             max_share_holder.owned_factories.append(self)
             self.owner = max_share_holder
-    
+
+    def avaliableProductivity(self):
+        productivity: float = Factory.productivity_with_salary(self.salary) * len(self.workers)
+        return productivity
+
     #---------------------------------------
     #------- Static Functions --------------
     #---------------------------------------
@@ -147,7 +188,7 @@ class Factory:
         if salary is None :
             salary=0
         return  log((salary+1)) * 50 * PRODUCTION_PER_PERSON_SCALE
-    
+
     @staticmethod
     def salary_with_productivity(N: int, productivity: float):
         #N must be > 0
@@ -165,17 +206,18 @@ class Factory:
             leftover_stock_ratio = 0
 
         def stockFunction(base, leftover, aggressiveness):
+            '''Return best stock for next step'''
             return round(base * (1 - ((leftover)**(3/2)-aggressiveness)))
 
         return stockFunction(last_two_mean, leftover_stock_ratio, FACTORY_STOCK_AGRESSIVENESS)
-    
+
     @staticmethod
     def updateFactoryWorkers(factory_worker_number: dict[Factory,int]):
         '''Doublecheck if workers number match, set new workers variable for factories set new salary '''
         
         def check_workers_number_match(factory_worker_number: dict[Factory,int]):
             for factory in factory_worker_number:
-                if(len(factory.workers) != factory_worker_number[factory]):
+                if len(factory.workers) != factory_worker_number[factory]:
                     
                     print("\n -- Factory_id: "+ str(factory.fact_id) + "\n- factory.workers: " + str(len(factory.workers))
                     +" -- factory_worker_number: " + str(factory_worker_number[factory]))
@@ -186,7 +228,7 @@ class Factory:
         for factory in Factory.all_factories:
             factory.workers = []
         for person in Person.all_persons:
-            if(person.employer is not None):
+            if person.employer is not None:
                 person.employer.workers.append(person)
         
         #Check for WorkersMarket errors
@@ -194,41 +236,12 @@ class Factory:
         
         #Update factories salary
         for factory in Factory.all_factories:
-            needed_productivity: float = factory.new_stock_value * productCost(factory.product_is_essential)
+            needed_productivity: float = factory.new_stock_value * productProductivityCost(factory.product_is_essential)
             if len(factory.workers) > 0:
                 factory.salary = Factory.salary_with_productivity(len(factory.workers),needed_productivity)
             else:
                 Factory.destroy(factory)
-                
-
-    def paySalary(self, worker: Person):
-        #TODO
-        if self.owner.capital >= self.salary:
-            self.owner.capital -= self.salary
-            worker.capital += self.salary
-        else:
-            self.__fire(worker)
-            # worker.capital += self.salary #?
-
-    def avaliableProductivity(self):
-        productivity: float = Factory.productivity_with_salary(self.salary) * len(self.workers)
-        return productivity
     
-    #--Production
-
-    def invest(self, base_funding: int):
-        if base_funding > self.new_stock_value:
-            investment = self.new_stock_value
-        else:
-            investment = base_funding
-        # will add to production price if is not essencial
-        self.stock = investment * (LUXURY_PRODUCE_PRICE_MULTIPLIER * self.product_is_essential)
-        return investment
-
-    def fire(self, person: Person):
-        #TODO
-        person.employer = None
-
 #--------------------
 #---- PERSON --------
 #--------------------
@@ -254,29 +267,24 @@ class Person:
         return 1
 
     def luxury_capital_projection(self):
-        return (self.capital-self.essential_capital_projection()) * (self.LUXURY_CAPITAL_PERCENTAGE)
-    
+        ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
+        return self.capital * self.LUXURY_CAPITAL_PERCENTAGE
+
+    def shareMarket_capital_investment_projection(self):
+        ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
+        return self.capital * self.SHAREMARKET_CAPITAL_PERCENTAGE
+
     def factory_capital_investment_projection(self):
-        return (self.capital-Person.essential_capital_projection()) - (self.luxury_capital_projection() + self.shareMarket_capital_investment_projection())
+        ''' capital avaliable  '''
+        return self.capital - (self.luxury_capital_projection() + self.shareMarket_capital_investment_projection())
 
     def max_capital_investment_per_factory(self):
         #TODO test this
-        if(len(self.owned_factories) > 0):
+        if len(self.owned_factories) > 0:
             return self.factory_capital_investment_projection()/len(self.owned_factories)
         else:
             return 0
 
-    def shareMarket_capital_investment_projection(self):
-            avaliable_capital = (self.capital - Person.essential_capital_projection()) * (self.SHAREMARKET_CAPITAL_PERCENTAGE)
-            return avaliable_capital
-
-    def transfer_capital(self,capital: float,recipient: Person|Factory):
-        if self.capital < capital:
-            raise Exception("ATTEMPTED TRANSFER WITH INVALID CAPITAL")
-        if type(recipient) != Factory and type(recipient) != Person:
-            raise Exception("ATTEMPTED TRANSFER WITH INVALID RECIPIENT")
-        recipient.capital += capital
-        self.capital -= capital
 
 #-----------------------
 #---- M A R K E T S ----
@@ -287,21 +295,106 @@ class Person:
 #--------------------
 
 class GoodsMarket():
-    '''DocString'''
+    '''Controls consumption of essential an luxury, also sets each persons luxury_capital_percentage and sharemarket_capital_percentage'''
     essencial_factories: List[Factory] = []
     luxury_factories: List[Factory] = []
+    avg_essential_price: float = 1
+    
+    @staticmethod
+    def runMarket():
+        from MedianOneGenerator import generate
+
+        def runEssentialMarket():
+
+            price_sorted_factory_id_list: List[int] = generate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
+            price_sorted_factories = sorted(GoodsMarket.essencial_factories,key= lambda x: x.product_price)
+
+            def attemptEssentialTrade(person:Person, i: int,j: int = 0):
+                ''' Act as a circular list until find tradeable factory '''
+                
+                if j > len(price_sorted_factories):
+                    return False #Error, could not find any factory with enough stock to trade (or person has not enough capital to trade)
+                
+                idx = i + j #Circular list index
+                if idx >= len(price_sorted_factories):
+                    idx -= len(price_sorted_factories)
+                
+                trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
+                
+                if trade_factory.avaliable_stock == 0 or trade_factory.product_price > person.capital:
+                    return attemptEssentialTrade(person,i,j+1)
+                elif trade_factory.avaliable_stock > 0 and trade_factory.product_price < person.capital:
+                    trade_factory.avaliable_stock -= 1
+                    transfer_capital(person,trade_factory.product_price,trade_factory)
+                    return True
+            
+            i :int = 0 #cycle persons with price_sorted_factories
+            for person in Person.all_persons:
+                #Find a factory to trade
+                traded = attemptEssentialTrade(person,i)
+                if not traded:
+                    print("person did not consume essential")
+                    #TODO what to do in this case?
+            
+            #TODO set essential capital projection for next timestep
+        
+        def runLuxuryMarket():
+            
+            price_sorted_factory_id_list: List[int] = generate(len(GoodsMarket.luxury_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
+            price_sorted_factories = sorted(GoodsMarket.luxury_factories,key= lambda x: x.product_price)
+
+            def attemptLuxuryTrade(person:Person, max_cost: float, i: int,j: int = 0):
+                ''' Act as a circular list until find tradeable factory '''
+                
+                if j > len(price_sorted_factories):
+                    return False #Error, could not find any factory with enough stock to trade (or person has not enough capital to trade)
+                
+                idx = i + j #Circular list index
+                if idx >= len(price_sorted_factories):
+                    idx -= len(price_sorted_factories)
+                
+                trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
+                
+                if trade_factory.avaliable_stock == 0 or trade_factory.product_price > max_cost:
+                    return attemptLuxuryTrade(person,max_cost,i,j+1)
+                elif trade_factory.avaliable_stock > 0 and trade_factory.product_price < max_cost:
+                    trade_factory.avaliable_stock -= 1
+                    transfer_capital(person,trade_factory.product_price,trade_factory)
+                    return True
+
+            i :int = 0 #cycle persons with price_sorted_factories
+            for person in Person.all_persons:
+                max_luxury_capital_projection = person.luxury_capital_projection()
+                luxury_expense = 0
+                while(luxury_expense < max_luxury_capital_projection):
+                    #Find a factory to trade
+                    capital_before_trade = person.capital
+                    traded = attemptLuxuryTrade(person,max_luxury_capital_projection,i)
+                    if not traded:
+                        print("person did not consume luxury")
+                        break
+                    else:
+                        trade_cost = capital_before_trade - person.capital
+                        luxury_expense += trade_cost
+
+            #TODO set persons luxury_capital percentage and sharemarket_capital_percentage
+
+        runEssentialMarket()
+
+        runLuxuryMarket()
+
 
 #--------------------
 #-- WorkersMarket ---
 #--------------------
 
 class WorkersMarket():
-    '''DocString'''
+    ''' Hires workers for factories '''
     avaliable_workers: List[Person] = []
     factory_salary_projection: Dict[Factory,float]= {}
 
     @staticmethod
-    def RunWorkersMarket(test_mode = False):
+    def runMarket(test_mode = False):
         ''' Find work for every worker, set new employer for every person '''
 
         def get_hiring_factory(i: int):
@@ -372,6 +465,7 @@ class WorkersMarket():
 #--------------------
 
 class SharesMarket():
+    ''' Sells owners shares to make enough capital for production and controls secondary shares trading '''
     factory_shares_for_sale: Dict[Tuple[Factory,Person],int] = {} #{factory: (share_number,share_value)}
     
     @staticmethod
@@ -381,7 +475,7 @@ class SharesMarket():
         return factory.stock * 0.01
 
     @staticmethod
-    def runSharesMarket():
+    def runMarket():
         
         def sell_share(seller: Person, factory: Factory, value: float, buyer: Person):
             '''Sell seller share in factory to buyer'''
@@ -392,9 +486,9 @@ class SharesMarket():
             
             #transfer capital from buyer to seller (or factory if seller is owner)
             if seller == factory.owner:
-                buyer.transfer_capital(value,factory) #Primary ShareMarket
+                transfer_capital(buyer,value,factory) #Primary ShareMarket
             else:
-                buyer.transfer_capital(value,seller) #Secondary ShareMarket
+                transfer_capital(buyer,value,seller) #Secondary ShareMarket
 
             #transfer share from seller to buyer
             if buyer not in factory.share_holders:

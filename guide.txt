@@ -16,3 +16,4 @@ Sistema:
 - invesimento gera mais renda (consumo)
 
 
+To think: How to create new factories and person??
