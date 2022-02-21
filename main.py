@@ -1,109 +1,92 @@
 from __future__ import annotations
 from typing import List
+
+from numpy import true_divide
 from globals import *
 import Prints
 import enum
 
-class Initial_conditions(enum.Enum):
-    bourgeoisie = 1
-    egalitarianism = 2
-    sole_ownership = 3
+from tests import generate
 
-def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10, initial_condition: Initial_conditions = Initial_conditions.sole_ownership, burgeoisie_percentage :int = 15):
+class InitialConditions(enum.Enum):
+    BOURGEOISIE = 1
+    EGALITARIANISM = 2
+    SOLE_OWNERSHIP = 3
+
+def startSim(people_number :int = 30,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10, initial_condition: InitialConditions = InitialConditions.SOLE_OWNERSHIP, burgeoisie_percentage :int = 15):
     #--Resolve initial conditions--#
-    if initial_condition == Initial_conditions.egalitarianism:
-        initial_condition = Initial_conditions.bourgeoisie
+    if initial_condition == InitialConditions.EGALITARIANISM:
+        initial_condition = InitialConditions.BOURGEOISIE
         burgeoisie_percentage = 100
 
     #--GENERATE PERSONS--#
     import random
     import GetRandomNames
+    from MedianOneGenerator import medianOneGenerate , uniformGenerate
+    from math import ceil
     #Generate random name for every person
     names = GetRandomNames.getRandomName(people_number)
     #Create person
+    unemployed_people : List[Person] = []
+    burgeoisie : List[Person] = []
     for i in range(0,people_number):
-        Person(names[i], random.randint(min_capital, max_capital))
+        person = Person(names[i], random.randint(min_capital, max_capital))
+        unemployed_people.append(person)
+        if i <= ceil(people_number * burgeoisie_percentage):
+            burgeoisie.append(person)
 
-    def pickRandomPerson():
-        person_id = int(len(Person.all_persons) * random.random())
-        return Person.all_persons[person_id]
+    #--FACTORY CREATION--#
+    def pickRandomPeople(ammount:int = 1, pool = Person.all_persons, repetition = True) -> List[Person]:
+        if(len(pool) <= ammount):
+            ammount = len(pool) - 1
+        indexes = uniformGenerate(len(pool)-1,ammount,repetition = repetition)
+        return [pool[i] for i in indexes]
 
-    def CreateFactories(people_number :int,factory_number :int):
-        #Randomize number of workers assigned to every factory
-        from MedianOneGenerator import generate
-        number_workers_list = generate(people_number,factory_number)
-        for i in range(factory_number):
+    def findWorkers(ammount: int = 1):
+        #Grab random unemployed
+        workers = pickRandomPeople(ammount, unemployed_people, repetition = False)
+        for worker in workers:
+            unemployed_people.remove(worker)
+        return workers
 
-            #Find ShareHolders
-            """
-            owner_id = random.randint(0,people_number-1)
-            counter = 0
-            owner = Person.all_persons[owner_id]
-            while(len(owner.owned_factories) > 0):
-                counter+=1
-                owner_id+=1
-                if owner_id >= people_number:
-                    owner_id = 0
-                owner = Person.all_persons[owner_id]
-                if counter >= people_number:
-                    break
-            #if everyone owns a factory
-            if counter >= people_number:
-                print("Only created "+str(i)+" factories, everyone owns a factory!")
-                return
-            """
-            def findShareHolders():
-                pass
+    #Workers
+    number_workers_list = medianOneGenerate(people_number,factory_number,min_number = 1)
+    number_shareholders_list = medianOneGenerate(people_number * burgeoisie_percentage/100,factory_number,min_number = 1)
 
-            
-            def findWorker():
-                #Grab random person
-                worker_id = random.randint(0,people_number-1)
-                counter = 0
-                worker = Person.all_persons[worker_id]
-                #If worker already is employed, search another worker
-                while(worker.employer is not None):
-                    worker_id += 1
-                    counter += 1
-                    if worker_id >= people_number:
-                        worker_id = 0
-                    if counter == people_number-1:
-                        return None
-                    worker = Person.all_persons[worker_id]
-                worker.employer = -1 #flags person as employed (until factory is created)
-                return worker
+    for i in range(factory_number):
+        workers :List[Person] = findWorkers(number_workers_list[i])
 
-            #Find workers
-            number_workers = number_workers_list[i]
-            if number_workers == 0:
-                number_workers = 1
-            workers: List[Factory] = []
-            for k in range(0,number_workers):
-                worker = findWorker()
-                if worker is not None:
-                    workers.append(worker)
+        #Grab random people from first (person_count * burgeoisie_percentage) indices and distribute 100 over them
+        share_holders :List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie)
+        #Distribute ShareValues
+        share_values = uniformGenerate(0,len(share_holders), int_return=False)
+        SUM = sum(share_values)
+        share_values = [value/SUM * 100 for value in share_values]
+        shares = {}
+        for i in range(len(share_values)):
+            shares[share_holders[i]] = share_values[i]
 
-            #Create Factory
-            factory = Factory(bool(random.randint(0,1)),i,workers, owner)
-            owner.owned_factories.append(factory)
-            owner.share_catalog[factory] = 1
-            
-            #Check if factory has no workers
-            if len(factory.workers) == 0:
-                Factory.destroy(factory)
+        #Create Factory
+        factory = Factory(bool(round(random.random())),workers,shares,random.random()*max_capital + min_capital)
 
-    def CreateFactory(shareHolders : Dict[Person,int], workers :List[Person]):
-        pass
-
-    CreateFactories(people_number,factory_number)
+        #Check if factory has no workers
+        if len(factory.workers) == 0:
+            Factory.destroy(factory)
 
 startSim()
 
 print("done starting sim")
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
 
-
 def nextTimeStep():
+    #CONSUMERS MARKET
+    #-------------------------
+    for factory in Factory.all_factories:
+        factory.produce() #Pay salaries and produce new stock ammount
+    GoodsMarket.runMarket()
+    print("done with GoodsMarket")
+    #-------------------------
+
     #Salary Projection
     #---------------------
     for factory in Factory.all_factories:
@@ -126,16 +109,8 @@ def nextTimeStep():
     print("done with workersMarket")
     #---------------------
 
-    #CONSUMERS MARKET
-    #-------------------------
-    for factory in Factory.all_factories:
-        factory.produce() #Pay salaries and produce new stock ammount
-    GoodsMarket.runMarket()
-    print("done with GoodsMarket")
-    #-------------------------
-
-GoodsMarket.runMarket()
-nextTimeStep()
+#GoodsMarket.runMarket()
+#nextTimeStep()
 
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 

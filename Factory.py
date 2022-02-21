@@ -9,32 +9,34 @@ class Factory:
     '''Controls production, salary payment, stockValues, and investment'''
     
     all_factories: List[Factory] = []
+    __idcounter__ :int = 0
 
-    def __init__(self, product_is_essential: bool, fact_id: int, workers: List[Person], owner: Person):
+    def __init__(self, product_is_essential: bool, workers: List[Person], shareHolders: Dict[Person,float], capital :float):
         from globals import GoodsMarket, productProductivityCost
 
-        self.fact_id: int = fact_id
+        self.fact_id: int = Factory.__idcounter__
+        Factory.__idcounter__+=1
+
+        self.capital: int = capital
         self.product_is_essential: bool = product_is_essential
-        #owner
-        self.owner: Person = owner
-        #--------------
+        #--ShareHolders----
+        self.share_holders = shareHolders
+        for shareHolder in shareHolders:
+            shareHolder.share_catalog[self] = shareHolders[shareHolder]
+        #--Workers----------
         self.workers: List[Person] = workers
         for worker in workers:
             worker.employer = self
         self.salary: int = len(self.workers) * productProductivityCost(product_is_essential)
-        self.product_price: float = (self.salary * len(self.workers)) + 0
-        #Stock_variables
-        self.stock: int = int(owner.capital/2)
+        self.product_price: float = (self.salary * len(self.workers))
+        #--Stock_variables--
+        self.stock: int = capital/2
         self.last_stock: int = self.stock
         self.avaliable_stock: int = self.stock
         self.new_stock_value:int = None
-        #--------------
-        self.share_holders: Dict[Person,float] = {owner: 1} #at creation, owner owns 100% of factory
-
-        self.capital: int = 0
-
+        #-----------
         self.profit_margin_per_product = 0.1 #determined by leftover stock and factory aggressiveness
-
+        #-----------
         if product_is_essential:  # Is esential
             GoodsMarket.essencial_factories.append(self)
         else:

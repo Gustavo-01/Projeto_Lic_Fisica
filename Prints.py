@@ -20,5 +20,5 @@ def printPersonsAndFactories(all_persons: List[Person],all_factories: List[Facto
     print("{3:<2} {0:<20} - {1:<9} - {2:<10} - {4:<10}".format("Owner_Name","N_Workers","Essencial","ID","Salary"))
     print("-"*50)
     for factory in sorted(all_factories, key=lambda f: f.fact_id):
-        print("{3:<2} {0:<20} - {1:<9} - {2:<10} - {4:<10}".format(factory.owner.name,str(len(factory.workers)),str(factory.product_is_essential),factory.fact_id,str(factory.salary) + "$"))
+        print("{3:<2} {0:<20} - {1:<9} - {2:<10} - {4:<10}".format(list(factory.share_holders.keys())[0].name,str(len(factory.workers)),str(factory.product_is_essential),factory.fact_id,str(factory.salary) + "$"))
 

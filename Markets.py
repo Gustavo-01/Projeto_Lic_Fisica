@@ -17,12 +17,12 @@ class GoodsMarket():
     
     @staticmethod
     def runMarket():
-        from MedianOneGenerator import generate
+        from MedianOneGenerator import medianOneGenerate
         from globals import Person, transfer_capital
 
         def runEssentialMarket():
 
-            price_sorted_factory_id_list: List[int] = generate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
+            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
             price_sorted_factories = sorted(GoodsMarket.essencial_factories,key= lambda x: x.product_price)
 
             def attemptEssentialTrade(person:Person, i: int,j: int = 0):
@@ -56,7 +56,7 @@ class GoodsMarket():
         
         def runLuxuryMarket():
             
-            price_sorted_factory_id_list: List[int] = generate(len(GoodsMarket.luxury_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
+            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.luxury_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
             price_sorted_factories = sorted(GoodsMarket.luxury_factories,key= lambda x: x.product_price)
 
             def attemptLuxuryTrade(person:Person, max_cost: float, i: int,j: int = 0):
@@ -122,8 +122,8 @@ class WorkersMarket():
                 new_factory_worker_number[hiring_factory] = 0
             return hiring_factory
 
-        from MedianOneGenerator import generate
-        salary_sorted_factory_id_list: List[int] = generate(len(Factory.all_factories)-1,len(Person.all_persons),) #give a number of workers per factory
+        from MedianOneGenerator import medianOneGenerate
+        salary_sorted_factory_id_list: List[int] = medianOneGenerate(len(Factory.all_factories)-1,len(Person.all_persons),) #give a number of workers per factory
         salary_sorted_factories = WorkersMarket.sort_dict(WorkersMarket.factory_salary_projection)
 
         if test_mode:
