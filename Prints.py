@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import List
-from Classes import *
+from globals import *
 
 
-def printPersonsAndFactories(all_persons: List[Person],all_factories: List[Factory]):
+def printPersonsAndFactories(all_persons: List[Person],all_factories: List[Factory],day :int = 0):
+    print(" "*30 + "day:{:<20d}".format(day))
     print("PERSONS")
     print("{0:<20} - {1:<4} - {2:<10}".format("Name","Capital","Employed"))
     print("-"*45)

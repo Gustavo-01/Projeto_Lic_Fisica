@@ -1,8 +1,7 @@
 from __future__ import annotations
 from typing import List
-
-from numpy.random.mtrand import f
-from Classes import *
+from globals import *
+import Prints
 
 #----todo----
 def trade(factory : Factory,person : Person ,ammount : int):
@@ -17,8 +16,7 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
     names = GetRandomNames.getRandomName(people_number)
     #Create person
     for i in range(0,people_number):
-        person = Person(names[i], random.randint(min_capital, max_capital))
-        Person.all_persons.append(person)
+        Person(names[i], random.randint(min_capital, max_capital))
 
     def CreateFactories(people_number :int,factory_number :int):
         #Randomize number of workers assigned to every factory
@@ -72,7 +70,6 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
 
             #Create Factory
             factory = Factory(bool(random.randint(0,1)),i,workers, owner)
-            Factory.all_factories.append(factory)
             owner.owned_factories.append(factory)
             owner.share_catalog[factory] = 1
             
@@ -85,6 +82,8 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
 startSim()
 
 print("done starting sim")
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
+
 
 def nextTimeStep():
     #WORKERS MARKET TIMESTEP
@@ -116,8 +115,7 @@ def nextTimeStep():
 GoodsMarket.runMarket()
 nextTimeStep()
 
-import Prints
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 
 def testWorkersMarket():
     for factory in Factory.all_factories:
@@ -136,7 +134,8 @@ def testShareMarket():
     print("running sharesMarket")
     SharesMarket.runMarket()
 #testShareMarket()
- 
+
+"""
 for i in range(0,10):
     print("----- i = " + str(i) + "-------")
     testWorkersMarket()
@@ -144,11 +143,10 @@ for i in range(0,10):
     testShareMarket()
     print("ShareMarket End")
     Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories)
-     
+"""     
  
 #Prints
 print("--------------- End State: ----------") 
 
-import Prints
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
+#Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 
