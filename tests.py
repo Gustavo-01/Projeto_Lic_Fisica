@@ -1,78 +1,35 @@
-"""
+import numpy as np
+import time
 
-cte = 1
+max_number = 100
+min_number = 1
+decay_speed = 0.8
+numbers_size = 100000
 
-def F(x: float):
-    return log((x+1)) * 50
-
-def d_F(x: float):
-    return 50/(log(x)*(x+1))
-
-def d_d_F(x: float):
-    return -(50*(x+1+x*log(x)))/(x*(log(x)**2)*(x+1)**2)
-
-def f(x: float):
-    return cte * x/F(x)
-    
-def d_f(x: float):
-    return (F(x) - d_F(x)*x)/(F(x))**2
-
-def d_d_f(x: float):
-    return ((x*d_d_F(x)*F(x))+(2*d_F(x))*(-x*d_F(x)+F(x)))/(F(x)**3)
-
-def main(x0: float, max_iter: int, epsilon: float):
-    xn = x0
-    for n in range(0,max_iter):
-        fxn = d_f(xn)
-        if abs(fxn) < epsilon:
-            print('Found solution after',n,'iterations.')
-            return xn
-        d_fxn = d_d_f(xn)
-        if d_fxn == 0:
-            print('Zero derivative. No solution found.')
-            return None
-        xn = xn - fxn/d_fxn
-    print('Exceeded maximum iterations. No solution found.')
-
-while(True):
-    x0 = input("x0: ")
-    max_iter = input("M_iter: ")
-    epsilon = input("epsilon: ")
-    main(float(x0),int(max_iter),float(epsilon))
-"""
-
-from numpy import log
-
-def F(x: float):
-    return log((x+1)) * 50
-
-def findSalaryWithApha(apha, c):
-    return 10**(c/apha) - 1
-"""
-def findMinimum(apha,c):
-    if(apha == 1):
-        apha0 = apha
-    else:
-        apha0 = round(apha/2)
-    apha1 = 2*apha
-    
-    cost0 = round(findSalaryWithApha(apha0,c)) * apha0
-    cost = round(findSalaryWithApha(apha,c)) * apha
-    cost1 = round(findSalaryWithApha(apha1,c)) * apha1
-    
-    print(apha0,apha,apha1)
-    print(round(cost0),round(cost),round(cost1))
-    
-    return
-    if(cost0 > cost and cost1 > cost): #Break Condition
-        return cost
-    elif(cost0 < cost):
-        findMinimum(apha0,c)
-    else:
-        findMinimum(apha1,c)
+def clock_0():
+    clock1 = time.time()
+    numbers = np.random.normal(1/max_number, 2/(max_number**decay_speed),numbers_size)*max_number
+    for i in range(0,len(numbers)):
+        number = int(abs(numbers[i]))
+        while number > max_number or number < min_number:
+            number = np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number
+        numbers[i] = number
+    clock2 = time.time()
+    print("TIME1 = " + str(clock2 - clock1))
+    return(numbers)
 
 
-OG_APHA = 5
-DELTAP_NF = 12
-findMinimum(OG_APHA,DELTAP_NF)
-"""
+def generate():
+    '''Generate numbers between 0 and max_number (included)'''
+    numbers = []
+    if(max_number == 0):
+        return [0] * numbers_size
+    clock1 = time.time()
+    for i in range(0,numbers_size):
+        number = int(abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number)))
+        while(number > max_number or number < min_number):
+            number = abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number))
+        numbers.append(number)
+    clock2 = time.time()
+    print("TIME1 = " + str(clock2 - clock1))
+    return(numbers)

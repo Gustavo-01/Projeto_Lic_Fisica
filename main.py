@@ -2,13 +2,19 @@ from __future__ import annotations
 from typing import List
 from globals import *
 import Prints
+import enum
 
-#----todo----
-def trade(factory : Factory,person : Person ,ammount : int):
-    print(factory.owner.name+"'s factory traded " + str(factory.ammount) + " " + str(factory.product_is_essential) + "with " + person.name)
-#------------
+class Initial_conditions(enum.Enum):
+    bourgeoisie = 1
+    egalitarianism = 2
+    sole_ownership = 3
 
-def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10):
+def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10, initial_condition: Initial_conditions = Initial_conditions.sole_ownership, burgeoisie_percentage :int = 15):
+    #--Resolve initial conditions--#
+    if initial_condition == Initial_conditions.egalitarianism:
+        initial_condition = Initial_conditions.bourgeoisie
+        burgeoisie_percentage = 100
+
     #--GENERATE PERSONS--#
     import random
     import GetRandomNames
@@ -18,13 +24,18 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
     for i in range(0,people_number):
         Person(names[i], random.randint(min_capital, max_capital))
 
+    def pickRandomPerson():
+        person_id = int(len(Person.all_persons) * random.random())
+        return Person.all_persons[person_id]
+
     def CreateFactories(people_number :int,factory_number :int):
         #Randomize number of workers assigned to every factory
         from MedianOneGenerator import generate
         number_workers_list = generate(people_number,factory_number)
         for i in range(factory_number):
 
-            #Find an Owner
+            #Find ShareHolders
+            """
             owner_id = random.randint(0,people_number-1)
             counter = 0
             owner = Person.all_persons[owner_id]
@@ -40,7 +51,11 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
             if counter >= people_number:
                 print("Only created "+str(i)+" factories, everyone owns a factory!")
                 return
+            """
+            def findShareHolders():
+                pass
 
+            
             def findWorker():
                 #Grab random person
                 worker_id = random.randint(0,people_number-1)
@@ -77,6 +92,9 @@ def startSim(people_number :int = 20,factory_number :int = 10,max_capital :int =
             if len(factory.workers) == 0:
                 Factory.destroy(factory)
 
+    def CreateFactory(shareHolders : Dict[Person,int], workers :List[Person]):
+        pass
+
     CreateFactories(people_number,factory_number)
 
 startSim()
@@ -86,17 +104,15 @@ Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
 
 
 def nextTimeStep():
-    #WORKERS MARKET TIMESTEP
+    #Salary Projection
     #---------------------
     for factory in Factory.all_factories:
         factory.analyzeMarket() #find new stock ammount
-        projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
+        projected_salary = factory.calculateNeededProductivity() #Set new salary
         WorkersMarket.factory_salary_projection[factory] = projected_salary
-    WorkersMarket.runMarket()
-    print("done with workersMarket")
     #---------------------
 
-    #SHARES MARKET TIMESTEP
+    #PRIMARY SHARES MARKET
     #---------------------
     for factory in Factory.all_factories:
         factory.getFunding()
@@ -104,7 +120,13 @@ def nextTimeStep():
     print("done with sharesMarket")
     #---------------------
 
-    #CONSUMERS MARKET TIMESTEP
+    #WORKERS MARKET
+    #----------------------
+    WorkersMarket.runMarket()
+    print("done with workersMarket")
+    #---------------------
+
+    #CONSUMERS MARKET
     #-------------------------
     for factory in Factory.all_factories:
         factory.produce() #Pay salaries and produce new stock ammount

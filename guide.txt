@@ -1,19 +1,17 @@
-Elementos:
-- Agentes : trabalham, consomem e investem.
-- bens (Necessidades e luxo) 
+mudanças:
+    Produto não inteiro no consumo  
+    trabalhadores com produção constante? (independente de salário)
+    Ordem de Markets:
+        primeiro ShareMarket primário (arrecadação de fundos)
+        depois WorkersMarket
+    Eliminar Owner - Novo ShareMarket:
+        PRINCIPAL:
+            LUCRO - distribuído por shareHolders - Investe percentagem de lucro
+            PERDAS - quando precisa de dinheiro, vende ações no mercado.
+        SECUNDÁRIO:
+            final, todo capital de sobra disponível, se maior que valor mínimo para empregar uma pessoa, cria-se fábrica com sobra
+    Destruição fábrica quando não consegue empregar uma pessoa - Sobra vai para shareHolders
 
-Todo agente compra: 
-    - Mínimo de necessidades
-    - Resto gasto em luxos OU invesimento
-
-
-Sistema:
-- Procura e oferta:
-    - Controla produção e empregabilidade
-- Produtividade (Bens produzidos / tempo):
-    - Aumentada com investimento
-
-- invesimento gera mais renda (consumo)
-
-
-To think: How to create new factories and person??
+Novidades:
+    Condições iniciais variantes:
+        distribuição de shares inicial (percentagem de burguesia - dono único - igualitário)
