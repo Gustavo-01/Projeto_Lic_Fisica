@@ -6,14 +6,12 @@ from globals import *
 import Prints
 import enum
 
-from tests import generate
-
 class InitialConditions(enum.Enum):
     BOURGEOISIE = 1
     EGALITARIANISM = 2
     SOLE_OWNERSHIP = 3
 
-def startSim(people_number :int = 30,factory_number :int = 10,max_capital :int = 1000,min_capital :int = 10, initial_condition: InitialConditions = InitialConditions.SOLE_OWNERSHIP, burgeoisie_percentage :int = 15):
+def startSim(people_number :int = 20,factory_number :int = 50,max_capital :int = 1000,min_capital :int = 10, initial_condition: InitialConditions = InitialConditions.SOLE_OWNERSHIP, burgeoisie_percentage :int = 15):
     #--Resolve initial conditions--#
     if initial_condition == InitialConditions.EGALITARIANISM:
         initial_condition = InitialConditions.BOURGEOISIE
@@ -55,23 +53,20 @@ def startSim(people_number :int = 30,factory_number :int = 10,max_capital :int =
 
     for i in range(factory_number):
         workers :List[Person] = findWorkers(number_workers_list[i])
-
+        if len(workers) == 0:
+            continue
         #Grab random people from first (person_count * burgeoisie_percentage) indices and distribute 100 over them
         share_holders :List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie)
         #Distribute ShareValues
         share_values = uniformGenerate(0,len(share_holders), int_return=False)
         SUM = sum(share_values)
-        share_values = [value/SUM * 100 for value in share_values]
+        share_values = [value/SUM for value in share_values]
         shares = {}
         for i in range(len(share_values)):
             shares[share_holders[i]] = share_values[i]
 
         #Create Factory
         factory = Factory(bool(round(random.random())),workers,shares,random.random()*max_capital + min_capital)
-
-        #Check if factory has no workers
-        if len(factory.workers) == 0:
-            Factory.destroy(factory)
 
 startSim()
 
@@ -84,41 +79,41 @@ def nextTimeStep():
     for factory in Factory.all_factories:
         factory.produce() #Pay salaries and produce new stock ammount
     GoodsMarket.runMarket()
-    print("done with GoodsMarket")
+    print("GoodsMarket done")
     #-------------------------
 
-    #Salary Projection
+    #Salary Projection and fundraising
     #---------------------
     for factory in Factory.all_factories:
-        factory.analyzeMarket() #find new stock ammount
-        projected_salary = factory.calculateNeededProductivity() #Set new salary
-        WorkersMarket.factory_salary_projection[factory] = projected_salary
+        factory.findNewStock() #find new stock ammount
+        projected_capital = factory.project_labor_capital() #Project new salary
+        factory.getFunding(projected_capital) #Fundraise (set shares for sale if needed)
     #---------------------
 
-    #PRIMARY SHARES MARKET
+    #SHARES MARKET
     #---------------------
-    for factory in Factory.all_factories:
-        factory.getFunding()
     SharesMarket.runMarket()
-    print("done with sharesMarket")
+    for factory in Factory.all_factories:
+        WorkersMarket.factory_labor_capital[factory] =  factory.labor_avaliable_capital()
+    print("sharesMarket done")
     #---------------------
 
     #WORKERS MARKET
     #----------------------
     WorkersMarket.runMarket()
-    print("done with workersMarket")
+    print("workersMarket done")
     #---------------------
 
-#GoodsMarket.runMarket()
-#nextTimeStep()
+nextTimeStep()
+nextTimeStep()
 
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 
 def testWorkersMarket():
     for factory in Factory.all_factories:
-        factory.analyzeMarket() #find new stock ammount
-        projected_salary = factory.calculateNeededProductivity() #Set new salary and search for new workers
-        WorkersMarket.factory_salary_projection[factory] = projected_salary
+        factory.findNewStock() #find new stock ammount
+        projected_salary = factory.project_labor_capital() #Set new salary and search for new workers
+        WorkersMarket.factory_labor_capital[factory] = projected_salary
     print("running workersMarket")
     WorkersMarket.runMarket(False)
 
@@ -145,5 +140,5 @@ for i in range(0,10):
 #Prints
 print("--------------- End State: ----------") 
 
-#Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 

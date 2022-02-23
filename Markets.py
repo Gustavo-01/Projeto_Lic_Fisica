@@ -1,5 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+import numpy
+from sympy import per
+
 if TYPE_CHECKING:
     from typing import Dict, List, Tuple
     from globals import Factory, Person
@@ -14,45 +17,75 @@ class GoodsMarket():
     essencial_factories: List[Factory] = []
     luxury_factories: List[Factory] = []
     avg_essential_price: float = 1
-    
+
     @staticmethod
     def runMarket():
         from MedianOneGenerator import medianOneGenerate
         from globals import Person, transfer_capital
 
+        def trade_essential(factory: Factory, buyer: Person,max_trade_ammount : float):
+            traded_product = max_trade_ammount
+            if factory.avaliable_stock <= traded_product:
+                traded_product = factory.avaliable_stock
+            if(buyer.capital <= factory.product_price * traded_product):
+                traded_product = buyer.capital/factory.product_price
+            
+            buyer.essential_satisfaction = traded_product
+            
+            transfer_capital(buyer,traded_product*factory.product_price,factory)
+            factory.avaliable_stock -= traded_product
+
+            return traded_product
+
+        def trade_luxury(factory: Factory, buyer: Person, max_cost: float):
+            traded_product = max_cost/factory.product_price
+            if factory.avaliable_stock < traded_product:
+                traded_product = factory.avaliable_stock
+
+            buyer.luxury_satisfaction = 1 - ((buyer.luxury_satisfaction)-traded_product)/buyer.luxury_satisfaction
+            
+            transfer_capital(buyer,traded_product*factory.product_price,factory)
+            factory.avaliable_stock -= traded_product
+
+            return traded_product * factory.product_price
+
         def runEssentialMarket():
 
-            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons)) #give a distribution of factories to trade (lower prices more likely)
+            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons),decay_speed=0.9) #give a distribution of factories to trade (lower prices more likely)
             price_sorted_factories = sorted(GoodsMarket.essencial_factories,key= lambda x: x.product_price)
 
-            def attemptEssentialTrade(person:Person, i: int,j: int = 0):
+            def attemptEssentialTrade(person:Person, needed_essentials :float, i: int, j: int = 0):
                 ''' Act as a circular list until find tradeable factory '''
-                
+
                 if j > len(price_sorted_factories):
                     return False #Error, could not find any factory with enough stock to trade (or person has not enough capital to trade)
-                
+
                 idx = i + j #Circular list index
                 if idx >= len(price_sorted_factories):
                     idx -= len(price_sorted_factories)
-                
+
                 trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
-                
-                if trade_factory.avaliable_stock == 0 or trade_factory.product_price > person.capital:
-                    return attemptEssentialTrade(person,i,j+1)
-                elif trade_factory.avaliable_stock > 0 and trade_factory.product_price < person.capital:
-                    trade_factory.avaliable_stock -= 1
-                    transfer_capital(person,trade_factory.product_price,trade_factory)
-                    return True
-            
-            i :int = 0 #cycle persons with price_sorted_factories
-            for person in Person.all_persons:
+
+                if trade_factory.avaliable_stock <= 0:
+                    return attemptEssentialTrade(person,needed_essentials,i,j+1)
+                else:
+                    traded_ammount = trade_essential(trade_factory,person,needed_essentials)
+                    needed_essentials -= traded_ammount
+                    if needed_essentials <= 0:
+                        return True
+                    else:
+                        return attemptEssentialTrade(person,needed_essentials,i,j+1)
+
+            for i in range(len(Person.all_persons)):
+                person = Person.all_persons[i]
                 #Find a factory to trade
-                traded = attemptEssentialTrade(person,i)
+                traded = attemptEssentialTrade(person,1,i)
                 if not traded:
                     print("person did not consume essential")
                     #TODO what to do in this case?
             
-            #TODO set essential capital projection for next timestep
+            pass
+            #TODO set essential capital projection for next timestep?
         
         def runLuxuryMarket():
             
@@ -70,34 +103,35 @@ class GoodsMarket():
                     idx -= len(price_sorted_factories)
                 
                 trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
-                
-                if trade_factory.avaliable_stock == 0 or trade_factory.product_price > max_cost:
+
+
+                if trade_factory.avaliable_stock <= 0:
                     return attemptLuxuryTrade(person,max_cost,i,j+1)
-                elif trade_factory.avaliable_stock > 0 and trade_factory.product_price < max_cost:
-                    trade_factory.avaliable_stock -= 1
-                    transfer_capital(person,trade_factory.product_price,trade_factory)
-                    return True
-
-            i :int = 0 #cycle persons with price_sorted_factories
-            for person in Person.all_persons:
-                max_luxury_capital_projection = person.luxury_capital_projection()
-                luxury_expense = 0
-                while(luxury_expense < max_luxury_capital_projection):
-                    #Find a factory to trade
-                    capital_before_trade = person.capital
-                    traded = attemptLuxuryTrade(person,max_luxury_capital_projection,i)
-                    if not traded:
-                        print("person did not consume luxury")
-                        break
+                else:
+                    trade_cost = trade_luxury(trade_factory,person,max_cost)
+                    max_cost -= trade_cost
+                    if max_cost <= 0:
+                        return True
                     else:
-                        trade_cost = capital_before_trade - person.capital
-                        luxury_expense += trade_cost
+                        return attemptLuxuryTrade(person,max_cost,i,j+1)
 
+
+            for i in range(len(Person.all_persons)):
+                person = Person.all_persons[i]
+                max_luxury_capital_projection = person.luxury_capital_projection()
+                #Find a factory to trade
+                traded = attemptLuxuryTrade(person,max_luxury_capital_projection,i)
+                if not traded:
+                    print("person did not fully consume luxury")
+                    #TODO what to do in this case?
+
+            pass
             #TODO set persons luxury_capital percentage and sharemarket_capital_percentage
 
-        runEssentialMarket()
-
-        runLuxuryMarket()
+        if len(GoodsMarket.essencial_factories)>0:
+            runEssentialMarket()
+        if len(GoodsMarket.luxury_factories) > 0:
+            runLuxuryMarket()
 
 
 #--------------------
@@ -106,8 +140,9 @@ class GoodsMarket():
 
 class WorkersMarket():
     ''' Hires workers for factories '''
-    avaliable_workers: List[Person] = []
-    factory_salary_projection: Dict[Factory,float]= {}
+    factory_labor_capital: Dict[Factory,float]= {}
+
+    workers_to_update: Dict[Factory,List[Person]] = {}
 
     @staticmethod
     def runMarket(test_mode = False):
@@ -117,55 +152,48 @@ class WorkersMarket():
 
         def get_hiring_factory(i: int):
             '''return hiring factory (factory the person will now be working for)'''
-            hiring_factory = salary_sorted_factories[salary_sorted_factory_id_list[i]][0]
+
+            hiring_factory = sorted_factories[sorted_factory_id_list[i]]
             if hiring_factory not in new_factory_worker_number:
                 new_factory_worker_number[hiring_factory] = 0
             return hiring_factory
 
+        #---------------------------------------------------------
         from MedianOneGenerator import medianOneGenerate
-        salary_sorted_factory_id_list: List[int] = medianOneGenerate(len(Factory.all_factories)-1,len(Person.all_persons),) #give a number of workers per factory
-        salary_sorted_factories = WorkersMarket.sort_dict(WorkersMarket.factory_salary_projection)
+        sorted_factory_id_list: List[int] = medianOneGenerate(len(Factory.all_factories)-1,len(Person.all_persons),) #give a number of workers per factory
+        sorted_factories = sorted(WorkersMarket.factory_labor_capital, key=WorkersMarket.factory_labor_capital.get)
+        #----------------------------------------------------------
 
-        if test_mode:
-            import MedianOneGenerator
-            MedianOneGenerator.plot_occurrences(salary_sorted_factory_id_list)
-
-
-        i: int = 0 #cycle salary_sorted_factory_id_list
         new_factory_worker_number: Dict[Factory,int] = {}
-        for person in Person.all_persons:
+        for i in range(len(Person.all_persons)):
+            person = Person.all_persons[i]
             hiring_factory = get_hiring_factory(i)
             
             #check if new worker number exceeds triple the original ammount
             j: int = 1 #cycle salary_sorted_factory_id_list until finds a factory not full (if needed)
             while new_factory_worker_number[hiring_factory] > 3*len(hiring_factory.workers):
-                if(i+j < len(Factory.all_factories) and i+j >= 0):
-                    hiring_factory = get_hiring_factory(i+j)
-                j = (-j if j>0 else -(j-1))
+                idx = i + j #Circular list index
+                if idx >= len(Factory.all_factories):
+                    idx -= len(Factory.all_factories)
+                
+                hiring_factory = get_hiring_factory(idx)
 
-                #--test_mode--#
                 if j > len(Factory.all_factories):
                     #Person becomes unemployed
-                    if test_mode:
-                        print("Could not find factory! A person went unemployed!")
+                    print("Could not find factory!" + person.name + " went unemployed!")
+                    #All factories are full
                     break
-                #-------------#
 
+            #- Employ -#
             person.employer = hiring_factory
-            i+=1
-            new_factory_worker_number[hiring_factory] += 1
-
-        if test_mode:
-            print("\n\n"+"-"*30+"\n--- WORKER-MARKET-TEST ---\n\n")
-            for factory in new_factory_worker_number:
-                print("FACTORY: " + str(factory.fact_id) +"\n"+
-                      "last-worker_N: " + str(len(factory.workers)) + "  --  new-worker_N: " + str(new_factory_worker_number[factory]) + "\n"+
-                      "last-salary: " + str(factory.salary) + " -- projected-salary: " + str(WorkersMarket.factory_salary_projection[factory]))
-        Factory.updateFactoryWorkers(new_factory_worker_number)
-
-    @staticmethod
-    def sort_dict(d : Dict[Factory,float]):
-        return sorted(d.items(), key=lambda x: x[1])
+            
+            if hiring_factory not in WorkersMarket.workers_to_update:
+                WorkersMarket.workers_to_update[hiring_factory] = [person]
+            else:
+                WorkersMarket.workers_to_update[hiring_factory].append(person)
+            #-----------#
+        #- Update workers -#
+        Factory.updateFactoryWorkers(WorkersMarket.workers_to_update)
 
     """
     @staticmethod
@@ -184,124 +212,155 @@ class WorkersMarket():
 
 class SharesMarket():
     ''' Sells owners shares to make enough capital for production and controls secondary shares trading '''
-    factory_shares_for_sale: Dict[Tuple[Factory,Person],int] = {} #{factory: (share_number,share_value)}
-    
+    shares_for_trade: Dict[Tuple[Factory,Person],float] = {} #{(facotry,seller): share}
+    factory_shares: Dict[Factory,float] = {} # {factory: (share}
+
     @staticmethod
-    def calculateShareValue(factory: Factory):
-        #TODO Maybe this works??
-        #one share is 1% of factory current value
-        return factory.stock * 0.01
+    def share_value(share: float, factory: Factory):
+        return share * factory.capital
 
     @staticmethod
     def runMarket():
         
-        from globals import Person
+        from globals import Person, transfer_capital
 
-        def sell_share(seller: Person, factory: Factory, value: float, buyer: Person):
-            '''Sell seller share in factory to buyer'''
+        def sell_shares(factory: Factory, price: float, shares: float, buyer: Person, seller :Person|Factory = None):
+            '''Create new shares and sell to buyer'''
             
-            #check if shares match
-            if seller.share_catalog[factory] != factory.share_holders[seller]:
-                raise Exception("factory share record and seller share record do not match")
-            
-            #transfer capital from buyer to seller (or factory if seller is owner)
-            if seller == factory.owner:
-                globals.transfer_capital(buyer,value,factory) #Primary ShareMarket
-            else:
-                globals.transfer_capital(buyer,value,seller) #Secondary ShareMarket
-
             #transfer share from seller to buyer
             if buyer not in factory.share_holders:
-                factory.share_holders[buyer] = 0.01
-                buyer.share_catalog[factory] = 0.01
+                factory.share_holders[buyer] = shares
+                buyer.share_catalog[factory] = shares
             else:
-                factory.share_holders[buyer] += 0.01
-                buyer.share_catalog[factory] += 0.01
+                factory.share_holders[buyer] += shares
+                buyer.share_catalog[factory] += shares
+
+            if seller == None:
+                seller = factory #Sold directly from factory
+            else:
+                seller.share_catalog[factory] -= shares
+                factory.share_holders[seller] -= shares
+                if seller.share_catalog[factory] == 0:
+                    seller.share_catalog.pop(factory)
+                    factory.share_holders.pop(seller)
+
+            transfer_capital(buyer,price,seller)
             
-            #remove share from seller
-            factory.share_holders[seller] -= 0.01
-            seller.share_catalog[factory] -= 0.01
-            if factory.share_holders[seller] == 0:
-                factory.share_holders.pop(seller)
-                seller.share_catalog.pop(factory)
+            #remove share from market
+            SharesMarket.factory_shares[factory] -= shares
 
         def PrimaryMarket():
-            '''Owner sells shares - capital goes to factory'''
+            '''create shares - capital goes to factory'''
 
-            def primary_share_sell_attempt(factory: Factory, value: float):
-                '''Attempt to sell factory share, capital goes directly to factory'''
-                #should first attempt shareholders, then indiscriminated search
-                for person in factory.share_holders:
-                    if person.shareMarket_capital_investment_projection() > value:
-                        sell_share(factory.owner,factory,value,person)
-                        return True
-                for person in Person.all_persons:
-                    if person.shareMarket_capital_investment_projection() > value:
-                        sell_share(factory.owner,factory,value,person)
-                        return True
-                return False
+            def primary_share_sell_attempt(factory:Factory, shares_for_sale:float, person: Person):
+                '''Attempt to sell factory share'''
+                
+                #TODO Selling too many shares
 
-            #PRIMARY MARKET: Owner sells shares - Every share MUST be sold - capital goes directly to factory production
-            for share in SharesMarket.factory_shares_for_sale:
-                factory = share[0]
-                share_N = SharesMarket.factory_shares_for_sale[share]
-                share_V = SharesMarket.calculateShareValue(factory)
-                for n in range(share_N):
-                    sold = primary_share_sell_attempt(factory,share_V)
-                    if not sold:
-                        print("COULD NOT SELL SHARE IN SHAREMARKET!") #WHAT TO DO??
-                    else:
-                        SharesMarket.factory_shares_for_sale[share] -= 1
-                factory.refreshOwner()
-                SharesMarket.factory_shares_for_sale.pop(share)
+                max_investment = person.shareMarket_capital_investment_projection() / 2
+                total_share_value = SharesMarket.share_value(shares_for_sale,factory)
+                if max_investment >= total_share_value:
+                    sold_shares = shares_for_sale
+                    price = total_share_value
+                else:
+                    price = max_investment
+                    sold_shares = shares_for_sale * price / total_share_value
 
+                sell_shares(factory,price,sold_shares,person)
 
-            if(len(SharesMarket.factory_shares_for_sale) != 0):
-                raise Exception("Something went wrong, factory_shares_for_sale is not empty after primary shareMarket round!")
+            #PRIMARY MARKET: Factory sells shares - Every share must be sold
+            for factory in SharesMarket.factory_shares:
+
+                #- First attempt shareholders -#
+                unordered_list = list(range(len(factory.share_holders)-1))
+                share_holders_list = list(factory.share_holders.keys())
+                numpy.random.shuffle(unordered_list)
+                for i in unordered_list:
+                    shares_for_sale = SharesMarket.factory_shares[factory]
+                    person = share_holders_list[i]
+                    if SharesMarket.factory_shares[factory] <= 0:
+                        break
+                    primary_share_sell_attempt(factory,shares_for_sale,person)
+
+                if factory not in SharesMarket.factory_shares:
+                    #All shares were sold to shareHolders
+                    break
+
+                #- Then indiscriminated search -#
+                unordered_list = list(range(len(Person.all_persons)-1))
+                numpy.random.shuffle(unordered_list)
+                for i in unordered_list:
+                    shares_for_sale = SharesMarket.factory_shares[factory]
+                    if SharesMarket.factory_shares[factory] <= 0:
+                        break
+                    person = Person.all_persons[i]
+                    primary_share_sell_attempt(factory,shares_for_sale,person)
+            
+            for value in SharesMarket.factory_shares.values():
+                if value > 0:
+                    raise Exception("Something went wrong, factory_shares_for_sale is not empty after primary shareMarket round!")
+            SharesMarket.factory_shares = {}
 
         def SecondaryMarket():
             '''Shareholders sell and buy shares'''
             
+            def secondary_share_sell_attempt(seller:Person, shares_for_sale:float, buyer: Person):
+                '''Attempt to sell factory share'''
+                
+                max_investment = buyer.shareMarket_capital_investment_projection() / 2
+                total_share_value = SharesMarket.share_value(shares_for_sale,factory)
+                if max_investment >= total_share_value:
+                    sold_shares = shares_for_sale
+                    price = total_share_value
+                else:
+                    price = max_investment
+                    sold_shares = shares_for_sale * price / total_share_value
+
+                sell_shares(factory,price,sold_shares,seller)
+
             #Sell step
-            for person in Person.all_persons:
+            for share_holder in Person.all_persons:
                 #if person cannot fulfil essential AND luxury needs:
-                projected_capital = person.capital #projected capital after SecondaryMarket
-                while projected_capital < (Person.essential_capital_projection() + person.luxury_capital_projection()):
-                    #Sell some shares (AND lower luxury consumption!)
-                    #TODO lower luxury consumption
+                if share_holder.capital < (Person.essential_capital_projection() + share_holder.luxury_capital_projection()):
+
+                    needed_capital = (Person.essential_capital_projection() + share_holder.luxury_capital_projection()) - share_holder.capital
+                    #- TODO lower luxury consumption! -
+                    
+                    #----------------------------------
                     import random
-                    factory = random.choice(list(person.share_catalog.keys())) #pick a random factory from share catalog
-                    projected_capital += SharesMarket.calculateShareValue(factory)
-                    share = (factory,person)
-                    if share not in SharesMarket.factory_shares_for_sale:
-                        SharesMarket.factory_shares_for_sale[share] = 1
-                    else:
-                        SharesMarket.factory_shares_for_sale[share] += 1
+                    #Sell some shares
+                    for factory in share_holder.share_catalog:
+                        total_share_value = share_holder.share_catalog[factory] * factory.capital
+                        if(total_share_value >= needed_capital):
+                            shares_for_sale = needed_capital/total_share_value
+                        else:
+                            shares_for_sale = share_holder.share_catalog[factory]
+                        SharesMarket.shares_for_trade[(factory,share_holder)] = shares_for_sale
+
+                        needed_capital -= SharesMarket.share_value(shares_for_sale,factory)
+                        if needed_capital <= 0:
+                            break
             
             #Buy step
-            #first attempt owner and shareholders
-            for share in sorted(SharesMarket.factory_shares_for_sale,key=lambda x: SharesMarket.calculateShareValue(x[0])):
+            #Sort by share value (biggest goes first)            
+            sorted_shares = sorted(SharesMarket.shares_for_trade,key=lambda x: SharesMarket.share_value(x[0], SharesMarket.shares_for_trade[x[0]]))
+            for share in sorted_shares:
                 factory = share[0]
-                share_value = SharesMarket.calculateShareValue(factory)
                 seller = share[1]
-                while SharesMarket.factory_shares_for_sale[share] > 0:
-                    
-                    #shareHolders
-                    for person in sorted(factory.share_holders,key=lambda x: factory.share_holders[x]):
-                        if person.shareMarket_capital_investment_projection() > share_value:
-                            sell_share(seller,factory,share_value,person)
-                            SharesMarket.factory_shares_for_sale[share] -= 1
-                            continue
-                    
-                    #indiscriminate search
-                    for person in Person.all_persons:
-                        if person.shareMarket_capital_investment_projection() > share_value:
-                            sell_share(seller,factory,share_value,person)
-                            SharesMarket.factory_shares_for_sale[share] -= 1
-                            continue
-                    
+                total_share_value = SharesMarket.share_value(SharesMarket.shares_for_trade[share],factory)
+                
+                #- Indiscriminated search -#
+                unordered_list = range(len(Person.all_persons)-1)
+                numpy.random.shuffle(unordered_list)
+                for i in unordered_list:
+                    if SharesMarket.shares_for_trade[factory] <= 0:
+                        SharesMarket.shares_for_trade.pop(factory)
+                        break
+                    person = Person.all_persons[i]
+                    secondary_share_sell_attempt(seller,shares_for_sale,person)
+
+            if(len(SharesMarket.shares_for_trade) != 0):
                     print("could not sell a factory share on secondary market")
-                factory.refreshOwner()            
         
         PrimaryMarket()
         SecondaryMarket()

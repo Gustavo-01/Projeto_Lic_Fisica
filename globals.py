@@ -1,21 +1,26 @@
 from __future__ import annotations
-from typing import Dict, List, Tuple, TYPE_CHECKING
+from ast import Constant
+from typing import Dict, List, Literal, Tuple, TYPE_CHECKING
 from numpy import log
 from Factory import Factory
 from Person import Person
 from Markets import *
 
-LUXURY_PRODUCION_COST_MULTIPLIER: float = 1.5 # essencial will always be one, this will define the price relative to essencial
+FLOATING_POINT_ERROR_MARGIN = 10**-5
 
-PRODUCTION_PER_PERSON_SCALE: float = 1.0
-PRODUCTION_PER_PRODUCT: float = 1.0
+#- production set as the salary necessary to produce one product -#
+# one worker with 1 (unit of capital) salary produces one essential product -#
+# one worker with LUXURY_PRODUCTION_COST (unit of capital) salary produces one luxury product -#
+LUXURY_PRODUCION_COST: Literal = 1.5 # price relative to essencial (defined as 1)
 
-FACTORY_STOCK_AGRESSIVENESS: float = 0.3 #could be dynamic for every factory
+PRODUCTION_PER_PERSON_SCALE: Literal = 1.0 #if bigger, everyone produces more
+
+FACTORY_STOCK_AGRESSIVENESS: Literal = 0.1 #could be dynamic for every factory
 
 #- GLOBAL FUNCTIONS -
 
 def transfer_capital(sender: Person|Factory,capital: float,recipient: Person|Factory):
-    if sender.capital < capital:
+    if sender.capital < capital - FLOATING_POINT_ERROR_MARGIN:
         raise Exception("ATTEMPTED TRANSFER WITH INVALID CAPITAL")
     if type(recipient) != Factory and type(recipient) != Person:
         raise Exception("ATTEMPTED TRANSFER WITH INVALID RECIPIENT")
@@ -24,9 +29,4 @@ def transfer_capital(sender: Person|Factory,capital: float,recipient: Person|Fac
     recipient.capital += capital
     sender.capital -= capital
 
-def productProductivityCost(is_essential: bool):
-    cost = PRODUCTION_PER_PRODUCT
-    if is_essential:
-        cost *= LUXURY_PRODUCION_COST_MULTIPLIER
-    return cost
 

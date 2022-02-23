@@ -15,11 +15,14 @@ class Person:
     def __init__(self, name: str, capital: int, employer: Factory = None):
         self.name: str = name
         self.capital: int = capital
+        self.original_capital :int = capital
         self.employer: Factory = employer
         self.owned_factories: List[Factory] = []
         self.share_catalog: Dict[Factory,float] = {}
-        self.LUXURY_CAPITAL_PERCENTAGE :float = 0.01 #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
-        self.SHAREMARKET_CAPITAL_PERCENTAGE :float = 0.01 #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
+        self.LUXURY_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
+        self.SHAREMARKET_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
+        self.essential_satisfaction: float = 0 
+        self.luxury_satisfaction: float = 0.5 #if > 1, spend less on luxury, if < 0.5?, spend more
         Person.all_persons.append(self)
 
     @staticmethod

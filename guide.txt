@@ -1,5 +1,5 @@
 mudanças:
-    Produto não inteiro no consumo  
+    Produto não inteiro no consumo
     trabalhadores com produção constante? (independente de salário)
     Ordem de Markets:
         primeiro ShareMarket primário (arrecadação de fundos)
@@ -15,3 +15,4 @@ mudanças:
 Novidades:
     Condições iniciais variantes:
         distribuição de shares inicial (percentagem de burguesia - dono único - igualitário)
+
