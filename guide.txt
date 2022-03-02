@@ -16,3 +16,5 @@ Novidades:
     Condições iniciais variantes:
         distribuição de shares inicial (percentagem de burguesia - dono único - igualitário)
 
+custoI -> produtoI
+custoF -> produtoF

@@ -17,12 +17,12 @@ class Person:
         self.capital: int = capital
         self.original_capital :int = capital
         self.employer: Factory = employer
-        self.owned_factories: List[Factory] = []
         self.share_catalog: Dict[Factory,float] = {}
-        self.LUXURY_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
-        self.SHAREMARKET_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
-        self.essential_satisfaction: float = 0 
+        self.essential_satisfaction: float = 1
         self.luxury_satisfaction: float = 0.5 #if > 1, spend less on luxury, if < 0.5?, spend more
+        self.__timestep_initial_capital = capital
+        self.__LUXURY_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
+        self.__SHAREMARKET_CAPITAL_PERCENTAGE :float = 0.1 #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
         Person.all_persons.append(self)
 
     @staticmethod
@@ -33,19 +33,16 @@ class Person:
 
     def luxury_capital_projection(self):
         ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
-        return self.capital * self.LUXURY_CAPITAL_PERCENTAGE
+        return self.__timestep_initial_capital * self.__LUXURY_CAPITAL_PERCENTAGE
 
     def shareMarket_capital_investment_projection(self):
         ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
-        return self.capital * self.SHAREMARKET_CAPITAL_PERCENTAGE
+        return self.__timestep_initial_capital * self.__SHAREMARKET_CAPITAL_PERCENTAGE
 
     def factory_capital_investment_projection(self):
         ''' capital avaliable  '''
-        return self.capital - (self.luxury_capital_projection() + self.shareMarket_capital_investment_projection())
+        return self.__timestep_initial_capital - (self.luxury_capital_projection() + self.shareMarket_capital_investment_projection())
 
-    def max_capital_investment_per_factory(self):
-        #TODO test this
-        if len(self.owned_factories) > 0:
-            return self.factory_capital_investment_projection()/len(self.owned_factories)
-        else:
-            return 0
+    def update_timestep_capital(self):
+        '''update avaliable capital at beggining of timestep'''
+        self.__timestep_initial_capital = self.capital

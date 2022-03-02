@@ -6,7 +6,7 @@ from Factory import Factory
 from Person import Person
 from Markets import *
 
-FLOATING_POINT_ERROR_MARGIN = 10**-5
+FLOATING_POINT_ERROR_MARGIN = 10**-10
 
 #- production set as the salary necessary to produce one product -#
 # one worker with 1 (unit of capital) salary produces one essential product -#
@@ -15,7 +15,7 @@ LUXURY_PRODUCION_COST: Literal = 1.5 # price relative to essencial (defined as 1
 
 PRODUCTION_PER_PERSON_SCALE: Literal = 1.0 #if bigger, everyone produces more
 
-FACTORY_STOCK_AGRESSIVENESS: Literal = 0.1 #could be dynamic for every factory
+FACTORY_STOCK_AGRESSIVENESS: Literal = 0.5 #could be dynamic for every factory
 
 #- GLOBAL FUNCTIONS -
 

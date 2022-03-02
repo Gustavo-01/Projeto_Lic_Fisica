@@ -56,22 +56,33 @@ def startSim(people_number :int = 20,factory_number :int = 50,max_capital :int =
         if len(workers) == 0:
             continue
         #Grab random people from first (person_count * burgeoisie_percentage) indices and distribute 100 over them
-        share_holders :List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie)
+        share_holders :List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie, repetition=False) #TODO ERROR! Returning same person twice!
         #Distribute ShareValues
-        share_values = uniformGenerate(0,len(share_holders), int_return=False)
+        share_values = uniformGenerate(0,len(share_holders), int_return=False) #max_number = 0+1
         SUM = sum(share_values)
         share_values = [value/SUM for value in share_values]
         shares = {}
         for i in range(len(share_values)):
             shares[share_holders[i]] = share_values[i]
+        #- TEST -
+        if sum(share_values) > 1+FLOATING_POINT_ERROR_MARGIN or sum(share_values) < 1-FLOATING_POINT_ERROR_MARGIN:
+            print(sum(share_values))
+        #--------
+        
+        # - TEST -
+        SUM = 0
+        for p in shares:
+            SUM += shares[p]
+        if SUM > 1+FLOATING_POINT_ERROR_MARGIN or SUM < 1-FLOATING_POINT_ERROR_MARGIN:
+            print(SUM)
+        #---------
 
         #Create Factory
-        factory = Factory(bool(round(random.random())),workers,shares,random.random()*max_capital + min_capital)
+        Factory(bool(round(random.random())),workers,shares,random.random()*max_capital + min_capital)
 
 startSim()
 
 print("done starting sim")
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories)
 
 def nextTimeStep():
     #CONSUMERS MARKET
@@ -85,16 +96,14 @@ def nextTimeStep():
     #Salary Projection and fundraising
     #---------------------
     for factory in Factory.all_factories:
-        factory.findNewStock() #find new stock ammount
-        projected_capital = factory.project_labor_capital() #Project new salary
-        factory.getFunding(projected_capital) #Fundraise (set shares for sale if needed)
+        projected_capital = factory.project_needed_capital() #Project needed capital
+        factory.TEST_PROJECT_CAPITAL = projected_capital
+        factory.getFunding(projected_capital) #Fundraise (set shares for sale or distribute capital)
     #---------------------
 
     #SHARES MARKET
     #---------------------
     SharesMarket.runMarket()
-    for factory in Factory.all_factories:
-        WorkersMarket.factory_labor_capital[factory] =  factory.labor_avaliable_capital()
     print("sharesMarket done")
     #---------------------
 
@@ -104,29 +113,11 @@ def nextTimeStep():
     print("workersMarket done")
     #---------------------
 
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,0)
 nextTimeStep()
-nextTimeStep()
-
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
-
-def testWorkersMarket():
-    for factory in Factory.all_factories:
-        factory.findNewStock() #find new stock ammount
-        projected_salary = factory.project_labor_capital() #Set new salary and search for new workers
-        WorkersMarket.factory_labor_capital[factory] = projected_salary
-    print("running workersMarket")
-    WorkersMarket.runMarket(False)
-
-#testWorkersMarket()
-#print("WorkersMarket End")
-
-def testShareMarket():
-    for factory in Factory.all_factories:
-        factory.getFunding()
-    print("running sharesMarket")
-    SharesMarket.runMarket()
-#testShareMarket()
-
+nextTimeStep()
+Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,2)
 """
 for i in range(0,10):
     print("----- i = " + str(i) + "-------")
@@ -138,7 +129,10 @@ for i in range(0,10):
 """     
  
 #Prints
-print("--------------- End State: ----------") 
+print("\n\n--------------- End State: ----------------\n\n") 
 
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
+#Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,3)
 
+print(len(Factory.all_factories))
+print(len(Person.all_persons))
+pass
