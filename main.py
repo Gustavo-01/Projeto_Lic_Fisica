@@ -64,18 +64,6 @@ def startSim(people_number :int = 20,factory_number :int = 50,max_capital :int =
         shares = {}
         for i in range(len(share_values)):
             shares[share_holders[i]] = share_values[i]
-        #- TEST -
-        if sum(share_values) > 1+FLOATING_POINT_ERROR_MARGIN or sum(share_values) < 1-FLOATING_POINT_ERROR_MARGIN:
-            print(sum(share_values))
-        #--------
-        
-        # - TEST -
-        SUM = 0
-        for p in shares:
-            SUM += shares[p]
-        if SUM > 1+FLOATING_POINT_ERROR_MARGIN or SUM < 1-FLOATING_POINT_ERROR_MARGIN:
-            print(SUM)
-        #---------
 
         #Create Factory
         Factory(bool(round(random.random())),workers,shares,random.random()*max_capital + min_capital)
@@ -97,7 +85,6 @@ def nextTimeStep():
     #---------------------
     for factory in Factory.all_factories:
         projected_capital = factory.project_needed_capital() #Project needed capital
-        factory.TEST_PROJECT_CAPITAL = projected_capital
         factory.getFunding(projected_capital) #Fundraise (set shares for sale or distribute capital)
     #---------------------
 
@@ -118,16 +105,7 @@ nextTimeStep()
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
 nextTimeStep()
 Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,2)
-"""
-for i in range(0,10):
-    print("----- i = " + str(i) + "-------")
-    testWorkersMarket()
-    print("WorkersMarket End")
-    testShareMarket()
-    print("ShareMarket End")
-    Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories)
-"""     
- 
+
 #Prints
 print("\n\n--------------- End State: ----------------\n\n") 
 
