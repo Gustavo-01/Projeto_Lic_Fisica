@@ -82,7 +82,6 @@ class Factory:
             
             #---------- TEST ------------------
             if(self.capital != projected_capital):
-                print(self.share_holders)
                 sum = 0
                 for share_holder in self.share_holders:
                     sum += self.share_holders[share_holder]

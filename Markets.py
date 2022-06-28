@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import numpy
-from sympy import per
 
 if TYPE_CHECKING:
     from typing import Dict, List, Tuple
@@ -31,9 +30,6 @@ class GoodsMarket():
                 traded_product = buyer.capital/factory.product_price
             
             buyer.essential_satisfaction = traded_product
-
-            new_essential_satisfaction = 1 - ((buyer.essential_satisfaction)-traded_product)/buyer.essential_satisfaction
-            buyer.essential_satisfaction = (buyer.essential_satisfaction + new_essential_satisfaction)/2
             
             transfer_capital(buyer,traded_product*factory.product_price,factory)
             factory.avaliable_stock -= traded_product
@@ -85,6 +81,7 @@ class GoodsMarket():
                 #Find a factory to trade
                 traded = attemptEssentialTrade(person,1,i)
                 if not traded:
+                    person.essential_satisfaction = 0
                     print("person did not consume essential")
                     #TODO what to do in this case?
             
@@ -174,8 +171,9 @@ class WorkersMarket():
             projected_salary_sorted = [factory for factory in projected_salary_sorted if new_factory_worker_number[factory] <= 3*len(factory.workers)+1]
 
             #Get hiring factory (factory with higher salary)
-            if(len(projected_salary_sorted) == 0):
-                hiring_factory = None
+            if(len(projected_salary_sorted) == 0): #No more hiring factories
+                person.employer = None
+                break
             else:
                 hiring_factory = projected_salary_sorted[0]
 
@@ -319,7 +317,9 @@ class SharesMarket():
             def secondary_share_sell_attempt(seller:Person, shares_for_sale:float, buyer: Person):
                 '''Attempt to sell factory share'''
                 
-                max_investment = buyer.shareMarket_capital_investment_projection() / 2
+                from globals import FLOATING_POINT_ERROR_MARGIN
+
+                max_investment = buyer.shareMarket_capital_investment_projection()
                 total_share_value = SharesMarket.share_value(shares_for_sale,factory)
                 if max_investment >= total_share_value:
                     sold_shares = shares_for_sale
@@ -328,6 +328,8 @@ class SharesMarket():
                     price = max_investment
                     sold_shares = shares_for_sale * price / total_share_value
 
+                if sold_shares < FLOATING_POINT_ERROR_MARGIN:
+                    return
                 sell_shares(factory,price,sold_shares,buyer,seller)
 
             #Sell step

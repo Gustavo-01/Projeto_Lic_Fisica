@@ -11,7 +11,7 @@ class InitialConditions(enum.Enum):
     EGALITARIANISM = 2
     SOLE_OWNERSHIP = 3
 
-def startSim(people_number :int = 20,factory_number :int = 50,max_capital :int = 1000,min_capital :int = 10, initial_condition: InitialConditions = InitialConditions.SOLE_OWNERSHIP, burgeoisie_percentage :int = 15):
+def startSim(people_number :int = 20,factory_number :int = 20,max_capital :int = 1000,min_capital :int = 10, initial_condition: InitialConditions = InitialConditions.SOLE_OWNERSHIP, burgeoisie_percentage :int = 15):
     #--Resolve initial conditions--#
     if initial_condition == InitialConditions.EGALITARIANISM:
         initial_condition = InitialConditions.BOURGEOISIE
@@ -100,11 +100,13 @@ def nextTimeStep():
     print("workersMarket done")
     #---------------------
 
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,0)
-nextTimeStep()
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,1)
-nextTimeStep()
-Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,2)
+f = open("printOutput/print.txt","w")
+
+for i in range(0,100):
+    Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,i,f)
+    nextTimeStep()
+
+f.close()
 
 #Prints
 print("\n\n--------------- End State: ----------------\n\n") 
