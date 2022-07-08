@@ -314,13 +314,12 @@ class SharesMarket():
         def SecondaryMarket():
             '''Shareholders sell and buy shares'''
             
-            def secondary_share_sell_attempt(seller:Person, shares_for_sale:float, buyer: Person):
+            def secondary_share_sell_attempt(seller:Person, total_share_value:float, buyer: Person):
                 '''Attempt to sell factory share'''
                 
                 from globals import FLOATING_POINT_ERROR_MARGIN
 
                 max_investment = buyer.shareMarket_capital_investment_projection()
-                total_share_value = SharesMarket.share_value(shares_for_sale,factory)
                 if max_investment >= total_share_value:
                     sold_shares = shares_for_sale
                     price = total_share_value
@@ -362,16 +361,17 @@ class SharesMarket():
                 factory = share[0]
                 seller = share[1]
                 total_share_value = SharesMarket.share_value(SharesMarket.shares_for_trade[share],factory)
-                
+
                 #- Indiscriminated search -#
                 unordered_list = list(range(len(Person.all_persons)-1))
                 numpy.random.shuffle(unordered_list)
                 for i in unordered_list:
+
                     if SharesMarket.shares_for_trade[share] <= 0:
                         SharesMarket.shares_for_trade.pop(share)
                         break
                     person = Person.all_persons[i]
-                    secondary_share_sell_attempt(seller,shares_for_sale,person)
+                    secondary_share_sell_attempt(seller,total_share_value,person)
 
             if(len(SharesMarket.shares_for_trade) != 0):
                     print("could not sell a factory share on secondary market")

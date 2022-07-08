@@ -16,7 +16,7 @@ def printPersonsAndFactories(all_persons: List[Person],all_factories: List[Facto
     f.write("\n")
     f.write("-FACTORIES-\n")
     f.write("{0:<3s} - {1:<6s} - {2:<4s} - {3:>10s}  - {4:<7s} - {5:>7s} - {6:>7s} - {7:>5s} - {8:>2s} \n".format(
-        "ID","Essen","Works.","Salary","ava_stk","stock","new_stk","price","profit"))
+        "ID","Essen","Works.","Salary","left_stk","stock","new_stk","price","profit"))
     f.write("-"*80 + "\n")
     for factory in sorted(all_factories, key=lambda f: f.__fact_id__):
         f.write("{0:<3d} - {1:<6s} - {2:<4d} - {3:>10.2f}$ - {4:<7.2f} - {5:>7.2f} - {6:>7.2f} - {7:>5.2f} - {8:>2.0f}% \n".format(

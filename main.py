@@ -102,7 +102,7 @@ def nextTimeStep():
 
 f = open("printOutput/print.txt","w")
 
-for i in range(0,100):
+for i in range(0,20):
     Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,i,f)
     nextTimeStep()
 

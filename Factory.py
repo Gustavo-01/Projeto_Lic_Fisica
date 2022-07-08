@@ -40,10 +40,10 @@ class Factory:
             worker.employer = self
         self.salary: int = capital / len(workers)
         #--Stock variables--
-        self.stock: int = self.production_cost_per_product * Factory.production_per_worker(self.salary) * len(workers)
-        self.last_stock: int = self.stock
-        self.avaliable_stock: int = 0
-        self.new_stock:int = 0
+        self.stock: int = self.production_cost_per_product * Factory.production_per_worker(self.salary) * len(workers) # total stock
+        self.last_stock: int = self.stock # total stock last timestep
+        self.avaliable_stock: int = 0 # leftover stock
+        self.new_stock:int = 0 # stock created this timestep
         #--Product price---
         self.profit_margin_per_product = 0.4 #determined by leftover stock and factory aggressiveness
         self.product_price: float = (1+self.profit_margin_per_product) * (self.capital/self.stock)
@@ -116,7 +116,7 @@ class Factory:
 
         #Set price
         new_total_cost = self.salary * len(self.workers) 
-        self.profit_margin_per_product =  FACTORY_STOCK_AGRESSIVENESS * self.stock/self.last_stock
+        self.profit_margin_per_product =  FACTORY_STOCK_AGRESSIVENESS * self.avaliable_stock/self.last_stock
         new_stock_product_price = self.profit_margin_per_product * new_total_cost
         self.product_price = (new_stock_product_price + self.product_price)/2 #New price is halfway newStock price and old price
 
