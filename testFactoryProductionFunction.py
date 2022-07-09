@@ -1,5 +1,5 @@
 
-def step(rest,lastStock,stock):
+def step(rest, lastStock, stock):
     lastTwoMean = stock + ((lastStock - stock)/2)
     print("lastStock: " + str(lastStock))
     print("stock: " + str(stock))
@@ -11,8 +11,9 @@ def step(rest,lastStock,stock):
     newStockAttempt = round(lastTwoMean * (1 - ((leftOverStock)**(3/2)-0.3)))
     print("newStock: " + str(newStockAttempt))
     print("-------------------")
-    rest = round(int(input("rest?: " )))
+    rest = round(int(input("rest?: ")))
     print("-------------------")
-    step(rest,stock,newStockAttempt)
+    step(rest, stock, newStockAttempt)
 
-step(0,5,0)
+
+step(0, 5, 0)

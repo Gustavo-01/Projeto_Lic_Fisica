@@ -1,137 +1,861 @@
+
+
+
+
 			day:0                   
+
+
+
+
 PERSONS
 Name                      - Capital    - Employed - Ess_sat - Lux_sat 
 --------------------------------------------------
-Adam Smith                -     659.00$ - 5    -   100% -    50% 
-Amy Lapp                  -     200.00$ - 4    -   100% -    50% 
-Betty Skidmore            -     113.00$ - 6    -   100% -    50% 
-Debora Scott              -     843.00$ - 1    -   100% -    50% 
-Deborah Barham            -     949.00$ - None -   100% -    50% 
-Deborah Tollefson         -     354.00$ - 1    -   100% -    50% 
-Dorothy Johnson           -     833.00$ - 5    -   100% -    50% 
-Evan Ries                 -     396.00$ - 0    -   100% -    50% 
-George Mcclintock         -     261.00$ - 5    -   100% -    50% 
-Jennifer Rambert          -     317.00$ - 1    -   100% -    50% 
-Jennifer Watson           -      13.00$ - 5    -   100% -    50% 
-Katherine Curtis          -     964.00$ - 5    -   100% -    50% 
-Kelly Schnieders          -     841.00$ - 1    -   100% -    50% 
-Lucy Gibson               -     560.00$ - 2    -   100% -    50% 
-Michael Bishop            -     831.00$ - 2    -   100% -    50% 
-Nicholas Schneider        -     131.00$ - 4    -   100% -    50% 
-Phyllis Rodregez          -     597.00$ - 5    -   100% -    50% 
-Rebecca Lewis             -      80.00$ - 3    -   100% -    50% 
-Sara Jones                -     269.00$ - 3    -   100% -    50% 
-Zachariah Zolocsik        -     993.00$ - 2    -   100% -    50% 
+Anita Massey              -     433.00$ - 4    -   100% -    50% 
+Bobby Biedrzycki          -     897.00$ - 1    -   100% -    50% 
+Daniel Turkus             -     239.00$ - 2    -   100% -    50% 
+Duncan Bryant             -     964.00$ - 3    -   100% -    50% 
+Edward Adams              -      85.00$ - 4    -   100% -    50% 
+Greg Belanger             -     216.00$ - 1    -   100% -    50% 
+Isabel Hill               -     230.00$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     103.00$ - 4    -   100% -    50% 
+Michelle Brown            -     731.00$ - 1    -   100% -    50% 
+Mickey Sledge             -     839.00$ - 2    -   100% -    50% 
+Oscar Hall                -     744.00$ - 4    -   100% -    50% 
+Patricia Gallaher         -     323.00$ - 0    -   100% -    50% 
+Roberto Gonyea            -     107.00$ - 1    -   100% -    50% 
+Rose Raney                -     659.00$ - 2    -   100% -    50% 
+Roy Plante                -      64.00$ - None -   100% -    50% 
+Scott Underwood           -     306.00$ - 4    -   100% -    50% 
+Tasha Davis               -     332.00$ - 1    -   100% -    50% 
+Theodore Ortega           -     625.00$ - 2    -   100% -    50% 
+Todd Harris               -     321.00$ - 1    -   100% -    50% 
+Tony Putman               -      22.00$ - 2    -   100% -    50% 
 
 -FACTORIES-
-ID  - Essen  - Works. -     Salary  - left_stk -   stock - new_stk - price - profit 
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
 --------------------------------------------------------------------------------
-0   - False  - 1    -      51.41$ - 0.00    -    7.41 -    0.00 -  9.71 - 40% 
-1   - False  - 4    -      63.97$ - 0.00    -   30.95 -    0.00 - 11.57 - 40% 
-2   - False  - 3    -      14.23$ - 0.00    -   16.45 -    0.00 -  3.63 - 40% 
-3   - True   - 2    -     500.53$ - 0.00    -   14.43 -    0.00 - 97.11 - 40% 
-4   - True   - 2    -     316.78$ - 0.00    -   13.52 -    0.00 - 65.62 - 40% 
-5   - True   - 6    -      85.80$ - 0.00    -   32.71 -    0.00 - 22.03 - 40% 
-6   - False  - 1    -     594.62$ - 0.00    -   11.08 -    0.00 - 75.12 - 40% 
+0   - True   - 1    -     110.68$ -    0.00 -    0.00 - 27.15 - 40% - 110.68$ 
+1   - True   - 6    -      24.72$ -    0.00 -    0.00 -  8.23 - 40% - 148.33$ 
+2   - True   - 5    -     125.04$ -    0.00 -    0.00 - 30.03 - 40% - 625.22$ 
+3   - True   - 1    -     896.48$ -    0.00 -    0.00 - 160.94 - 40% - 896.48$ 
+4   - True   - 6    -       9.73$ -    0.00 -    0.00 -  4.16 - 40% - 58.37$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
 
 
 			day:1                   
+
+
+
+
 PERSONS
 Name                      - Capital    - Employed - Ess_sat - Lux_sat 
 --------------------------------------------------
-Adam Smith                -     498.24$ - 4    -   100% -   468% 
-Amy Lapp                  -     293.02$ - 4    -   100% -    72% 
-Betty Skidmore            -     464.78$ - 4    -   100% -    99% 
-Debora Scott              -     561.14$ - 3    -   100% -   290% 
-Deborah Barham            -     585.16$ - 1    -   100% -   392% 
-Deborah Tollefson         -     204.09$ - 3    -   100% -    58% 
-Dorothy Johnson           -     654.84$ - 3    -   100% -   129% 
-Evan Ries                 -     230.59$ - 5    -   100% -   230% 
-George Mcclintock         -      43.18$ - 4    -   100% -    32% 
-Jennifer Rambert          -     241.26$ - 5    -   100% -    50% 
-Jennifer Watson           -       0.00$ - 1    -     0% -    25% 
-Katherine Curtis          -     772.74$ - 3    -   100% -   712% 
-Kelly Schnieders          -     688.73$ - 2    -   100% -   135% 
-Lucy Gibson               -     434.52$ - 4    -   100% -    50% 
-Michael Bishop            -     546.41$ - 4    -   100% -    50% 
-Nicholas Schneider        -     277.26$ - 4    -   100% -    69% 
-Phyllis Rodregez          -     488.78$ - 4    -   100% -   103% 
-Rebecca Lewis             -     350.40$ - 5    -   100% -    81% 
-Sara Jones                -     520.50$ - 3    -   100% -   183% 
-Zachariah Zolocsik        -     734.43$ - 3    -   100% -   142% 
+Anita Massey              -     396.87$ - 0    -   100% -    50% 
+Bobby Biedrzycki          -     875.87$ - 4    -   100% -    50% 
+Daniel Turkus             -     267.45$ - 0    -   100% -    50% 
+Duncan Bryant             -    1763.89$ - 4    -   100% -    50% 
+Edward Adams              -     127.03$ - 4    -     0% -    50% 
+Greg Belanger             -     144.13$ - 4    -   100% -    50% 
+Isabel Hill               -    1714.43$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     289.84$ - 4    -   100% -    50% 
+Michelle Brown            -     709.87$ - 4    -   100% -    50% 
+Mickey Sledge             -     211.21$ - 0    -   100% -    50% 
+Oscar Hall                -     657.14$ - 4    -   100% -    50% 
+Patricia Gallaher         -      31.55$ - 4    -     0% -    50% 
+Roberto Gonyea            -     123.78$ - 4    -   100% -    50% 
+Rose Raney                -     456.25$ - 4    -   100% -    50% 
+Roy Plante                -      79.29$ - 0    -     0% -    50% 
+Scott Underwood           -      27.28$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 0    -     0% -    50% 
+Theodore Ortega           -    1302.25$ - 4    -   100% -    50% 
+Todd Harris               -     391.97$ - 4    -   100% -    50% 
+Tony Putman               -     179.82$ - 4    -   100% -    50% 
 
 -FACTORIES-
-ID  - Essen  - Works. -     Salary  - left_stk -   stock - new_stk - price - profit 
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
 --------------------------------------------------------------------------------
-0   - False  - 0    -      51.41$ - 0.00    -    7.41 -    7.41 - 17.71 - 50% 
-1   - False  - 2    -      63.97$ - 24.26   -   30.95 -   30.95 - 69.76 - 50% 
-2   - False  - 1    -      14.23$ - 0.00    -   16.45 -   16.45 - 12.49 - 50% 
-3   - True   - 6    -     500.53$ - 10.10   -   14.43 -   14.43 - 298.82 - 50% 
-4   - True   - 8    -     316.78$ - 3.52    -   13.52 -   13.52 - 191.20 - 50% 
-5   - True   - 3    -      85.80$ - 27.71   -   32.71 -   32.71 - 139.71 - 50% 
-6   - False  - 0    -     594.62$ - 11.08   -   11.08 -   11.08 - 186.22 - 50% 
+0   - True   - 5    -     110.68$ -    0.73 -    5.71 - 96.59 - 50% - 1174.74$ 
+1   - True   - 0    -      24.72$ -   21.69 -   25.25 - 115.36 - 50% - 5414.55$ 
+2   - True   - 0    -     125.04$ -   25.86 -   29.14 - 483.93 - 50% - 26616.68$ 
+3   - True   - 0    -     896.48$ -    6.80 -    7.80 - 752.83 - 50% - 10989.05$ 
+4   - True   - 15   -       9.73$ -   13.65 -   19.65 - 45.85 - 50% - 1672.87$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
 
 
 			day:2                   
+
+
+
+
 PERSONS
 Name                      - Capital    - Employed - Ess_sat - Lux_sat 
 --------------------------------------------------
-Adam Smith                -    4506.69$ - 5    -     0% -   234% 
-Amy Lapp                  -       0.00$ - 0    -     0% -    36% 
-Betty Skidmore            -     574.70$ - 5    -   100% -   103% 
-Debora Scott              -       0.00$ - 5    -     0% -   145% 
-Deborah Barham            -       0.00$ - 5    -     0% -   196% 
-Deborah Tollefson         -       0.00$ - 0    -     0% -    29% 
-Dorothy Johnson           -    1855.71$ - 2    -   100% -   124% 
-Evan Ries                 -    5038.76$ - 2    -     0% -   115% 
-George Mcclintock         -       0.00$ - 6    -     0% -    16% 
-Jennifer Rambert          -     137.69$ - 5    -   100% -    41% 
-Jennifer Watson           -       0.00$ - 2    -     0% -    12% 
-Katherine Curtis          -       0.00$ - 5    -     0% -   356% 
-Kelly Schnieders          -       1.00$ - 6    -     0% -    67% 
-Lucy Gibson               -     317.16$ - 5    -   100% -   123% 
-Michael Bishop            -       0.00$ - 5    -     0% -    25% 
-Nicholas Schneider        -     175.62$ - 2    -   100% -    42% 
-Phyllis Rodregez          -     364.99$ - 5    -   100% -    73% 
-Rebecca Lewis             -       9.73$ - 2    -     0% -    40% 
-Sara Jones                -       0.00$ - 5    -     0% -    92% 
-Zachariah Zolocsik        -      10.06$ - 5    -     0% -    71% 
+Anita Massey              -      72.63$ - 4    -   100% -    50% 
+Bobby Biedrzycki          -     504.00$ - 4    -   100% -    50% 
+Daniel Turkus             -     217.95$ - 4    -   100% -    50% 
+Duncan Bryant             -    1666.77$ - 4    -   100% -    50% 
+Edward Adams              -     319.35$ - 4    -   100% -    50% 
+Greg Belanger             -      47.01$ - 4    -   100% -    50% 
+Isabel Hill               -    2202.92$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     511.63$ - 4    -   100% -    50% 
+Michelle Brown            -     338.00$ - 4    -   100% -    50% 
+Mickey Sledge             -     161.71$ - 4    -   100% -    50% 
+Oscar Hall                -     419.72$ - 3    -   100% -    50% 
+Patricia Gallaher         -       9.66$ - 3    -     0% -    50% 
+Roberto Gonyea            -      11.61$ - 4    -     0% -    50% 
+Rose Raney                -     311.63$ - 4    -     0% -    50% 
+Roy Plante                -      98.07$ - 4    -   100% -    50% 
+Scott Underwood           -      58.79$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 4    -     0% -    50% 
+Theodore Ortega           -    2651.13$ - 4    -   100% -    50% 
+Todd Harris               -     336.99$ - 4    -   100% -    50% 
+Tony Putman               -     128.07$ - 4    -   100% -    50% 
 
 -FACTORIES-
-ID  - Essen  - Works. -     Salary  - left_stk -   stock - new_stk - price - profit 
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
 --------------------------------------------------------------------------------
-0   - False  - 2    -       0.00$ - 0.00    -    0.00 -    0.00 -  8.85 -  0% 
-1   - False  - 0    -     233.31$ - 43.52   -   43.62 -   19.36 - 199.28 - 70% 
-2   - False  - 5    -     205.47$ - 5.91    -    9.49 -    9.49 - 35.87 - 29% 
-3   - True   - 0    -     215.68$ - 44.26   -   48.34 -   38.24 - 1233.19 - 167% 
-4   - True   - 0    -     239.00$ - 53.30   -   55.33 -   51.81 - 2052.24 - 205% 
-5   - True   - 11   -     232.86$ - 41.06   -   47.06 -   19.35 - 321.12 - 72% 
-6   - False  - 2    -       0.00$ - 10.48   -   11.08 -    0.00 - 93.11 - 50% 
+0   - True   - 0    -      52.18$ -   24.41 -   24.77 - 470.15 - 223% - 23122.52$ 
+1   - True   - 0    -       0.00$ -   19.51 -    0.00 - 57.68 - 43% - 1125.51$ 
+2   - True   - 0    -       0.00$ -   22.86 -    0.00 - 241.97 - 44% - 5530.76$ 
+3   - True   - 2    -       0.00$ -    2.46 -    0.00 - 376.42 - 44% - 925.06$ 
+4   - True   - 18   -       4.55$ -   44.38 -   37.73 - 101.68 - 131% - 8430.35$ 
+
+
+TOTAL_CAPITAL: 10079.079352775736
+
 
 
 			day:3                   
+
+
+
+
 PERSONS
 Name                      - Capital    - Employed - Ess_sat - Lux_sat 
 --------------------------------------------------
-Adam Smith                -    6227.22$ - 5    -   100% -   192% 
-Amy Lapp                  -       0.00$ - 5    -     0% -    18% 
-Betty Skidmore            -     610.60$ - 5    -     0% -    52% 
-Debora Scott              -       0.00$ - 5    -     0% -    73% 
-Deborah Barham            -       0.00$ - 5    -     0% -    98% 
-Deborah Tollefson         -       0.00$ - 5    -     0% -    14% 
-Dorothy Johnson           -    1933.68$ - 5    -   100% -   153% 
-Evan Ries                 -    3907.57$ - 5    -   100% -   234% 
-George Mcclintock         -       0.00$ - 5    -     0% -     8% 
-Jennifer Rambert          -       0.00$ - 5    -     0% -    21% 
-Jennifer Watson           -       0.00$ - 5    -     0% -     6% 
-Katherine Curtis          -       0.00$ - 5    -     0% -   178% 
-Kelly Schnieders          -       0.00$ - 5    -     0% -    34% 
-Lucy Gibson               -       0.00$ - 5    -     0% -    62% 
-Michael Bishop            -       0.00$ - 5    -     0% -    12% 
-Nicholas Schneider        -      34.93$ - 5    -   100% -    13% 
-Phyllis Rodregez          -     183.99$ - 5    -   100% -    50% 
-Rebecca Lewis             -       0.00$ - 5    -     0% -    20% 
-Sara Jones                -       0.00$ - 5    -     0% -    46% 
-Zachariah Zolocsik        -     400.04$ - 5    -     0% -    35% 
+Anita Massey              -      43.79$ - 1    -   100% -    50% 
+Bobby Biedrzycki          -     383.02$ - 3    -   100% -    50% 
+Daniel Turkus             -     189.11$ - 3    -   100% -    50% 
+Duncan Bryant             -    1637.93$ - 1    -   100% -    50% 
+Edward Adams              -     293.42$ - 0    -   100% -    50% 
+Greg Belanger             -      18.17$ - 2    -   100% -    50% 
+Isabel Hill               -    2658.01$ - 3    -   100% -    50% 
+Jerry Yasutomi            -     522.58$ - 4    -   100% -    50% 
+Michelle Brown            -     309.16$ - 4    -   100% -    50% 
+Mickey Sledge             -     110.87$ - 4    -   100% -    50% 
+Oscar Hall                -     304.45$ - 3    -   100% -    50% 
+Patricia Gallaher         -      18.48$ - 0    -     0% -    50% 
+Roberto Gonyea            -      22.21$ - 4    -     0% -    50% 
+Rose Raney                -     205.73$ - 4    -   100% -    50% 
+Roy Plante                -      93.67$ - 2    -   100% -    50% 
+Scott Underwood           -       2.13$ - 3    -     0% -    50% 
+Tasha Davis               -       0.00$ - 3    -     0% -    50% 
+Theodore Ortega           -    2756.28$ - 3    -   100% -    50% 
+Todd Harris               -     306.54$ - 3    -   100% -    50% 
+Tony Putman               -     185.98$ - 4    -   100% -    50% 
 
 -FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 2    -       0.00$ -   24.41 -    0.00 - 235.08 - 48% - 5737.71$ 
+1   - True   - 2    -       0.00$ -   10.58 -    0.00 - 28.84 - 45% - 305.05$ 
+2   - True   - 2    -       0.00$ -   18.86 -    0.00 - 120.98 - 44% - 2281.45$ 
+3   - True   - 8    -       5.71$ -    7.64 -    5.48 - 197.25 - 58% - 2634.75$ 
+4   - True   - 6    -       0.00$ -   40.38 -    0.00 - 50.84 - 43% - 2052.79$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:4                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 2    -     0% -    50% 
+Bobby Biedrzycki          -     322.53$ - 1    -   100% -    50% 
+Daniel Turkus             -      71.58$ - 2    -   100% -    50% 
+Duncan Bryant             -    1619.71$ - 4    -   100% -    50% 
+Edward Adams              -     439.21$ - 1    -   100% -    50% 
+Greg Belanger             -       0.00$ - 1    -     0% -    50% 
+Isabel Hill               -    2836.27$ - 2    -   100% -    50% 
+Jerry Yasutomi            -     479.74$ - 2    -   100% -    50% 
+Michelle Brown            -     191.62$ - 1    -   100% -    50% 
+Mickey Sledge             -      85.45$ - 2    -   100% -    50% 
+Oscar Hall                -     279.03$ - 2    -   100% -    50% 
+Patricia Gallaher         -       6.23$ - 1    -     0% -    50% 
+Roberto Gonyea            -       7.49$ - 2    -     0% -    50% 
+Rose Raney                -     436.07$ - 1    -   100% -    50% 
+Roy Plante                -      82.33$ - 1    -   100% -    50% 
+Scott Underwood           -       1.00$ - 0    -     0% -    50% 
+Tasha Davis               -       0.00$ - 0    -     0% -    50% 
+Theodore Ortega           -    2813.19$ - 1    -   100% -    50% 
+Todd Harris               -     309.94$ - 2    -   100% -    50% 
+Tony Putman               -      97.70$ - 0    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 3    -       0.00$ -   20.81 -    0.00 - 117.54 - 50% - 2445.51$ 
+1   - True   - 8    -       8.77$ -   13.92 -    6.34 - 27.00 - 43% - 617.20$ 
+2   - True   - 8    -       0.00$ -   15.49 -    0.00 - 60.49 - 41% - 937.05$ 
+3   - True   - 0    -       0.00$ -    7.62 -    0.00 - 98.62 - 48% - 751.63$ 
+4   - True   - 1    -       0.00$ -   34.65 -    0.00 - 25.42 - 45% - 880.82$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:5                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     309.03$ - 4    -   100% -    50% 
+Daniel Turkus             -      22.26$ - 3    -   100% -    50% 
+Duncan Bryant             -    1607.00$ - 1    -   100% -    50% 
+Edward Adams              -     454.93$ - 1    -   100% -    50% 
+Greg Belanger             -       0.00$ - 1    -     0% -    50% 
+Isabel Hill               -    2822.77$ - 0    -   100% -    50% 
+Jerry Yasutomi            -     504.76$ - 0    -   100% -    50% 
+Michelle Brown            -     178.91$ - 0    -   100% -    50% 
+Mickey Sledge             -      71.96$ - 4    -   100% -    50% 
+Oscar Hall                -     265.53$ - 4    -   100% -    50% 
+Patricia Gallaher         -       7.21$ - 1    -     0% -    50% 
+Roberto Gonyea            -       8.66$ - 1    -     0% -    50% 
+Rose Raney                -     417.39$ - 0    -   100% -    50% 
+Roy Plante                -      87.74$ - 1    -   100% -    50% 
+Scott Underwood           -       3.45$ - 3    -     0% -    50% 
+Tasha Davis               -       0.00$ - 4    -     0% -    50% 
+Theodore Ortega           -    2870.99$ - 1    -   100% -    50% 
+Todd Harris               -     324.41$ - 4    -   100% -    50% 
+Tony Putman               -     118.05$ - 0    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 6    -       0.00$ -   19.81 -    0.00 - 58.77 - 43% - 1163.99$ 
+1   - True   - 7    -       0.00$ -    6.90 -    0.00 - 13.50 - 41% - 93.20$ 
+2   - True   - 0    -       0.00$ -   15.49 -    0.00 - 30.25 - 41% - 468.54$ 
+3   - True   - 2    -       0.00$ -    5.60 -    0.00 - 49.31 - 50% - 276.19$ 
+4   - True   - 5    -       0.00$ -   29.65 -    0.00 - 12.71 - 43% - 376.86$ 
+
+
+TOTAL_CAPITAL: 10079.079352775736
+
+
+
+			day:6                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 3    -     0% -    50% 
+Bobby Biedrzycki          -     283.87$ - 1    -   100% -    50% 
+Daniel Turkus             -      15.39$ - 1    -   100% -    50% 
+Duncan Bryant             -    1600.07$ - 3    -   100% -    50% 
+Edward Adams              -     451.51$ - 1    -   100% -    50% 
+Greg Belanger             -       0.00$ - 1    -     0% -    50% 
+Isabel Hill               -    2869.85$ - 1    -   100% -    50% 
+Jerry Yasutomi            -     516.18$ - 1    -   100% -    50% 
+Michelle Brown            -     171.71$ - 1    -   100% -    50% 
+Mickey Sledge             -      57.03$ - 1    -   100% -    50% 
+Oscar Hall                -     250.61$ - 1    -   100% -    50% 
+Patricia Gallaher         -       2.40$ - 1    -   100% -    50% 
+Roberto Gonyea            -       2.55$ - 1    -     0% -    50% 
+Rose Raney                -     404.16$ - 3    -   100% -    50% 
+Roy Plante                -      86.14$ - 1    -   100% -    50% 
+Scott Underwood           -       2.48$ - 1    -     0% -    50% 
+Tasha Davis               -       0.00$ - 1    -     0% -    50% 
+Theodore Ortega           -    2913.48$ - 3    -   100% -    50% 
+Todd Harris               -     311.93$ - 3    -   100% -    50% 
+Tony Putman               -     120.79$ - 1    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 0    -       0.17$ -   19.81 -    0.00 - 30.12 - 48% - 596.61$ 
+1   - True   - 15   -       0.14$ -    1.33 -    0.00 -  7.37 - 25% - 11.92$ 
+2   - True   - 0    -       0.00$ -   11.89 -    0.00 - 15.12 - 50% - 179.89$ 
+3   - True   - 5    -       0.50$ -    3.21 -    0.61 - 25.36 - 41% - 99.59$ 
+4   - True   - 0    -       0.20$ -   25.65 -    0.00 -  7.07 - 43% - 181.33$ 
+
+
+TOTAL_CAPITAL: 10079.079352775736
+
+
+
+			day:7                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 3    -     0% -    50% 
+Bobby Biedrzycki          -     267.70$ - 3    -   100% -    50% 
+Daniel Turkus             -      11.76$ - 3    -   100% -    50% 
+Duncan Bryant             -    1593.56$ - 3    -   100% -    50% 
+Edward Adams              -     460.03$ - 3    -   100% -    50% 
+Greg Belanger             -       0.00$ - 3    -     0% -    50% 
+Isabel Hill               -    2893.53$ - 3    -   100% -    50% 
+Jerry Yasutomi            -     518.69$ - 3    -   100% -    50% 
+Michelle Brown            -     169.08$ - 2    -   100% -    50% 
+Mickey Sledge             -      53.40$ - 3    -   100% -    50% 
+Oscar Hall                -     236.45$ - 3    -   100% -    50% 
+Patricia Gallaher         -       1.00$ - 3    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 3    -     0% -    50% 
+Rose Raney                -     408.52$ - 3    -   100% -    50% 
+Roy Plante                -      79.48$ - 3    -   100% -    50% 
+Scott Underwood           -       1.78$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 4    -     0% -    50% 
+Theodore Ortega           -    2956.95$ - 3    -   100% -    50% 
+Todd Harris               -     306.08$ - 2    -   100% -    50% 
+Tony Putman               -     118.16$ - 3    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 0    -       0.00$ -   17.75 -    0.00 - 15.06 - 50% - 267.28$ 
+1   - True   - 0    -       0.91$ -   14.85 -   13.53 - 17.80 - 108% - 505.10$ 
+2   - True   - 2    -       0.00$ -    6.44 -    0.00 -  7.56 - 38% - 48.69$ 
+3   - True   - 16   -       1.05$ -    5.44 -    5.23 - 17.07 - 68% - 198.95$ 
+4   - True   - 2    -       0.00$ -   19.20 -    0.00 -  3.53 - 43% - 67.88$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:8                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 2    -     0% -    50% 
+Bobby Biedrzycki          -     265.90$ - 3    -   100% -    50% 
+Daniel Turkus             -       7.00$ - 2    -   100% -    50% 
+Duncan Bryant             -    1584.83$ - 3    -   100% -    50% 
+Edward Adams              -     458.55$ - 2    -   100% -    50% 
+Greg Belanger             -       0.00$ - 3    -     0% -    50% 
+Isabel Hill               -    2901.74$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     515.13$ - 2    -   100% -    50% 
+Michelle Brown            -     165.05$ - 4    -   100% -    50% 
+Mickey Sledge             -      51.61$ - 3    -   100% -    50% 
+Oscar Hall                -     234.65$ - 2    -   100% -    50% 
+Patricia Gallaher         -       1.00$ - 2    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 4    -     0% -    50% 
+Rose Raney                -     409.72$ - 3    -   100% -    50% 
+Roy Plante                -      76.69$ - 3    -   100% -    50% 
+Scott Underwood           -       1.00$ - 2    -     0% -    50% 
+Tasha Davis               -       0.00$ - 3    -     0% -    50% 
+Theodore Ortega           -    2976.17$ - 4    -   100% -    50% 
+Todd Harris               -     307.99$ - 3    -   100% -    50% 
+Tony Putman               -     109.44$ - 4    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 0    -       0.00$ -   15.74 -    0.00 -  7.53 - 45% - 118.54$ 
+1   - True   - 0    -       0.00$ -   14.85 -    0.00 -  8.90 - 50% - 132.18$ 
+2   - True   - 7    -       0.75$ -    4.27 -    1.43 -  4.78 - 33% - 32.50$ 
+3   - True   - 8    -       0.02$ -    2.44 -    0.00 -  8.74 - 32% - 21.51$ 
+4   - True   - 5    -       0.04$ -   12.64 -    0.00 -  1.82 - 37% - 23.15$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:9                   
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     262.68$ - 4    -   100% -    50% 
+Daniel Turkus             -       4.60$ - 1    -   100% -    50% 
+Duncan Bryant             -    1581.61$ - 4    -   100% -    50% 
+Edward Adams              -     463.29$ - 4    -   100% -    50% 
+Greg Belanger             -       0.00$ - 4    -     0% -    50% 
+Isabel Hill               -    2899.32$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     513.64$ - 4    -   100% -    50% 
+Michelle Brown            -     160.89$ - 4    -   100% -    50% 
+Mickey Sledge             -      49.14$ - 4    -   100% -    50% 
+Oscar Hall                -     232.24$ - 4    -   100% -    50% 
+Patricia Gallaher         -       1.00$ - 4    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 4    -     0% -    50% 
+Rose Raney                -     418.34$ - 4    -   100% -    50% 
+Roy Plante                -      76.34$ - 4    -   100% -    50% 
+Scott Underwood           -       1.00$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 4    -     0% -    50% 
+Theodore Ortega           -    2984.75$ - 0    -   100% -    50% 
+Todd Harris               -     313.68$ - 4    -   100% -    50% 
+Tony Putman               -     111.01$ - 4    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 2    -       0.00$ -   10.15 -    0.00 -  3.77 - 44% - 38.23$ 
+1   - True   - 1    -       0.00$ -   12.37 -    0.00 -  4.45 - 50% - 55.04$ 
+2   - True   - 0    -       0.61$ -    7.77 -    3.50 -  5.56 - 49% - 62.73$ 
+3   - True   - 0    -       0.54$ -    5.52 -    3.07 -  7.63 - 51% - 65.51$ 
+4   - True   - 17   -       0.61$ -    7.44 -    2.51 -  3.03 - 39% - 40.43$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:10                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     260.66$ - 2    -   100% -    50% 
+Daniel Turkus             -       1.83$ - 0    -   100% -    50% 
+Duncan Bryant             -    1579.59$ - 1    -   100% -    50% 
+Edward Adams              -     463.40$ - 0    -   100% -    50% 
+Greg Belanger             -       0.00$ - 1    -     0% -    50% 
+Isabel Hill               -    2907.06$ - 1    -   100% -    50% 
+Jerry Yasutomi            -     511.30$ - 0    -   100% -    50% 
+Michelle Brown            -     158.32$ - 2    -   100% -    50% 
+Mickey Sledge             -      46.77$ - 0    -   100% -    50% 
+Oscar Hall                -     229.58$ - 0    -   100% -    50% 
+Patricia Gallaher         -       1.00$ - 1    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 0    -     0% -    50% 
+Rose Raney                -     418.19$ - 4    -   100% -    50% 
+Roy Plante                -      74.87$ - 4    -   100% -    50% 
+Scott Underwood           -       0.21$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 4    -     0% -    50% 
+Theodore Ortega           -    2984.45$ - 0    -   100% -    50% 
+Todd Harris               -     313.43$ - 4    -   100% -    50% 
+Tony Putman               -     110.06$ - 1    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 8    -       0.52$ -    8.85 -    0.70 -  2.58 - 34% - 28.87$ 
+1   - True   - 5    -       0.00$ -    6.83 -    0.00 -  2.22 - 42% - 15.19$ 
+2   - True   - 2    -       0.00$ -    0.64 -    0.00 -  2.78 - 50% - 1.79$ 
+3   - True   - 0    -       0.00$ -    5.52 -    0.00 -  3.81 - 50% - 21.04$ 
+4   - True   - 5    -       0.21$ -    6.39 -    0.00 -  3.69 - 25% - 24.62$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:11                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     257.61$ - 0    -   100% -    50% 
+Daniel Turkus             -       0.57$ - 0    -     0% -    50% 
+Duncan Bryant             -    1579.25$ - 0    -   100% -    50% 
+Edward Adams              -     461.92$ - 1    -   100% -    50% 
+Greg Belanger             -       0.00$ - 0    -     0% -    50% 
+Isabel Hill               -    2909.90$ - 3    -   100% -    50% 
+Jerry Yasutomi            -     512.54$ - 0    -   100% -    50% 
+Michelle Brown            -     161.24$ - 1    -   100% -    50% 
+Mickey Sledge             -      45.54$ - 0    -   100% -    50% 
+Oscar Hall                -     223.53$ - 0    -   100% -    50% 
+Patricia Gallaher         -       1.00$ - 0    -     0% -    50% 
+Roberto Gonyea            -       1.15$ - 0    -     0% -    50% 
+Rose Raney                -     418.59$ - 0    -   100% -    50% 
+Roy Plante                -      78.88$ - 0    -   100% -    50% 
+Scott Underwood           -       0.00$ - 0    -     0% -    50% 
+Tasha Davis               -       0.00$ - 3    -     0% -    50% 
+Theodore Ortega           -    2988.74$ - 0    -   100% -    50% 
+Todd Harris               -     307.71$ - 0    -   100% -    50% 
+Tony Putman               -     120.53$ - 0    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 16   -       0.00$ -    4.85 -    0.00 -  1.29 - 41% - 6.28$ 
+1   - True   - 2    -       1.57$ -   10.00 -    7.25 -  7.26 - 57% - 128.36$ 
+2   - True   - 0    -       4.76$ -    5.44 -    5.12 -  7.91 - 37% - 83.55$ 
+3   - True   - 2    -       0.00$ -    0.00 -    0.00 -  1.91 - 50% - 0.00$ 
+4   - True   - 0    -       0.00$ -    4.73 -    0.00 -  1.85 - 43% - 8.74$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:12                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 1    -     0% -    50% 
+Bobby Biedrzycki          -     254.46$ - 1    -   100% -    50% 
+Daniel Turkus             -      -0.03$ - 0    -     0% -    50% 
+Duncan Bryant             -    1575.49$ - 0    -   100% -    50% 
+Edward Adams              -     461.07$ - 0    -   100% -    50% 
+Greg Belanger             -       0.00$ - 0    -     0% -    50% 
+Isabel Hill               -    2914.96$ - 0    -   100% -    50% 
+Jerry Yasutomi            -     512.37$ - 1    -   100% -    50% 
+Michelle Brown            -     157.51$ - 0    -   100% -    50% 
+Mickey Sledge             -      42.35$ - 4    -   100% -    50% 
+Oscar Hall                -     220.35$ - 0    -   100% -    50% 
+Patricia Gallaher         -       0.35$ - 0    -     0% -    50% 
+Roberto Gonyea            -       1.05$ - 1    -   100% -    50% 
+Rose Raney                -     419.64$ - 1    -   100% -    50% 
+Roy Plante                -      78.47$ - 1    -   100% -    50% 
+Scott Underwood           -       0.00$ - 1    -     0% -    50% 
+Tasha Davis               -       0.00$ - 1    -     0% -    50% 
+Theodore Ortega           -    2988.09$ - 4    -   100% -    50% 
+Todd Harris               -     304.61$ - 0    -   100% -    50% 
+Tony Putman               -     124.91$ - 2    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 9    -       0.28$ -    0.77 -    0.00 -  3.49 - 27% - 5.20$ 
+1   - True   - 8    -       0.30$ -    3.94 -    0.00 -  4.04 - 36% - 18.34$ 
+2   - True   - 1    -       0.00$ -    3.46 -    0.00 -  3.96 - 47% - 13.67$ 
+3   - True   - 0    -       2.60$ -    3.91 -    3.91 -  4.48 - 35% - 35.10$ 
+4   - True   - 2    -       0.00$ -    0.51 -    0.00 -  0.92 - 37% - 0.47$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:13                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 2    -     0% -    50% 
+Bobby Biedrzycki          -     252.51$ - 3    -   100% -    50% 
+Daniel Turkus             -      -0.00$ - 2    -     0% -    50% 
+Duncan Bryant             -    1574.06$ - 4    -   100% -    50% 
+Edward Adams              -     476.53$ - 0    -   100% -    50% 
+Greg Belanger             -       0.00$ - 0    -     0% -    50% 
+Isabel Hill               -    2914.43$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     511.81$ - 0    -   100% -    50% 
+Michelle Brown            -     156.17$ - 2    -   100% -    50% 
+Mickey Sledge             -      41.42$ - 0    -   100% -    50% 
+Oscar Hall                -     218.22$ - 4    -   100% -    50% 
+Patricia Gallaher         -       0.00$ - 2    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 0    -     0% -    50% 
+Rose Raney                -     436.65$ - 0    -   100% -    50% 
+Roy Plante                -      71.33$ - 0    -   100% -    50% 
+Scott Underwood           -       0.00$ - 4    -     0% -    50% 
+Tasha Davis               -       0.00$ - 3    -     0% -    50% 
+Theodore Ortega           -    2989.20$ - 2    -   100% -    50% 
+Todd Harris               -     304.79$ - 0    -   100% -    50% 
+Tony Putman               -     116.77$ - 4    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 8    -       0.82$ -    2.68 -    7.22 -  8.48 - 82% - 90.44$ 
+1   - True   - 0    -       1.34$ -   14.26 -   10.33 - 11.19 - 71% - 275.15$ 
+2   - True   - 5    -       1.34$ -    1.05 -    1.29 -  2.94 - 44% - 13.60$ 
+3   - True   - 2    -       0.00$ -    0.00 -    0.00 -  2.24 - 50% - 0.00$ 
+4   - True   - 5    -       2.00$ -    1.18 -    3.39 -  3.29 - 41% - 25.04$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:14                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     250.39$ - 3    -    65% -    50% 
+Daniel Turkus             -      -0.00$ - 3    -     0% -    50% 
+Duncan Bryant             -    1569.87$ - 0    -   100% -    50% 
+Edward Adams              -     481.22$ - 2    -   100% -    50% 
+Greg Belanger             -       0.00$ - 4    -     0% -    50% 
+Isabel Hill               -    2925.45$ - 4    -   100% -    50% 
+Jerry Yasutomi            -     509.93$ - 2    -   100% -    50% 
+Michelle Brown            -     153.85$ - 0    -   100% -    50% 
+Mickey Sledge             -      37.68$ - 2    -   100% -    50% 
+Oscar Hall                -     214.63$ - 2    -   100% -    50% 
+Patricia Gallaher         -       0.00$ - 2    -     0% -    50% 
+Roberto Gonyea            -       1.00$ - 4    -     0% -    50% 
+Rose Raney                -     444.66$ - 4    -   100% -    50% 
+Roy Plante                -      68.01$ - 0    -   100% -    50% 
+Scott Underwood           -       0.00$ - 3    -     0% -    50% 
+Tasha Davis               -       0.00$ - 3    -     0% -    50% 
+Theodore Ortega           -    2996.14$ - 2    -    65% -    50% 
+Todd Harris               -     307.72$ - 0    -   100% -    50% 
+Tony Putman               -     110.92$ - 4    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 5    -       0.55$ -    2.96 -    3.15 -  7.22 - 36% - 46.83$ 
+1   - True   - 0    -       0.00$ -   13.90 -    0.00 -  5.59 - 50% - 77.74$ 
+2   - True   - 6    -       0.75$ -    0.00 -    3.59 -  4.28 - 49% - 19.92$ 
+3   - True   - 4    -       1.51$ -    0.00 -    2.82 -  3.17 - 36% - 15.00$ 
+4   - True   - 5    -       0.61$ -    0.00 -    2.50 -  3.88 - 47% - 12.74$ 
+
+
+TOTAL_CAPITAL: 10079.079352775741
+
+
+
+			day:15                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 3    -     0% -    50% 
+Bobby Biedrzycki          -     248.00$ - 2    -   100% -    50% 
+Daniel Turkus             -       0.00$ - 3    -     0% -    50% 
+Duncan Bryant             -    1570.26$ - 2    -     0% -    50% 
+Edward Adams              -     478.59$ - 1    -   100% -    50% 
+Greg Belanger             -       0.36$ - 3    -     0% -    50% 
+Isabel Hill               -    2923.01$ - 3    -   100% -    50% 
+Jerry Yasutomi            -     507.51$ - 3    -   100% -    50% 
+Michelle Brown            -     154.24$ - 3    -     0% -    50% 
+Mickey Sledge             -      35.26$ - 1    -   100% -    50% 
+Oscar Hall                -     212.21$ - 2    -   100% -    50% 
+Patricia Gallaher         -       0.00$ - 2    -     0% -    50% 
+Roberto Gonyea            -       0.20$ - 3    -     0% -    50% 
+Rose Raney                -     442.22$ - 3    -   100% -    50% 
+Roy Plante                -      65.60$ - 3    -   100% -    50% 
+Scott Underwood           -       0.40$ - 3    -     0% -    50% 
+Tasha Davis               -       0.40$ - 3    -     0% -    50% 
+Theodore Ortega           -    2993.10$ - 3    -   100% -    50% 
+Todd Harris               -     306.89$ - 3    -     0% -    50% 
+Tony Putman               -     108.48$ - 2    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 0    -       0.39$ -    3.22 -    0.26 -  4.85 - 28% - 16.91$ 
+1   - True   - 2    -       0.00$ -    3.00 -    0.00 -  2.80 - 49% - 8.38$ 
+2   - True   - 5    -       0.37$ -    0.00 -    0.10 -  3.28 -  1% - 2.21$ 
+3   - True   - 13   -       0.40$ -    0.00 -    0.36 -  2.44 -  6% - 6.12$ 
+4   - True   - 0    -       0.36$ -    0.00 -    0.00 -  2.84 -  0% - 0.00$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:16                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.10$ - 3    -     0% -    50% 
+Bobby Biedrzycki          -     248.10$ - 3    -     0% -    50% 
+Daniel Turkus             -       0.10$ - 0    -     0% -    50% 
+Duncan Bryant             -    1570.36$ - 3    -     0% -    50% 
+Edward Adams              -     493.84$ - 3    -     0% -    50% 
+Greg Belanger             -       0.46$ - 2    -     0% -    50% 
+Isabel Hill               -    2920.69$ - 3    -   100% -    50% 
+Jerry Yasutomi            -     507.61$ - 3    -     0% -    50% 
+Michelle Brown            -     154.34$ - 3    -     0% -    50% 
+Mickey Sledge             -      50.51$ - 3    -     0% -    50% 
+Oscar Hall                -     212.31$ - 0    -     0% -    50% 
+Patricia Gallaher         -       0.10$ - 3    -     0% -    50% 
+Roberto Gonyea            -       0.00$ - 3    -     0% -    50% 
+Rose Raney                -     442.32$ - 2    -     0% -    50% 
+Roy Plante                -      65.71$ - 3    -     0% -    50% 
+Scott Underwood           -       0.51$ - 3    -     0% -    50% 
+Tasha Davis               -       0.51$ - 3    -     0% -    50% 
+Theodore Ortega           -    2990.78$ - 3    -   100% -    50% 
+Todd Harris               -     306.99$ - 3    -     0% -    50% 
+Tony Putman               -     106.16$ - 3    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 2    -       0.00$ -    0.10 -    0.00 -  2.42 - 50% - 0.24$ 
+1   - True   - 0    -      15.25$ -   10.44 -    7.45 - 22.37 - 38% - 400.33$ 
+2   - True   - 2    -       0.10$ -    0.00 -    0.00 -  1.89 -  0% - 0.20$ 
+3   - True   - 16   -       0.10$ -    0.00 -    0.00 -  1.89 -  0% - 1.64$ 
+4   - True   - 0    -       0.00$ -    0.00 -    0.00 -  1.42 -  0% - 0.00$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574
+
+
+
+			day:17                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.10$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     240.35$ - 0    -   100% -    50% 
+Daniel Turkus             -       3.87$ - 2    -     0% -    50% 
+Duncan Bryant             -    1562.70$ - 2    -   100% -    50% 
+Edward Adams              -     501.69$ - 0    -     0% -    50% 
+Greg Belanger             -       0.00$ - 2    -     0% -    50% 
+Isabel Hill               -    2920.69$ - 0    -     0% -    50% 
+Jerry Yasutomi            -     510.65$ - 0    -     0% -    50% 
+Michelle Brown            -     146.55$ - 1    -   100% -    50% 
+Mickey Sledge             -      50.53$ - 3    -     0% -    50% 
+Oscar Hall                -     216.59$ - 0    -     0% -    50% 
+Patricia Gallaher         -       0.10$ - 2    -     0% -    50% 
+Roberto Gonyea            -       0.00$ - 1    -     0% -    50% 
+Rose Raney                -     450.81$ - 3    -   100% -    50% 
+Roy Plante                -      68.07$ - 0    -     0% -    50% 
+Scott Underwood           -       0.51$ - 2    -     0% -    50% 
+Tasha Davis               -       0.00$ - 2    -     0% -    50% 
+Theodore Ortega           -    2990.78$ - 2    -     0% -    50% 
+Todd Harris               -     299.28$ - 0    -   100% -    50% 
+Tony Putman               -     110.45$ - 2    -     0% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 8    -       3.79$ -    0.00 -    4.66 -  7.79 - 74% - 66.65$ 
+1   - True   - 2    -       0.00$ -    9.40 -    0.00 - 11.19 - 50% - 105.14$ 
+2   - True   - 8    -       0.00$ -    0.00 -    0.00 -  0.95 -  0% - 0.00$ 
+3   - True   - 2    -       0.00$ -    0.00 -    0.00 -  0.94 -  0% - 0.00$ 
+4   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.71 -  0% - 0.00$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:18                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.00$ - 1    -     0% -    50% 
+Bobby Biedrzycki          -     235.64$ - 1    -   100% -    50% 
+Daniel Turkus             -      -0.10$ - 1    -     0% -    50% 
+Duncan Bryant             -    1557.71$ - 1    -   100% -    50% 
+Edward Adams              -     509.31$ - 0    -   100% -    50% 
+Greg Belanger             -       0.00$ - 0    -     0% -    50% 
+Isabel Hill               -    2913.45$ - 0    -   100% -    50% 
+Jerry Yasutomi            -     516.51$ - 1    -   100% -    50% 
+Michelle Brown            -     140.96$ - 0    -   100% -    50% 
+Mickey Sledge             -      45.03$ - 0    -   100% -    50% 
+Oscar Hall                -     213.76$ - 0    -   100% -    50% 
+Patricia Gallaher         -       0.00$ - 0    -     0% -    50% 
+Roberto Gonyea            -       0.00$ - 1    -     0% -    50% 
+Rose Raney                -     470.51$ - 1    -     0% -    50% 
+Roy Plante                -      73.33$ - 0    -   100% -    50% 
+Scott Underwood           -       0.00$ - 0    -     0% -    50% 
+Tasha Davis               -       0.00$ - 0    -     0% -    50% 
+Theodore Ortega           -    2983.94$ - 0    -    54% -    50% 
+Todd Harris               -     294.74$ - 1    -   100% -    50% 
+Tony Putman               -     120.98$ - 0    -   100% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 12   -       0.67$ -    1.24 -    4.78 -  7.91 - 50% - 55.60$ 
+1   - True   - 8    -       0.00$ -    0.00 -    0.00 -  5.59 - 45% - 0.00$ 
+2   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.47 -  0% - 0.00$ 
+3   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.47 -  0% - 0.00$ 
+4   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.36 -  0% - 0.00$ 
+
+
+TOTAL_CAPITAL: 10079.079352775738
+
+
+
+			day:19                  
+
+
+
+
+PERSONS
+Name                      - Capital    - Employed - Ess_sat - Lux_sat 
+--------------------------------------------------
+Anita Massey              -       0.29$ - 0    -     0% -    50% 
+Bobby Biedrzycki          -     235.92$ - 0    -     0% -    50% 
+Daniel Turkus             -       0.19$ - 0    -     0% -    50% 
+Duncan Bryant             -    1557.99$ - 0    -     0% -    50% 
+Edward Adams              -     510.20$ - 0    -     0% -    50% 
+Greg Belanger             -       0.09$ - 0    -     0% -    50% 
+Isabel Hill               -    2913.54$ - 0    -     0% -    50% 
+Jerry Yasutomi            -     516.79$ - 0    -     0% -    50% 
+Michelle Brown            -     141.04$ - 0    -     0% -    50% 
+Mickey Sledge             -      45.12$ - 0    -     0% -    50% 
+Oscar Hall                -     213.85$ - 0    -     0% -    50% 
+Patricia Gallaher         -       0.09$ - 0    -     0% -    50% 
+Roberto Gonyea            -       0.29$ - 0    -     0% -    50% 
+Rose Raney                -     468.99$ - 0    -   100% -    50% 
+Roy Plante                -      73.41$ - 0    -     0% -    50% 
+Scott Underwood           -       0.09$ - 0    -     0% -    50% 
+Tasha Davis               -       0.09$ - 0    -     0% -    50% 
+Theodore Ortega           -    2984.02$ - 0    -     0% -    50% 
+Todd Harris               -     295.02$ - 0    -     0% -    50% 
+Tony Putman               -     121.06$ - 0    -     0% -    50% 
+
+-FACTORIES-
+ID  - Essen  - Wok. -     Salary  - left_stk - new_stk - price - profit - share_val 
+--------------------------------------------------------------------------------
+0   - True   - 20   -       0.09$ -    0.00 -    0.00 -  4.54 - 13% - 1.72$ 
+1   - True   - 0    -       0.29$ -    0.00 -    0.00 -  3.94 -  0% - 0.00$ 
+2   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.24 -  0% - 0.00$ 
+3   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.24 -  0% - 0.00$ 
+4   - True   - 0    -       0.00$ -    0.00 -    0.00 -  0.18 -  0% - 0.00$ 
+
+
+TOTAL_CAPITAL: 10079.07935277574

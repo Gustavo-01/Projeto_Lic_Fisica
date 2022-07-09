@@ -1,18 +1,20 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from numpy import log
+from numpy import log, result_type
+
 if TYPE_CHECKING:
-    from typing import Dict, List, Tuple
+    from typing import Dict, List
     from globals import Person, GoodsMarket, WorkersMarket, SharesMarket
+
 
 class Factory:
     '''Controls production, salary payment, stockValues, and investment'''
 
     all_factories: List[Factory] = []
-    __fact_id__ :int = 0
+    __fact_id__: int = 0
 
-    def __init__(self, product_is_essential: bool, workers: List[Person], shares: Dict[Person,float], capital :float):
-        from globals import GoodsMarket, LUXURY_PRODUCION_COST
+    def __init__(self, product_is_essential: bool, workers: List[Person], shares: Dict[Person, float], capital: float):
+        from globals import LUXURY_PRODUCION_COST, GoodsMarket
 
         #- Register factory -#
         self.__fact_id__ = Factory.__fact_id__
@@ -27,11 +29,11 @@ class Factory:
 
         #- Capital -#
         self.capital: int = capital
-        self.original_capital: int = capital #TEST
+        self.original_capital: int = capital  #TEST
         #-- Constants --
         self.product_is_essential: bool = product_is_essential
         #--ShareHolders----
-        self.share_holders :Dict[Person,float] = shares
+        self.share_holders: Dict[Person, float] = shares
         for share_holder in shares:
             share_holder.share_catalog[self] = shares[share_holder]
         #--Workers----------
@@ -40,23 +42,22 @@ class Factory:
             worker.employer = self
         self.salary: int = capital / len(workers)
         #--Stock variables--
-        self.stock: int = self.production_cost_per_product * Factory.production_per_worker(self.salary) * len(workers) # total stock
-        self.last_stock: int = self.stock # total stock last timestep
-        self.avaliable_stock: int = 0 # leftover stock
-        self.new_stock:int = 0 # stock created this timestep
+        self.stock: int = self.production_cost_per_product * Factory.production_per_worker(self.salary) * len(workers)  # total stock
+        self.last_stock: int = self.stock  # total stock last timestep
+        self.avaliable_stock: int = 0  # leftover stock
+        self.new_stock: int = 0  # stock created this timestep
         #--Product price---
-        self.profit_margin_per_product = 0.4 #determined by leftover stock and factory aggressiveness
+        self.profit_margin_per_product = 0.4  #determined by leftover stock and factory aggressiveness
         self.product_price: float = (1+self.profit_margin_per_product) * (self.capital/self.stock)
         #-----------
-
 
     #--------------------------------
     #-- Functions called from main --
     #--------------------------------
 
-    def getFunding(self,projected_capital):
+    def getFunding(self, projected_capital):
         ''' Get funding by selling factory shares on the SharesMarket '''
-        from globals import SharesMarket, transfer_capital
+        from globals import transfer_capital, SharesMarket
 
         if projected_capital > self.capital:
             #ENTER SHARESMARKET
@@ -65,7 +66,9 @@ class Factory:
             #Factory cannot sell more than half of itself in a single timestep
             if(needed_capital > self.capital/2):
                 needed_capital = self.capital/2
-            shares_to_sell = needed_capital/self.capital
+            shares_to_sell = SharesMarket.share_ammount(needed_capital, self)
+            if(shares_to_sell > 1):
+                shares_to_sell = 0
             SharesMarket.factory_shares[self] = shares_to_sell
 
             #Remove needed percentage from all shareHolders
@@ -78,15 +81,8 @@ class Factory:
             #factory will distribute leftover capital to investors
             leftover_capital = self.capital - projected_capital
             for share_holder in self.share_holders:
-                transfer_capital(self,leftover_capital*self.share_holders[share_holder],share_holder)
-            
-            #---------- TEST ------------------
-            if(self.capital != projected_capital):
-                sum = 0
-                for share_holder in self.share_holders:
-                    sum += self.share_holders[share_holder]
-                print(sum)
-            #------------------------------------
+                transfer_capital(self, leftover_capital*self.share_holders[share_holder], share_holder)
+
 
     def produce(self):
         ''' Pay salaries, create products and set price '''
@@ -107,7 +103,7 @@ class Factory:
         for person in self.workers:
             if person.employer != self:
                 raise Exception("Factory is paying salary of a non-worker person!")
-            transfer_capital(self,self.salary,person)
+            transfer_capital(self, self.salary, person)
 
         #produce
         self.new_stock: int = self.production_cost_per_product * self.production_per_worker(self.salary) * len(self.workers)
@@ -115,15 +111,18 @@ class Factory:
         self.avaliable_stock = self.stock
 
         #Set price
-        new_total_cost = self.salary * len(self.workers) 
-        self.profit_margin_per_product =  FACTORY_STOCK_AGRESSIVENESS * self.avaliable_stock/self.last_stock
-        new_stock_product_price = self.profit_margin_per_product * new_total_cost
-        self.product_price = (new_stock_product_price + self.product_price)/2 #New price is halfway newStock price and old price
+        new_total_cost = self.salary * len(self.workers)
+        self.profit_margin_per_product = FACTORY_STOCK_AGRESSIVENESS * (self.avaliable_stock / self.last_stock)
+        if(self.avaliable_stock == 0 or self.last_stock == 0):
+            self.profit_margin_per_product = 0
+
+        new_stock_product_price = (1+self.profit_margin_per_product) * new_total_cost
+        self.product_price = (new_stock_product_price + self.product_price)/2  #New price is halfway newStock price and old price
 
     def project_needed_capital(self):
-        new_stock_projection = Factory.findNewStockValue(self.stock,self.last_stock,self.avaliable_stock)
-        
-        return self.project_labor_capital(new_stock_projection) #TODO + extra costs?
+        new_stock_projection = Factory.findNewStockValue(self.stock, self.last_stock, self.avaliable_stock)
+
+        return self.project_labor_capital(new_stock_projection)  #TODO + extra costs?
 
     #-------------------------------
     #------ General Methods --------
@@ -135,13 +134,18 @@ class Factory:
     def project_labor_capital(self, new_stock_proj):
         ''' project total labor cost (rough estimate) '''
 
-        last_produced_stock = self.stock - self.last_stock
+        from globals import FLOATING_POINT_ERROR_MARGIN
 
         if new_stock_proj == 0:
             return 0
-        if last_produced_stock == 0:
-            return self.labor_avaliable_capital()
-        return len(self.workers) * self.salary * new_stock_proj / self.stock #TODO idk about this boss
+
+        salary_per_stock_lst = [f.salary/f.new_stock for f in Factory.all_factories if f.new_stock > 0 and len(f.workers) > 0]
+        if(len(salary_per_stock_lst) == 0):  #Every factory has not produced anything
+            return 1  #default wage
+        average_salary_per_stock = sum(salary_per_stock_lst)/len(salary_per_stock_lst)
+        if(average_salary_per_stock <= FLOATING_POINT_ERROR_MARGIN):  # Average worker is not being paid
+            return 1  #default wage
+        return average_salary_per_stock * new_stock_proj
 
     #---------------------------------------
     #------- Static Functions --------------
@@ -176,10 +180,10 @@ class Factory:
 
         #N must be > 0
         exp = productivity/(N * PRODUCTION_PER_PERSON_SCALE)
-        return e**(exp) -1
+        return e**(exp)-1
 
     @staticmethod
-    def production_per_worker(salary :int):
+    def production_per_worker(salary: int):
         from globals import PRODUCTION_PER_PERSON_SCALE
         from numpy import e
 
@@ -214,16 +218,15 @@ class Factory:
             # leftover_ratio = 0 -> new_stock ≃ 1.6*stock
             # leftover_ratio = 0.5 -> new_stock = stock
             # leftover_ratio = 0.9 -> new_stock = 4E-18 * stock ≃ 0
-            return  base * e**(-0.5*(x**2)+aggressiveness)
+            return base * e**(-0.5*(x**2)+aggressiveness)
 
         return stockFunction(last_two_mean, leftover_stock_ratio, FACTORY_STOCK_AGRESSIVENESS)
 
     @staticmethod
-    def updateFactoryWorkers(workers_to_update: dict[Factory,List[Person]]):
+    def updateFactoryWorkers(workers_to_update: dict[Factory, List[Person]]):
         '''Update workers in factories'''
         for factory in Factory.all_factories:
             factory.workers = []
             if factory in workers_to_update:
                 factory.workers = workers_to_update[factory]
             workers_to_update[factory] = []
-

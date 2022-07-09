@@ -6,10 +6,11 @@ min_number = 1
 decay_speed = 0.8
 numbers_size = 100000
 
+
 def clock_0():
     clock1 = time.time()
-    numbers = np.random.normal(1/max_number, 2/(max_number**decay_speed),numbers_size)*max_number
-    for i in range(0,len(numbers)):
+    numbers = np.random.normal(1/max_number, 2/(max_number**decay_speed), numbers_size)*max_number
+    for i in range(0, len(numbers)):
         number = int(abs(numbers[i]))
         while number > max_number or number < min_number:
             number = np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number
@@ -25,7 +26,7 @@ def generate():
     if(max_number == 0):
         return [0] * numbers_size
     clock1 = time.time()
-    for i in range(0,numbers_size):
+    for i in range(0, numbers_size):
         number = int(abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number)))
         while(number > max_number or number < min_number):
             number = abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number))
