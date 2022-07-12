@@ -20,9 +20,9 @@ class Person:
         self.share_catalog: Dict[Factory, float] = {}
         self.essential_satisfaction: float = 1
         self.luxury_satisfaction: float = 0.5  #if > 1, spend less on luxury, if < 0.5?, spend more
-        self.__timestep_initial_capital = capital
-        self.__LUXURY_CAPITAL_PERCENTAGE: float = 0.1  #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
-        self.__SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.1  #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
+        self.timestep_initial_capital = capital
+        self.LUXURY_CAPITAL_PERCENTAGE: float = 0.4  #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
+        self.__SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.4  #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
         Person.all_persons.append(self)
 
     @staticmethod
@@ -33,16 +33,12 @@ class Person:
 
     def luxury_capital_projection(self):
         ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
-        return self.__timestep_initial_capital * self.__LUXURY_CAPITAL_PERCENTAGE
+        return self.timestep_initial_capital * self.LUXURY_CAPITAL_PERCENTAGE
 
     def shareMarket_capital_investment_projection(self):
         ''' Calculated after essential market Timestep (essential capital already withdrawn) '''
-        return self.__timestep_initial_capital * self.__SHAREMARKET_CAPITAL_PERCENTAGE
-
-    def factory_capital_investment_projection(self):
-        ''' capital avaliable  '''
-        return self.__timestep_initial_capital - (self.luxury_capital_projection() + self.shareMarket_capital_investment_projection())
+        return self.timestep_initial_capital * self.__SHAREMARKET_CAPITAL_PERCENTAGE
 
     def update_timestep_capital(self):
         '''update avaliable capital at beggining of timestep'''
-        self.__timestep_initial_capital = self.capital
+        self.timestep_initial_capital = self.capital

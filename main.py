@@ -5,7 +5,7 @@ from typing import List
 import enum
 
 from numpy import NaN
-from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket
+from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup
 import Prints
 
 
@@ -13,6 +13,7 @@ class InitialConditions(enum.Enum):
     BOURGEOISIE = 1
     EGALITARIANISM = 2
     SOLE_OWNERSHIP = 3
+    MONOPOLY = 4
 
 
 def startSim(people_number: int = 20, factory_number: int = 20, max_capital: int = 1000, min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM, burgeoisie_percentage: int = 15):
@@ -20,6 +21,8 @@ def startSim(people_number: int = 20, factory_number: int = 20, max_capital: int
     if initial_condition == InitialConditions.EGALITARIANISM:
         initial_condition = InitialConditions.BOURGEOISIE
         burgeoisie_percentage = 100
+    if InitialConditions == InitialConditions.MONOPOLY:
+        burgeoisie_percentage = 1/people_number * 100
 
     #--GENERATE PERSONS--#
     import random
@@ -73,18 +76,18 @@ def startSim(people_number: int = 20, factory_number: int = 20, max_capital: int
         Factory(bool(round(random.random())), workers, shares, random.random()*max_capital + min_capital)
 
 
-startSim()
+startSim(initial_condition=InitialConditions.MONOPOLY)
 
 print("done starting sim")
 
 
 def nextTimeStep():
+
     #CONSUMERS MARKET
     #-------------------------
     for factory in Factory.all_factories:
         factory.produce() #Pay salaries and produce new stock ammount
     GoodsMarket.runMarket()
-    print("GoodsMarket done")
     #-------------------------
 
     #Salary Projection and fundraising
@@ -97,26 +100,19 @@ def nextTimeStep():
     #SHARES MARKET
     #---------------------
     SharesMarket.runMarket()
-    print("sharesMarket done")
     #---------------------
 
     #WORKERS MARKET
     #----------------------
     WorkersMarket.runMarket()
-    print("workersMarket done")
     #---------------------
-
-    #test:
-    if NaN in [p.capital for p in Person.all_persons]:
-        pass
-
-    if NaN in [f.product_price for f in Factory.all_factories] or inf in [f.product_price for f in Factory.all_factories]:
-        pass
-
+    
+    cleanup(Person.all_persons, Factory.all_factories)
+    
 
 f = open("printOutput/print.txt", "w")
 f.close()
-for i in range(0, 20):
+for i in range(0, 1000):
     f = open("printOutput/print.txt", "a")
     Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
     nextTimeStep()
