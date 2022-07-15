@@ -3,7 +3,7 @@ from typing import List, Literal
 from Factory import Factory
 from Person import Person
 from Markets import GoodsMarket, SharesMarket, WorkersMarket
-from numpy import e
+from numpy import e, sort
 
 FLOATING_POINT_ERROR_MARGIN = 10**-10
 
@@ -51,3 +51,22 @@ def cleanup(persons: List[Person], factories: List[Factory]):
             person.share_catalog[factory] = value/total
             factory.share_holders[person] = value/total
         break
+
+#-----------------
+#Data collection
+#----------------
+def saveState(persons: List[Person], factories: List[Factory]):
+    #Inequality: capital of top 50% - capital of bottom 50%
+    capitals = sort([person.capital for person in persons])
+    top50 = sum(capitals[round(len(capitals)/2):])
+    bot50 = sum(capitals[:round(len(capitals)/2)])
+    
+    #Total stock production
+    stock = sum([factory.stock for factory in factories])
+    
+    #Essential satisfaction
+    essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
+    
+    #Luxury satisfaction
+#    luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
+    return [(top50 - bot50)/sum(capitals), stock,essential_sat]#,luxury_sat]

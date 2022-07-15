@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import List, TextIO
-from globals import Person, Factory, GoodsMarket, SharesMarket, WorkersMarket
+from typing import Dict, List
 
+from matplotlib import pyplot as plt
+
+from globals import Person, Factory, GoodsMarket, SharesMarket, WorkersMarket
 
 def printPersonsAndFactories(all_persons: List[Person], all_factories: List[Factory], day: int = 0, f: TextIO = None):
     f.write("\n\n")
@@ -29,6 +31,35 @@ def printPersonsAndFactories(all_persons: List[Person], all_factories: List[Fact
             factory.new_stock, factory.product_price, factory.profit_margin_per_product * 100, SharesMarket.share_value(1, factory)))
     f.write("\n\n")
 
-    #test:
-    f.write("TOTAL_CAPITAL: " + str(sum([p.capital for p in Person.all_persons]) + sum([f.capital for f in Factory.all_factories])))
 
+def plotStates(state: List[List[float]], axes: plt = None):
+    days: List[int] = []
+    vals_n: int = len(state[0])
+    vals: List[List[float]] = []
+    for i in range(vals_n):
+        vals.append([])
+    for i in range(len(state)):
+        days.append(i)
+        for j in range(len(state[i])):
+            vals[j].append(state[i][j])
+
+    for i in range(0,vals_n):
+        plt.subplot(vals_n, 1,i+1)
+        plt.plot(days, vals[i])
+        if(i != vals_n):
+            ax = plt.gca()
+            ax.get_xaxis().set_visible(False) #hide x axis
+    plt.subplot(vals_n,1,1)
+    plt.title('(top50 - bottom50)/total')
+    plt.ylabel('Inequality')
+    plt.subplot(vals_n, 1,2)
+    plt.title('Production')
+    plt.ylabel('total stock')
+    plt.subplot(vals_n, 1,3)
+    plt.title('Essential satisfaction')
+    plt.ylabel('essential/person')
+#    plt.subplot(vals_n, 1,4)
+#    plt.title('Luxury satisfaction')
+#    plt.ylabel('luxury/person')
+#    plt.xlabel('cycle')
+    return plt

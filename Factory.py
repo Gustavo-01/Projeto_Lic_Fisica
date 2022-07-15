@@ -72,11 +72,11 @@ class Factory:
             if(shares_to_sell == -1):
                 #Factory is bankrupt (no stock and no capital)
                 shares_to_sell = 1
-            from math import isnan #TODO DELETE
-            if isnan(float(shares_to_sell)):
-                pass
-                shares_to_sell = SharesMarket.share_ammount(needed_capital, self)
-                pass
+#            from math import isnan #TODO DELETE
+#            if isnan(float(shares_to_sell)):
+#                pass
+#                shares_to_sell = SharesMarket.share_ammount(needed_capital, self)
+#                pass
             SharesMarket.factory_shares[self] = shares_to_sell
 
             #Remove needed percentage from all shareHolders

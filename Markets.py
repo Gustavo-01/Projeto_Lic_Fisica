@@ -38,14 +38,19 @@ class GoodsMarket():
             return traded_product
 
         def trade_luxury(factory: Factory, buyer: Person, max_cost: float):
+            from math import floor
+
+            # This division creates errors that propagate!!
+            # Truncate on decimal e^-10
+            max_cost = (10**-10)*floor((10**10)*max_cost)
             traded_product = max_cost/factory.product_price
             if factory.avaliable_stock < traded_product:
                 traded_product = factory.avaliable_stock
 
-            new_luxury_satisfaction = 1 - ((buyer.luxury_satisfaction)-traded_product)/buyer.luxury_satisfaction
-            buyer.luxury_satisfaction = (buyer.luxury_satisfaction + new_luxury_satisfaction)/2
+            #TODO fix this mess
+            buyer.luxury_satisfaction += traded_product
 
-            transfer_capital(buyer,traded_product*factory.product_price, factory, 'bought luxury')
+            transfer_capital(buyer, traded_product*factory.product_price, factory, 'bought luxury')
             factory.avaliable_stock -= traded_product
 
             return traded_product * factory.product_price
@@ -93,11 +98,13 @@ class GoodsMarket():
             def attemptLuxuryTrade(person: Person, max_cost: float, i: int, j: int=0):
                 ''' Act as a circular list until find tradeable factory '''
 
-                if j > len(price_sorted_factory_id_list):
-                    return False  #Error, could not find any factory with enough stock to trade (or person has not enough capital to trade)
+                from globals import FLOATING_POINT_ERROR_MARGIN
+                
+                if j > len(price_sorted_factory_id_list) or max_cost <= FLOATING_POINT_ERROR_MARGIN: # No factory has stock or person has consumed all luxury capital
+                    return max_cost
 
                 idx = i + j  #Circular list index
-                if idx >= len(price_sorted_factory_id_list):
+                while idx >= len(price_sorted_factory_id_list):
                     idx -= len(price_sorted_factory_id_list)
 
                 trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
@@ -107,10 +114,7 @@ class GoodsMarket():
                 else:
                     trade_cost = trade_luxury(trade_factory, person, max_cost)
                     max_cost -= trade_cost
-                    if max_cost <= 0:
-                        return True
-                    else:
-                        return attemptLuxuryTrade(person, max_cost, i, j+1)
+                    return attemptLuxuryTrade(person, max_cost, i, j+1)
 
             from globals import FLOATING_POINT_ERROR_MARGIN
             
@@ -118,8 +122,8 @@ class GoodsMarket():
                 person = Person.all_persons[i]
                 max_luxury_capital_projection = person.luxury_capital_projection()
                 #Find a factory to trade
-                traded = attemptLuxuryTrade(person, max_luxury_capital_projection, i)
-                if not traded:
+                leftover_capital = attemptLuxuryTrade(person, max_luxury_capital_projection, i)
+                if leftover_capital > FLOATING_POINT_ERROR_MARGIN:
                     #TODO what to do in this case?
                     pass
 
@@ -131,15 +135,9 @@ class GoodsMarket():
         #Update person expense agenda
         for person in Person.all_persons:
             person.update_timestep_capital()
+            person.luxury_satisfaction = 0
         if len(GoodsMarket.luxury_factories) > 0:
             runLuxuryMarket()
-        for person in Person.all_persons: #TODO DELETE
-            from globals import FLOATING_POINT_ERROR_MARGIN
-            max_luxury_capital = person.timestep_initial_capital * (1-person.LUXURY_CAPITAL_PERCENTAGE)
-            if person.capital < max_luxury_capital - FLOATING_POINT_ERROR_MARGIN:
-                print(person.capital - max_luxury_capital)
-                pass
-        pass
 
 
 #--------------------
@@ -212,6 +210,7 @@ class SharesMarket():
     ''' Sells owners shares to make enough capital for production and controls secondary shares trading '''
     shares_for_trade: Dict[Tuple[Factory, Person],float] = {}  #{(facotry,seller): share}
     factory_shares: Dict[Factory, float] = {} # {factory: (share}
+    avaliable_capital: Dict[Person,float] = {} #{person: avaliable capital for primary shareMarket}
 
     @staticmethod
     def close_primary(factory:  Factory):
@@ -272,10 +271,8 @@ class SharesMarket():
                 if seller.share_catalog[factory] == 0:
                     seller.share_catalog.pop(factory)
                     factory.share_holders.pop(seller)
-
-            #TODO DELETE
-            if buyer.capital < price - FLOATING_POINT_ERROR_MARGIN:
-                print("WTF?")
+           
+            SharesMarket.avaliable_capital[buyer] -= price
             
             transfer_capital(buyer, price, seller,'bought share')
 
@@ -290,10 +287,11 @@ class SharesMarket():
 
             def primary_share_sell_attempt(factory: Factory, shares_for_sale: float, person: Person):
                 '''Attempt to sell factory share'''
-                
+
                 from globals import FLOATING_POINT_ERROR_MARGIN
-                
-                max_investment = person.shareMarket_capital_investment_projection() / 2
+
+                max_investment = SharesMarket.avaliable_capital[person]
+
                 total_share_value = SharesMarket.share_value(shares_for_sale, factory)
                 if (total_share_value / shares_for_sale <= FLOATING_POINT_ERROR_MARGIN):
                     #FACTORY BANKRUPT - Buy 100% and delete all shareholders
@@ -310,9 +308,6 @@ class SharesMarket():
                 else:
                     price = max_investment
                     sold_shares = shares_for_sale * price / total_share_value
-
-                if person.capital < price:
-                    print("wtf?") #TODO DELETE
                 
                 sell_shares(factory, price, sold_shares, person)
 
@@ -326,7 +321,10 @@ class SharesMarket():
                     shares_for_sale = SharesMarket.factory_shares[factory]
                     if SharesMarket.factory_shares[factory] <= 0:
                         break
-                    primary_share_sell_attempt(factory, shares_for_sale, person)
+
+                    if SharesMarket.avaliable_capital[person] / 2 > FLOATING_POINT_ERROR_MARGIN:
+                        primary_share_sell_attempt(factory, shares_for_sale, person)
+
                 #- Then indiscriminated search -#
                 person_shuffled = [person for person in Person.all_persons if person.capital > FLOATING_POINT_ERROR_MARGIN and person not in ShareHolders_shuffled]
                 numpy.random.shuffle(person_shuffled)
@@ -334,18 +332,20 @@ class SharesMarket():
                     shares_for_sale = SharesMarket.factory_shares[factory]
                     if SharesMarket.factory_shares[factory] <= 0:
                         break
-                    primary_share_sell_attempt(factory,shares_for_sale,person)                    
+                    if SharesMarket.avaliable_capital[person] / 2 > FLOATING_POINT_ERROR_MARGIN:
+                        primary_share_sell_attempt(factory,shares_for_sale,person)      
+                             
             SharesMarket.factory_shares = {}
 
         def SecondaryMarket():
             '''Shareholders sell and buy shares'''
             
-            from globals import FLOATING_POINT_ERROR_MARGIN
+            from globals import FLOATING_POINT_ERROR_MARGIN, Factory
             
             def secondary_share_sell_attempt(seller:Person, total_share_value:float, factory: Factory, buyer: Person):
                 '''Attempt to sell factory share'''
 
-                max_investment = person.shareMarket_capital_investment_projection() / 2
+                max_investment = SharesMarket.avaliable_capital[person]
                 if max_investment >= total_share_value:
                     price = total_share_value
                 else:
@@ -353,25 +353,19 @@ class SharesMarket():
 
                 sold_shares = SharesMarket.share_ammount(price, factory)
                 if(sold_shares == -1):
-                    #sold_shares = 1
-                    #print("Factory",factory.__fact_id__," bought from Bankrupcy by ", buyer.name)
                     return
 
                 if sold_shares < FLOATING_POINT_ERROR_MARGIN:
                     return
-                
-                #TODO DELETE
-                if buyer.capital < price:
-                    print("WTF?")
                 
                 sell_shares(factory,price,sold_shares,buyer,seller)
 
             #Sell step
             for share_holder in [person for person in Person.all_persons if len(person.share_catalog) != 0]:
                 #if person cannot fulfil essential AND luxury needs:
-                if share_holder.capital < (Person.essential_capital_projection() + share_holder.luxury_capital_projection()):
+                if share_holder.capital < (Person.essential_capital_projection(Factory.all_factories) + share_holder.luxury_capital_projection()):
 
-                    needed_capital = (Person.essential_capital_projection() + share_holder.luxury_capital_projection()) - share_holder.capital
+                    needed_capital = (Person.essential_capital_projection(Factory.all_factories) + share_holder.luxury_capital_projection()) - share_holder.capital
                     #- TODO lower luxury consumption! -
                     
                     #----------------------------------
@@ -412,11 +406,13 @@ class SharesMarket():
                     if SharesMarket.shares_for_trade[share] <= 0:
                         SharesMarket.shares_for_trade.pop(share)
                         break
-                    if person.shareMarket_capital_investment_projection() > FLOATING_POINT_ERROR_MARGIN:
+                    if SharesMarket.avaliable_capital[person] > FLOATING_POINT_ERROR_MARGIN:
                         secondary_share_sell_attempt(seller, total_share_value, factory, person)
 
             SharesMarket.shares_for_trade = {} #empty shares for trade
         
+        for person in Person.all_persons:
+            SharesMarket.avaliable_capital[person] = person.shareMarket_capital_investment_projection()
         PrimaryMarket()
         SecondaryMarket()
 

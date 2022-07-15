@@ -1,11 +1,12 @@
 from __future__ import annotations
 from cmath import inf
-from typing import List
+from typing import Dict, List, Tuple
 
 import enum
+from matplotlib import pyplot as plt
 
 from numpy import NaN
-from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup
+from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup, saveState
 import Prints
 
 
@@ -16,7 +17,16 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 20, factory_number: int = 20, max_capital: int = 1000, min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM, burgeoisie_percentage: int = 15):
+def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000, min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM, burgeoisie_percentage: int = 20):
+    #--Delete any previous simulation residue--#
+    Person.all_persons = []
+    Factory.all_factories = []
+    SharesMarket.factory_shares = {}
+    SharesMarket.shares_for_trade = {}
+    GoodsMarket.essencial_factories = []
+    GoodsMarket.luxury_factories = []
+    WorkersMarket.workers_to_update = {}
+
     #--Resolve initial conditions--#
     if initial_condition == InitialConditions.EGALITARIANISM:
         initial_condition = InitialConditions.BOURGEOISIE
@@ -73,13 +83,16 @@ def startSim(people_number: int = 20, factory_number: int = 20, max_capital: int
             shares[share_holders[i]] = share_values[i]
 
         #Create Factory
-        Factory(bool(round(random.random())), workers, shares, random.random()*max_capital + min_capital)
+        if(len([factory for factory in Factory.all_factories if factory.product_is_essential]) == 0):
+            essential = True
+        elif(len([factory for factory in Factory.all_factories if not factory.product_is_essential]) == 0):
+            essential = False
+        else:
+            essential = bool(round(random.random()))
+        Factory(essential, workers, shares, random.random()*max_capital + min_capital)
 
 
-startSim(initial_condition=InitialConditions.MONOPOLY)
-
-print("done starting sim")
-
+initial_condition = InitialConditions.EGALITARIANISM
 
 def nextTimeStep():
 
@@ -108,22 +121,26 @@ def nextTimeStep():
     #---------------------
     
     cleanup(Person.all_persons, Factory.all_factories)
-    
 
 f = open("printOutput/print.txt", "w")
 f.close()
-for i in range(0, 1000):
-    f = open("printOutput/print.txt", "a")
-    Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
-    nextTimeStep()
-    f.close()
 
-
-
+import matplotlib.pyplot as plt
+for attempt in range(0, 5):
+    state: List[List[float]] = []
+    startSim(initial_condition=initial_condition)
+    for i in range(0, 5000):
+        f = open("printOutput/print.txt", "a")
+        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
+        nextTimeStep()
+        f.close()
+        if i % 50 == 0:
+            state.append(saveState(Person.all_persons, Factory.all_factories))
+            print(i)
+    plot = Prints.plotStates(state,plt)
+plt.show()
 #Prints
 print("\n\n--------------- End State: ----------------\n\n")
-
-#Prints.printPersonsAndFactories(Person.all_persons,Factory.all_factories,3)
 
 print(len(Factory.all_factories))
 print(len(Person.all_persons))
