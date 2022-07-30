@@ -1,0 +1,4 @@
+Monopoly percentage, capital / person (x is person ID)
+
+
+- variate minimum wage, Factory aggressiveness?, production per worker...

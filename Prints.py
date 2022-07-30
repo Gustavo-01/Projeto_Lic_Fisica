@@ -28,7 +28,7 @@ def printPersonsAndFactories(all_persons: List[Person], all_factories: List[Fact
     for factory in sorted(all_factories, key=lambda f: f.fact_id):
         f.write("{0:<3d} - {1:<6s} - {2:<4d} - {3:>10.2f}$ - {4:>7.2f} - {5:>7.2f} - {6:>5.2f} - {7:>2.0f}% - {8:<4.2f}$ \n".format(
             factory.fact_id, str(factory.product_is_essential), len(factory.workers), factory.salary, factory.avaliable_stock,
-            factory.new_stock, factory.product_price, factory.profit_margin_per_product * 100, SharesMarket.share_value(1, factory)))
+            factory.new_stock, factory.product_price, (factory.profit_margin_per_product-1) * 100, SharesMarket.share_value(1, factory)))
     f.write("\n\n")
 
 
@@ -58,8 +58,11 @@ def plotStates(state: List[List[float]], axes: plt = None):
     plt.subplot(vals_n, 1,3)
     plt.title('Essential satisfaction')
     plt.ylabel('essential/person')
-#    plt.subplot(vals_n, 1,4)
-#    plt.title('Luxury satisfaction')
-#    plt.ylabel('luxury/person')
-#    plt.xlabel('cycle')
+    plt.subplot(vals_n, 1,4)
+    plt.title('Luxury satisfaction')
+    plt.ylabel('luxury/person')
+    plt.subplot(vals_n, 1,5)
+    plt.title('Mean salary')
+    plt.ylabel('capital')
+    plt.xlabel('cycle')
     return plt

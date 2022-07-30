@@ -9,7 +9,7 @@ def medianOneGenerate(max_number, numbers_size, decay_speed=0.8, min_number=0):
     if max_number <= min_number:
         raise Exception("Generating impossible numbers")
     numbers = np.random.normal(1/max_number, 2/(max_number**decay_speed), numbers_size)*max_number
-    for i in range(0,len(numbers)):
+    for i in range(0, len(numbers)):
         number = int(abs(numbers[i]))
         while number > max_number or number < min_number:
             number = abs(int(np.random.normal(1/max_number, 2/(max_number**decay_speed))*max_number))
@@ -41,6 +41,11 @@ def plot_occurrences(numbers: np.ndarray):
     for i in range(0,np.amax(numbers)):
         occurrences.append(np.count_nonzero(numbers == i))
     pyplot.plot(range(0,max(numbers)), occurrences)
+    pyplot.title('worker distribution')
+    pyplot.xlabel('worker number')
+    pyplot.ylabel('occurences')
+    ax = pyplot.gca()
+    ax.set_yticklabels([])
     pyplot.show()
 
 
@@ -49,4 +54,4 @@ def testGenerator(max_number, numbers_size):
     plot_occurrences(numbers)
 
 
-#testGenerator(10,1000)
+#testGenerator(100,10000000)

@@ -18,3 +18,6 @@ Novidades:
 
 custoI -> produtoI
 custoF -> produtoF
+
+TODO: Essential sobra produto mas ninguém compra!!
+

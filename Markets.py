@@ -1,5 +1,4 @@
 from __future__ import annotations
-from logging.config import valid_ident
 from typing import TYPE_CHECKING
 import numpy
 
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
 
 class GoodsMarket():
     '''Controls consumption of essential an luxury, also sets each persons luxury_capital_percentage and sharemarket_capital_percentage'''
-    essencial_factories: List[Factory] = []
+    essential_factories: List[Factory] = []
     luxury_factories: List[Factory] = []
     avg_essential_price: float = 1
 
@@ -22,6 +21,9 @@ class GoodsMarket():
     def runMarket():
         from MedianOneGenerator import medianOneGenerate
         from globals import Person, transfer_capital
+
+        def sample_from_list(lst: List[Factory]):
+            return medianOneGenerate(len(lst)-1, 1)[0]
 
         def trade_essential(factory: Factory, buyer: Person, max_trade_ammount : float):
             traded_product = max_trade_ammount
@@ -47,7 +49,6 @@ class GoodsMarket():
             if factory.avaliable_stock < traded_product:
                 traded_product = factory.avaliable_stock
 
-            #TODO fix this mess
             buyer.luxury_satisfaction += traded_product
 
             transfer_capital(buyer, traded_product*factory.product_price, factory, 'bought luxury')
@@ -56,81 +57,62 @@ class GoodsMarket():
             return traded_product * factory.product_price
 
         def runEssentialMarket():
-
-            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.essencial_factories)-1,len(Person.all_persons),decay_speed=0.9) #give a distribution of factories to trade (lower prices more likely)
-            price_sorted_factories = sorted(GoodsMarket.essencial_factories, key=lambda x: x.product_price)
-
-            def attemptEssentialTrade(person: Person, needed_essentials: float, i: int, j: int = 0):
-                ''' Act as a circular list until find tradeable factory '''
-
-                from globals import FLOATING_POINT_ERROR_MARGIN
-                
-                if j > len(price_sorted_factory_id_list):
-                    return 1 - needed_essentials  #Error, could not find any factory with enough stock to trade (or person has not enough capital to trade)
-
-                idx = i + j  #Circular list index
-                while idx >= len(price_sorted_factory_id_list):
-                    idx -= len(price_sorted_factory_id_list)
-
-                trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
-
-                if trade_factory.avaliable_stock <= 0:
-                    return attemptEssentialTrade(person, needed_essentials, i, j+1)
-                else:
-                    traded_ammount = trade_essential(trade_factory, person, needed_essentials)
-                    needed_essentials -= traded_ammount
-                    return 1 - needed_essentials
-
-            for i in range(len(Person.all_persons)):
-                person = Person.all_persons[i]
-                #Find a factory to trade
-                traded = attemptEssentialTrade(person, 1, i)
-                person.essential_satisfaction = traded
             
-            pass
-            #TODO set essential capital projection for next timestep?
-
-        def runLuxuryMarket():
-            
-            price_sorted_factory_id_list: List[int] = medianOneGenerate(len(GoodsMarket.luxury_factories)-1, len(Person.all_persons))  #give a distribution of factories to trade (lower prices more likely)
-            price_sorted_factories = sorted(GoodsMarket.luxury_factories, key=lambda x: x.product_price)
-
-            def attemptLuxuryTrade(person: Person, max_cost: float, i: int, j: int=0):
-                ''' Act as a circular list until find tradeable factory '''
-
-                from globals import FLOATING_POINT_ERROR_MARGIN
-                
-                if j > len(price_sorted_factory_id_list) or max_cost <= FLOATING_POINT_ERROR_MARGIN: # No factory has stock or person has consumed all luxury capital
-                    return max_cost
-
-                idx = i + j  #Circular list index
-                while idx >= len(price_sorted_factory_id_list):
-                    idx -= len(price_sorted_factory_id_list)
-
-                trade_factory = price_sorted_factories[price_sorted_factory_id_list[idx]]
-
-                if trade_factory.avaliable_stock <= 0:
-                    return attemptLuxuryTrade(person, max_cost, i, j+1)
-                else:
-                    trade_cost = trade_luxury(trade_factory, person, max_cost)
-                    max_cost -= trade_cost
-                    return attemptLuxuryTrade(person, max_cost, i, j+1)
-
             from globals import FLOATING_POINT_ERROR_MARGIN
             
-            for i in range(len(Person.all_persons)):
-                person = Person.all_persons[i]
+            def attemptEssentialTrade(person: Person, needed_essentials: float):
+                ''' Act as a circular list until find tradeable factory '''
+
+                tradeable_factories = sorted([f for f in GoodsMarket.essential_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
+                if len(tradeable_factories) == 0 or person.capital <= FLOATING_POINT_ERROR_MARGIN:
+                    return 1 - needed_essentials
+                idx = sample_from_list(tradeable_factories)
+                trade_factory = tradeable_factories[idx]
+
+                traded_ammount = trade_essential(trade_factory, person, needed_essentials)
+                needed_essentials -= traded_ammount
+                if needed_essentials <= FLOATING_POINT_ERROR_MARGIN:
+                    return 1
+                else:
+                    return attemptEssentialTrade(person, needed_essentials)
+
+            for person in [p for p in Person.all_persons if p.capital > FLOATING_POINT_ERROR_MARGIN]:
+                #Find a factory to trade
+                traded = attemptEssentialTrade(person, 1)
+                person.essential_satisfaction = traded
+
+            pass
+
+        def runLuxuryMarket():
+
+            def attemptLuxuryTrade(person: Person, max_cost: float):
+                ''' Act as a circular list until find tradeable factory '''
+
+                from globals import FLOATING_POINT_ERROR_MARGIN
+
+                tradeable_factories = sorted([f for f in GoodsMarket.luxury_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
+                if len(tradeable_factories) == 0 or max_cost <= FLOATING_POINT_ERROR_MARGIN:
+                    return max_cost
+                idx = sample_from_list(tradeable_factories)
+                trade_factory = tradeable_factories[idx]
+
+                trade_cost = trade_luxury(trade_factory, person, max_cost)
+                max_cost -= trade_cost
+                return attemptLuxuryTrade(person, max_cost)
+
+            from globals import FLOATING_POINT_ERROR_MARGIN
+
+            for person in [p for p in Person.all_persons if p.capital > FLOATING_POINT_ERROR_MARGIN]:
                 max_luxury_capital_projection = person.luxury_capital_projection()
                 #Find a factory to trade
-                leftover_capital = attemptLuxuryTrade(person, max_luxury_capital_projection, i)
+                leftover_capital = attemptLuxuryTrade(person, max_luxury_capital_projection)
                 if leftover_capital > FLOATING_POINT_ERROR_MARGIN:
                     #TODO what to do in this case?
                     pass
 
             pass
-            #TODO set persons luxury_capital percentage and sharemarket_capital_percentage
 
-        if len(GoodsMarket.essencial_factories) > 0:
+        if len(GoodsMarket.essential_factories) > 0:
             runEssentialMarket()
         #Update person expense agenda
         for person in Person.all_persons:
@@ -138,6 +120,15 @@ class GoodsMarket():
             person.luxury_satisfaction = 0
         if len(GoodsMarket.luxury_factories) > 0:
             runLuxuryMarket()
+        
+        #TODO delete
+        no_sell = True
+        for f in GoodsMarket.luxury_factories:
+            if f.stock != f.avaliable_stock:
+                no_sell = False
+                break
+        if no_sell:
+            pass
 
 
 #--------------------
@@ -148,7 +139,15 @@ class WorkersMarket():
     ''' Hires workers for factories '''
     workers_to_update: Dict[Factory, List[Person]] = {}
 
-    #Find factory with bigger salary - update salary
+    @staticmethod
+    def meanSalary(persons):
+        salaries = []
+        for p in persons:
+            if p.employer is not None:
+                salaries.append(p.employer.salary)
+            else:
+                salaries.append(0)
+        return sum(salaries)/len(salaries)
 
     @staticmethod
     def runMarket():
@@ -247,7 +246,6 @@ class SharesMarket():
             return -1  #Signals that factory is bankrupt
         return capital / value_per_share
 
-
     @staticmethod
     def runMarket():
         from globals import Person, transfer_capital, FLOATING_POINT_ERROR_MARGIN
@@ -268,7 +266,7 @@ class SharesMarket():
             else:
                 seller.share_catalog[factory] -= shares
                 factory.share_holders[seller] -= shares
-                if seller.share_catalog[factory] == 0:
+                if seller.share_catalog[factory] <= 0:
                     seller.share_catalog.pop(factory)
                     factory.share_holders.pop(seller)
            
@@ -360,15 +358,14 @@ class SharesMarket():
                 
                 sell_shares(factory,price,sold_shares,buyer,seller)
 
+            mean_salary = WorkersMarket.meanSalary(Person.all_persons)
+            
             #Sell step
             for share_holder in [person for person in Person.all_persons if len(person.share_catalog) != 0]:
                 #if person cannot fulfil essential AND luxury needs:
-                if share_holder.capital < (Person.essential_capital_projection(Factory.all_factories) + share_holder.luxury_capital_projection()):
+                if share_holder.capital + mean_salary < Person.essential_capital_projection(Factory.all_factories):
 
-                    needed_capital = (Person.essential_capital_projection(Factory.all_factories) + share_holder.luxury_capital_projection()) - share_holder.capital
-                    #- TODO lower luxury consumption! -
-                    
-                    #----------------------------------
+                    needed_capital = (Person.essential_capital_projection(Factory.all_factories)) - share_holder.capital
                     #Sell shares
                     for factory in share_holder.share_catalog:
                         needed_shares = SharesMarket.share_ammount(needed_capital,factory)
@@ -413,6 +410,9 @@ class SharesMarket():
         
         for person in Person.all_persons:
             SharesMarket.avaliable_capital[person] = person.shareMarket_capital_investment_projection()
+        for factory in list(SharesMarket.factory_shares):
+            if SharesMarket.factory_shares[factory] <= FLOATING_POINT_ERROR_MARGIN:
+                SharesMarket.factory_shares.pop(factory) #Will not sell shares that are too small
         PrimaryMarket()
         SecondaryMarket()
 

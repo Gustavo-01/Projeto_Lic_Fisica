@@ -1,12 +1,10 @@
 from __future__ import annotations
-from cmath import inf
 from typing import Dict, List, Tuple
 
 import enum
 from matplotlib import pyplot as plt
 
-from numpy import NaN
-from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup, saveState
+from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup, saveState, act_government
 import Prints
 
 
@@ -17,13 +15,15 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000, min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM, burgeoisie_percentage: int = 20):
+def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000,
+             min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
+             burgeoisie_percentage: int = 20):
     #--Delete any previous simulation residue--#
     Person.all_persons = []
     Factory.all_factories = []
     SharesMarket.factory_shares = {}
     SharesMarket.shares_for_trade = {}
-    GoodsMarket.essencial_factories = []
+    GoodsMarket.essential_factories = []
     GoodsMarket.luxury_factories = []
     WorkersMarket.workers_to_update = {}
 
@@ -31,8 +31,8 @@ def startSim(people_number: int = 100, factory_number: int = 20, max_capital: in
     if initial_condition == InitialConditions.EGALITARIANISM:
         initial_condition = InitialConditions.BOURGEOISIE
         burgeoisie_percentage = 100
-    if InitialConditions == InitialConditions.MONOPOLY:
-        burgeoisie_percentage = 1/people_number * 100
+    elif initial_condition == InitialConditions.MONOPOLY:
+        burgeoisie_percentage = 101/people_number
 
     #--GENERATE PERSONS--#
     import random
@@ -92,7 +92,7 @@ def startSim(people_number: int = 100, factory_number: int = 20, max_capital: in
         Factory(essential, workers, shares, random.random()*max_capital + min_capital)
 
 
-initial_condition = InitialConditions.EGALITARIANISM
+initial_condition = InitialConditions.MONOPOLY
 
 def nextTimeStep():
 
@@ -119,25 +119,26 @@ def nextTimeStep():
     #----------------------
     WorkersMarket.runMarket()
     #---------------------
-    
+
     cleanup(Person.all_persons, Factory.all_factories)
+
+    act_government(Person.all_persons)
 
 f = open("printOutput/print.txt", "w")
 f.close()
 
 import matplotlib.pyplot as plt
-for attempt in range(0, 5):
-    state: List[List[float]] = []
-    startSim(initial_condition=initial_condition)
-    for i in range(0, 5000):
-        f = open("printOutput/print.txt", "a")
-        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
-        nextTimeStep()
-        f.close()
-        if i % 50 == 0:
-            state.append(saveState(Person.all_persons, Factory.all_factories))
-            print(i)
-    plot = Prints.plotStates(state,plt)
+state: List[List[float]] = []
+startSim(initial_condition=initial_condition)
+for i in range(0, 1000):
+    f = open("printOutput/print.txt", "a")
+    Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
+    nextTimeStep()
+    f.close()
+    if i % 3 == 0:
+        state.append(saveState(Person.all_persons, Factory.all_factories))
+        print(i)
+plot = Prints.plotStates(state,plt)
 plt.show()
 #Prints
 print("\n\n--------------- End State: ----------------\n\n")

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from doctest import FAIL_FAST
 from typing import TYPE_CHECKING
 
 #from Markets import GoodsMarket, SharesMarket, WorkersMarket
@@ -20,10 +19,10 @@ class Person:
         self.employer: Factory = employer
         self.share_catalog: Dict[Factory, float] = {}
         self.essential_satisfaction: float = 1
-        self.luxury_satisfaction: float = 0.5  #if > 1, spend less on luxury, if < 0.5?, spend more
+        self.luxury_satisfaction: float = 0.5
         self.timestep_initial_capital = capital
-        self.LUXURY_CAPITAL_PERCENTAGE: float = 0.4  #TODO placeholder - if person filled its luxury_capital_percentage, percentage should increase
-        self.SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.4  #TODO placeholder - if person could not buy any shares and, percentage should increase, if person is owner, percentage should grow slower
+        self.LUXURY_CAPITAL_PERCENTAGE: float = 0.4
+        self.SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.4
         Person.all_persons.append(self)
 
     @staticmethod
