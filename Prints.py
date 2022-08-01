@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from matplotlib import pyplot as plt
 
@@ -31,8 +31,7 @@ def printPersonsAndFactories(all_persons: List[Person], all_factories: List[Fact
             factory.new_stock, factory.product_price, (factory.profit_margin_per_product-1) * 100, SharesMarket.share_value(1, factory)))
     f.write("\n\n")
 
-
-def plotStates(state: List[List[float]], axes: plt = None):
+def process_state(state: List[List[float]]):
     days: List[int] = []
     vals_n: int = len(state[0])
     vals: List[List[float]] = []
@@ -42,27 +41,71 @@ def plotStates(state: List[List[float]], axes: plt = None):
         days.append(i)
         for j in range(len(state[i])):
             vals[j].append(state[i][j])
+    return(days, vals)
 
-    for i in range(0,vals_n):
-        plt.subplot(vals_n, 1,i+1)
+def process_multistate(runs: Tuple[List[int], List[List[float]]]):
+    days_n = len(runs[0][0])
+    runs_n = len(runs)
+    all_lines:List[List[float]] = [None] * days_n
+    for x in range(0,days_n):
+        runs_lines = [None] * runs_n
+        run_i = 0
+        for run in runs:
+            run_state = run[1]
+            run_lines = [None] * len(run[1])
+            line_i = 0
+            for line in run_state:
+                run_lines[line_i] = line[x]
+                line_i += 1
+            runs_lines[run_i] = run_lines
+            run_i += 1
+        all_lines[x] = [None] * len(run[1])
+        line_i = 0
+        for line in all_lines[x]:
+            all_lines[x][line_i] = [None] * runs_n
+            line_i+=1
+        line_i = 0
+        for line in all_lines[x]:
+            run_i = 0
+            for run_lines in runs_lines:
+                all_lines[x][line_i][run_i] = run_lines[line_i]
+                run_i += 1
+            line_i += 1
+        for line_i in range(0,len(all_lines[x])):
+            all_lines[x][line_i] = sum([run for run in all_lines[x][line_i]])/len(all_lines[x][line_i])
+    return process_state(all_lines)
+
+def plotStates(days: List[int], vals: List[List[float]]):
+    vals_n = len(vals)
+    for i in range(0, vals_n):
+        plt.subplot(vals_n, 1, i+1)
         plt.plot(days, vals[i])
-        if(i != vals_n):
+        if(i != vals_n-1):
             ax = plt.gca()
             ax.get_xaxis().set_visible(False) #hide x axis
-    plt.subplot(vals_n,1,1)
+    """
+    plt.subplot(vals_n, 1, 1)
     plt.title('(top50 - bottom50)/total')
     plt.ylabel('Inequality')
-    plt.subplot(vals_n, 1,2)
+    plt.subplot(vals_n, 1, 2)
     plt.title('Production')
     plt.ylabel('total stock')
-    plt.subplot(vals_n, 1,3)
+    plt.subplot(vals_n, 1, 3)
     plt.title('Essential satisfaction')
     plt.ylabel('essential/person')
-    plt.subplot(vals_n, 1,4)
+    plt.subplot(vals_n, 1, 4)
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
-    plt.subplot(vals_n, 1,5)
+    """
+    plt.subplot(vals_n, 1, 1)
+    plt.title('Unemployment')
+    plt.ylabel('unemployed')
+    plt.subplot(vals_n, 1, 2)
+    plt.title('Monopoly%')
+    plt.ylabel('value/total')    
+    plt.subplot(vals_n, 1, 3)
     plt.title('Mean salary')
     plt.ylabel('capital')
     plt.xlabel('cycle')
+    #"""
     return plt

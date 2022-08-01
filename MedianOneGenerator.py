@@ -6,7 +6,9 @@ def medianOneGenerate(max_number, numbers_size, decay_speed=0.8, min_number=0):
     '''Generate numbers between 0 and max_number (included)'''
     if(max_number == 0):
         return [0] * numbers_size
-    if max_number <= min_number:
+    if (max_number == min_number):
+        return [max_number] * numbers_size
+    if max_number < min_number:
         raise Exception("Generating impossible numbers")
     numbers = np.random.normal(1/max_number, 2/(max_number**decay_speed), numbers_size)*max_number
     for i in range(0, len(numbers)):

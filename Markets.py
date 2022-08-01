@@ -141,12 +141,7 @@ class WorkersMarket():
 
     @staticmethod
     def meanSalary(persons):
-        salaries = []
-        for p in persons:
-            if p.employer is not None:
-                salaries.append(p.employer.salary)
-            else:
-                salaries.append(0)
+        salaries = [p.employer.salary for p in persons if p.employer is not None]
         return sum(salaries)/len(salaries)
 
     @staticmethod

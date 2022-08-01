@@ -21,6 +21,8 @@ def medianOneGenerate(max_number, numbers_size, decay_speed=0.8, min_number=0):
         numbers[i] = int(number)
     return numbers.astype(int)
 
+from numpy import log, linspace, e
+
 """
 n = 20
 Max = 100
@@ -29,9 +31,8 @@ occurrences = []
 for i in range(0,max(l)):
     occurrences.append(l.count(i))
 
-
-from numpy import log, linspace, e
-
+"""
+"""
 Min = 1/e
 print(Min)
 X = linspace(0.1,5,num=1000)
@@ -49,15 +50,17 @@ plt.ylabel('Production')
 plt.title('Worker productivity')
 plt.show()
 """
-"""
-X = np.linspace(0,8,10000)
-Y = np.e**(-0.5*(X**2)+1.5) + 10
+#"""
+X = np.linspace(0,5,10000)
+k=0.5
+Y = e**(-(X**2)/k+k)
 plt.plot(X,Y)
-plt.plot([0,8],[10,10],'k--')
+plt.plot([0,5],[0,0],'k--')
 plt.xlabel('stock ratio')
-plt.ylabel('production projection')
+plt.ylabel('production/stock')
 plt.title('production estimation')
 plt.show()
+#"""
 """
 X = np.linspace(0,100,10000)
 Y = (1-0.4)*(1-(1/(X+1.4)))
@@ -67,3 +70,4 @@ plt.xlabel('luxury consumed')
 plt.ylabel('production projection')
 plt.title('production estimation')
 plt.show()
+"""

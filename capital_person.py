@@ -1,4 +1,6 @@
 from __future__ import annotations
+from os import stat
+from re import L
 from typing import Dict, List, Tuple
 
 import enum
@@ -130,38 +132,28 @@ def nextTimeStep():
 f = open("printOutput/print.txt", "w")
 f.close()
 
+def saveState2(persons: List[Person]):
+    return [p.capital for p in persons]
+
 def run_f(cycles,initial_condition):
-    state: List[List[float]] = []
     startSim(initial_condition = initial_condition)
+    states=[]
     for i in range(0, cycles):
-        #f = open("printOutput/print.txt", "a")
-        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
-        #f.close()
         if i % 10 == 0:
-            state.append(saveState(Person.all_persons, Factory.all_factories))
-            #print(i)
-    return Prints.process_state(state)
+            states.append(saveState2(Person.all_persons))
+            print(i)
+    return states
 
-
-def get_plot(runs_n,cycles,initial_condition):    
-    runs: Tuple[List[int], List[List[float]]] = list()
-    for i in range(0, runs_n):
-        runs.append(run_f(cycles,initial_condition))
-        print(i)
-    (days,vals) = Prints.process_multistate(runs)
-    return Prints.plotStates(days,vals).gca()
-
-
-Government.type = Gov.NONE
-initial_condition = InitialConditions.BOURGEOISIE
-get_plot(10,1000,initial_condition)
-initial_condition = InitialConditions.EGALITARIANISM
-get_plot(10,1000,initial_condition)
-initial_condition = InitialConditions.SOLE_OWNERSHIP
-get_plot(10,1000,initial_condition)
-initial_condition = InitialConditions.MONOPOLY
-get_plot(10,1000,initial_condition)
-l = plt.legend(["Burgeoise","Egalitarism","Sole ownership","Monopoly"])
-l.set_draggable(True)
+states = run_f(1000,InitialConditions.MONOPOLY)
+person_state = []
+for p in range(0,len(Person.all_persons)):
+    person_state.append(list())
+    for i in range(0,len(states)):
+        person_state[p].append(list())
+        person_state[p][i] = states[i][p]
+for person in person_state:
+    plt.plot(person)
+ax = plt.gca()
+ax.get_xaxis().set_visible(False) #hide x axis
 plt.show()
