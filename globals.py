@@ -121,14 +121,14 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #Luxury satisfaction
     #luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
 
-    
+
     """Diferent plot"""
 
     #Mean salary
-    mean_salary = WorkersMarket.meanSalary(persons)
+    #mean_salary = WorkersMarket.meanSalary(persons)
 
     #Unemployment
-    unemployment = len([p for p in Person.all_persons if p.employer == None])
+    #unemployment = len([p for p in Person.all_persons if p.employer == None])
 
     #Monopoly percentage
     share_vals = [sum(list(p.share_catalog.values())) for p in Person.all_persons]
@@ -138,5 +138,5 @@ def saveState(persons: List[Person], factories: List[Factory]):
 
 
     #return [(top50 - bot50)/sum(capitals), stock,essential_sat, luxury_sat]
-    return [unemployment,monopoly_p,mean_salary]
-
+    #return [unemployment,monopoly_p,mean_salary]
+    return [monopoly_p]

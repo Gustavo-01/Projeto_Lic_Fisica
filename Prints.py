@@ -97,6 +97,8 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
     """
+    """
+    #GRAPHS SEPARATION
     plt.subplot(vals_n, 1, 1)
     plt.title('Unemployment')
     plt.ylabel('unemployed')
@@ -105,6 +107,13 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.ylabel('value/total')    
     plt.subplot(vals_n, 1, 3)
     plt.title('Mean salary')
+    plt.ylabel('capital')
+    plt.xlabel('cycle')
+    #MONOPOLY alone
+    """
+    #"""
+    plt.subplot(vals_n, 1, 1)
+    plt.title('Monopoly%')
     plt.ylabel('capital')
     plt.xlabel('cycle')
     #"""

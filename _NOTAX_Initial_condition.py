@@ -1,6 +1,4 @@
 from __future__ import annotations
-from os import stat
-from re import L
 from typing import Dict, List, Tuple
 
 import enum
@@ -133,44 +131,38 @@ def nextTimeStep():
 f = open("printOutput/print.txt", "w")
 f.close()
 
-def saveState2(persons: List[Person]):
-    return [p.capital for p in persons]
-
 def run_f(cycles,initial_condition):
+    state: List[List[float]] = []
     startSim(initial_condition = initial_condition)
-    states=[]
     for i in range(0, cycles):
+        #f = open("printOutput/print.txt", "a")
+        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
-        if i % 200 == 0:
-            states.append(saveState2(Person.all_persons))
-            print(i)
-    return states
+        #f.close()
+        if i % 10 == 0:
+            state.append(saveState(Person.all_persons, Factory.all_factories))
+            #print(i)
+    return Prints.process_state(state)
 
-states = run_f(1001,InitialConditions.EGALITARIANISM)
-person_state = []
-"""
-for p in range(0,len(Person.all_persons)):
-    person_state.append(list())
-    for i in range(0,len(states)):
-        person_state[p].append(list())
-        person_state[p][i] = states[i][p]
-for person in person_state:
-    plt.plot(person)
-"""
-i = 1
-plt.subplot(6,1,1)
-plt.title("Egalitarianism")
-for state in states:
-    plt.subplot(6,1,i)
-    plt.bar(list(range(0,len(state))),state)
-    plt.ylabel("value")
-    l = plt.legend(["cycle = " + str((i-1) * 200)])
-    l.set_draggable(True)
-    i += 1
-    ax = plt.gca()
-    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    if i != len(states)+1:
-        ax.get_xaxis().set_visible(False) #hide x axis
-    else:
-        plt.xlabel("person ID")
+
+def get_plot(runs_n,cycles,initial_condition):    
+    runs: Tuple[List[int], List[List[float]]] = list()
+    for i in range(0, runs_n):
+        runs.append(run_f(cycles,initial_condition))
+        print(i)
+    (days,vals) = Prints.process_multistate(runs)
+    return Prints.plotStates(days,vals).gca()
+
+Government.type = Gov.BOTH
+initial_condition = InitialConditions.BOURGEOISIE
+get_plot(10,1000,initial_condition)
+initial_condition = InitialConditions.EGALITARIANISM
+get_plot(10,1000,initial_condition)
+initial_condition = InitialConditions.SOLE_OWNERSHIP
+get_plot(10,1000,initial_condition)
+initial_condition = InitialConditions.MONOPOLY
+get_plot(10,1000,initial_condition)
+plt.title("Wealth cap and transaction tax")
+l = plt.legend(["Burgeoise","Egalitarianism","Sole ownership","Monopoly"])
+l.set_draggable(True)
 plt.show()

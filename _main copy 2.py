@@ -17,7 +17,7 @@ class InitialConditions(enum.Enum):
 
 def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000,
              min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
-             burgeoisie_percentage: int = 20):
+             burgeoisie_percentage: int = 0.5):
     #--Delete any previous simulation residue--#
     Person.all_persons = []
     Factory.all_factories = []
@@ -33,7 +33,6 @@ def startSim(people_number: int = 100, factory_number: int = 20, max_capital: in
         burgeoisie_percentage = 1
     elif initial_condition == InitialConditions.MONOPOLY:
         burgeoisie_percentage = 1/people_number
-    print(burgeoisie_percentage)
     #--GENERATE PERSONS--#
     import random
     import GetRandomNames
@@ -76,16 +75,18 @@ def startSim(people_number: int = 100, factory_number: int = 20, max_capital: in
             continue
         #Grab random people from first (person_count * burgeoisie_percentage) indices and distribute 100 over them
         if initial_condition == InitialConditions.SOLE_OWNERSHIP:
-            from random import randint
-            share_holders = Person.all_persons[randint(0,len(Person.all_persons)-1)]
-        share_holders: List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie, repetition=False) #TODO ERROR! Returning same person twice!
-        #Distribute ShareValues
-        share_values = uniformGenerate(0, len(share_holders), int_return=False) #max_number = 0+1
-        SUM = sum(share_values)
-        share_values = [value/SUM for value in share_values]
-        shares = {}
-        for i in range(len(share_values)):
-            shares[share_holders[i]] = share_values[i]
+            owner = Person.all_persons[i]
+            shares = {}
+            shares[owner] = 1
+        else:
+            share_holders: List[Person] = pickRandomPeople(number_shareholders_list[i], burgeoisie, repetition=False) #TODO ERROR! Returning same person twice!
+            #Distribute ShareValues
+            share_values = uniformGenerate(0, len(share_holders), int_return=False) #max_number = 0+1
+            SUM = sum(share_values)
+            share_values = [value/SUM for value in share_values]
+            shares = {}
+            for i in range(len(share_values)):
+                shares[share_holders[i]] = share_values[i]
 
         #Create Factory
         if(len([factory for factory in Factory.all_factories if factory.product_is_essential]) == 0):
@@ -152,7 +153,6 @@ def get_plot(runs_n,cycles,initial_condition):
     (days,vals) = Prints.process_multistate(runs)
     return Prints.plotStates(days,vals).gca()
 
-
 Government.type = Gov.NONE
 initial_condition = InitialConditions.BOURGEOISIE
 get_plot(10,1000,initial_condition)
@@ -162,6 +162,7 @@ initial_condition = InitialConditions.SOLE_OWNERSHIP
 get_plot(10,1000,initial_condition)
 initial_condition = InitialConditions.MONOPOLY
 get_plot(10,1000,initial_condition)
-l = plt.legend(["Burgeoise","Egalitarism","Sole ownership","Monopoly"])
+plt.title("no tax")
+l = plt.legend(["Burgeoise","Egalitarianism","Sole ownership","Monopoly"])
 l.set_draggable(True)
 plt.show()
