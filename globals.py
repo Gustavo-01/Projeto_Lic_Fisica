@@ -16,7 +16,7 @@ FLOATING_POINT_ERROR_MARGIN = 10**-10
 # one worker with LUXURY_PRODUCTION_COST (unit of capital) salary produces one luxury product -#
 LUXURY_PRODUCION_COST: Literal = 1  # price relative to essencial (defined as 1)
 
-PRODUCTION_PER_PERSON_SCALE: Literal = 1.2 #if bigger, everyone produces more
+PRODUCTION_PER_PERSON_SCALE: Literal = 1 #if bigger, everyone produces more
 
 FACTORY_STOCK_AGRESSIVENESS: Literal = 0.5  #could be dynamic for every factory
 
@@ -107,36 +107,43 @@ def cleanup(persons: List[Person], factories: List[Factory]):
 #-----------------
 
 def saveState(persons: List[Person], factories: List[Factory]):
-    #Inequality: capital of top 50% - capital of bottom 50%
-    #capitals = sort([person.capital for person in persons])
-    #top50 = sum(capitals[round(len(capitals)/2):])
-    #bot50 = sum(capitals[:round(len(capitals)/2)])
-    
-    #Total stock production
-    #stock = sum([factory.stock for factory in factories])
-    
-    #Essential satisfaction
-    #essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
-    
-    #Luxury satisfaction
-    #luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
+    #Gini index
+    #"""
+    g_sum = 0
+    for p_i in persons:
+        for p_j in persons:
+            g_sum += abs(p_i.capital-p_j.capital)
+    g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
 
+    #Total stock production
+    stock = sum([factory.avaliable_stock for factory in factories])
+
+    #Essential satisfaction
+    essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
+
+    #Luxury satisfaction
+    luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
+    #"""
 
     """Diferent plot"""
 
+    """
     #Mean salary
-    #mean_salary = WorkersMarket.meanSalary(persons)
+    mean_salary = WorkersMarket.meanSalary(persons)
 
     #Unemployment
-    #unemployment = len([p for p in Person.all_persons if p.employer == None])
+    unemployment = len([p for p in Person.all_persons if p.employer == None])
 
     #Monopoly percentage
-    share_vals = [sum(list(p.share_catalog.values())) for p in Person.all_persons]
-    monopoly_p = max(share_vals) / sum(share_vals)
+    def share_vals(p: Person):
+        return sum([SharesMarket.share_value(p.share_catalog[f],f) for f in list(p.share_catalog.keys())])
+    g_sum_share = 0
+    for p_i in persons:
+        for p_j in persons:
+            g_sum_share += abs(share_vals(p_i)-share_vals(p_j))
+    g_sum_share = g_sum_share/(2*sum([share_vals(p) for p in persons])*len(persons))
+    """
 
-    #capital / person !DIFERENT PLOT
-
-
-    #return [(top50 - bot50)/sum(capitals), stock,essential_sat, luxury_sat]
-    #return [unemployment,monopoly_p,mean_salary]
-    return [monopoly_p]
+    return [g_sum, stock, essential_sat, luxury_sat]
+    #return [unemployment,g_sum_share,mean_salary]
+    #return [monopoly_p]

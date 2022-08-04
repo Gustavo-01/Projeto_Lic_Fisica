@@ -31,19 +31,19 @@ def printPersonsAndFactories(all_persons: List[Person], all_factories: List[Fact
             factory.new_stock, factory.product_price, (factory.profit_margin_per_product-1) * 100, SharesMarket.share_value(1, factory)))
     f.write("\n\n")
 
-def process_state(state: List[List[float]]):
+def process_state(state: List[List[float]],cycle_n: int):
     days: List[int] = []
     vals_n: int = len(state[0])
-    vals: List[List[float]] = []
+    vals: List[List[float]] = [None] * vals_n
     for i in range(vals_n):
-        vals.append([])
+        vals[i] = [None] * len(state)
     for i in range(len(state)):
-        days.append(i)
+        days.append(i*cycle_n/200)
         for j in range(len(state[i])):
-            vals[j].append(state[i][j])
+            vals[j][i] = state[i][j]
     return(days, vals)
 
-def process_multistate(runs: Tuple[List[int], List[List[float]]]):
+def process_multistate(runs: Tuple[List[int]],cycle_n):
     days_n = len(runs[0][0])
     runs_n = len(runs)
     all_lines:List[List[float]] = [None] * days_n
@@ -73,7 +73,7 @@ def process_multistate(runs: Tuple[List[int], List[List[float]]]):
             line_i += 1
         for line_i in range(0,len(all_lines[x])):
             all_lines[x][line_i] = sum([run for run in all_lines[x][line_i]])/len(all_lines[x][line_i])
-    return process_state(all_lines)
+    return process_state(all_lines, cycle_n)
 
 def plotStates(days: List[int], vals: List[List[float]]):
     vals_n = len(vals)
@@ -83,9 +83,9 @@ def plotStates(days: List[int], vals: List[List[float]]):
         if(i != vals_n-1):
             ax = plt.gca()
             ax.get_xaxis().set_visible(False) #hide x axis
-    """
+    #"""
     plt.subplot(vals_n, 1, 1)
-    plt.title('(top50 - bottom50)/total')
+    plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
     plt.subplot(vals_n, 1, 2)
     plt.title('Production')
@@ -96,7 +96,8 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(vals_n, 1, 4)
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
-    """
+    plt.xlabel('cycle')
+    #"""
     """
     #GRAPHS SEPARATION
     plt.subplot(vals_n, 1, 1)
@@ -111,10 +112,10 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #MONOPOLY alone
     """
-    #"""
+    """
     plt.subplot(vals_n, 1, 1)
     plt.title('Monopoly%')
     plt.ylabel('capital')
     plt.xlabel('cycle')
-    #"""
+    """
     return plt
