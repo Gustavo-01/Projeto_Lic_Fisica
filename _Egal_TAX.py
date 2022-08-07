@@ -3,6 +3,7 @@ from typing import Dict, List, Tuple
 
 import enum
 from matplotlib import pyplot as plt
+from math import ceil
 
 from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup, saveState, act_government, Government, Gov
 import Prints
@@ -15,7 +16,7 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000,
+def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int = 1000,
              min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
              burgeoisie_percentage: int = 0.5):
     #--Delete any previous simulation residue--#
@@ -130,38 +131,45 @@ def nextTimeStep():
 
 f = open("printOutput/print.txt", "w")
 f.close()
-
 def run_f(cycles,initial_condition):
-    state: List[List[float]] = []
+    graph_interval: int = ceil(cycles/200)
+    bufferstates: List[float] = []
+    states: List[List[float]] = []
     startSim(initial_condition = initial_condition)
+    nextTimeStep()
     for i in range(0, cycles):
-        #f = open("printOutput/print.txt", "a")
         #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
-        #f.close()
-        if i % 10 == 0:
-            state.append(saveState(Person.all_persons, Factory.all_factories))
-            #print(i)
-    return Prints.process_state(state)
-
+        bufferstates.append(saveState(Person.all_persons, Factory.all_factories))
+        if i % graph_interval == 0:
+            bufferstate_n = len(bufferstates[0])
+            state = [0] * bufferstate_n
+            for bufferstate in bufferstates:
+                for i in range(0,len(bufferstate)):
+                    state[i] += bufferstate[i]
+            states.append([s/len(bufferstates) for s in state])
+            bufferstates = []
+    return Prints.process_state(states,cycles)
 
 def get_plot(runs_n,cycles,initial_condition):    
     runs: Tuple[List[int], List[List[float]]] = list()
     for i in range(0, runs_n):
         runs.append(run_f(cycles,initial_condition))
         print(i)
-    (days,vals) = Prints.process_multistate(runs)
+    (days,vals) = Prints.process_multistate(runs,cycles)
     return Prints.plotStates(days,vals).gca()
 
-initial_condition = InitialConditions.EGALITARIANISM
+initial_condition = InitialConditions.MONOPOLY
 Government.type = Gov.NONE
-get_plot(1,1000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.TRANSATION
-get_plot(1,1000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.WEALTH_CAP
-get_plot(1,1000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.BOTH
-get_plot(1,1000,initial_condition)
+get_plot(30,5000,initial_condition)
 l = plt.legend(["No tax", "Transaction", "Wealth cap", "Both"])
 l.set_draggable(True)
+
+f.close()
 plt.show()

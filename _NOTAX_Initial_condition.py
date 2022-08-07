@@ -16,7 +16,7 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000,
+def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int = 1000,
              min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
              burgeoisie_percentage: int = 0.5):
     #--Delete any previous simulation residue--#
@@ -137,11 +137,10 @@ def run_f(cycles,initial_condition):
     bufferstates: List[float] = []
     states: List[List[float]] = []
     startSim(initial_condition = initial_condition)
+    nextTimeStep()
     for i in range(0, cycles):
-        #f = open("printOutput/print.txt", "a")
         #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
-        #f.close()
         bufferstates.append(saveState(Person.all_persons, Factory.all_factories))
         if i % graph_interval == 0:
             bufferstate_n = len(bufferstates[0])
@@ -150,9 +149,8 @@ def run_f(cycles,initial_condition):
                 for i in range(0,len(bufferstate)):
                     state[i] += bufferstate[i]
             states.append([s/len(bufferstates) for s in state])
-            bufferstates = []
+            bufferstates = []    
     return Prints.process_state(states,cycles)
-
 
 def get_plot(runs_n,cycles,initial_condition):    
     runs: Tuple[List[int], List[List[float]]] = list()
@@ -164,16 +162,14 @@ def get_plot(runs_n,cycles,initial_condition):
 
 Government.type = Gov.NONE
 initial_condition = InitialConditions.EGALITARIANISM
-get_plot(10,2000,initial_condition)
+get_plot(10,5000,initial_condition)
 initial_condition = InitialConditions.BOURGEOISIE
-get_plot(10,2000,initial_condition)
+get_plot(10,5000,initial_condition)
 initial_condition = InitialConditions.SOLE_OWNERSHIP
-get_plot(10,2000,initial_condition)
+get_plot(10,5000,initial_condition)
 initial_condition = InitialConditions.MONOPOLY
-get_plot(10,2000,initial_condition)
-#plt.title("Wealth cap and transaction tax")
+get_plot(10,5000,initial_condition)
+plt.title("No tax")
 l = plt.legend(["Egalitarianism", "Burgeoisie", "Sole ownership", "Monopoly"])
 l.set_draggable(True)
 plt.show()
-
-

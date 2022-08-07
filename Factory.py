@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from numpy import log
+from numpy import log, product
 
 if TYPE_CHECKING:
     from typing import Dict, List
@@ -42,7 +42,7 @@ class Factory:
             worker.employer = self
         self.salary: int = capital / len(workers)
         #--Stock variables--
-        self.stock: int = self.production_cost_per_product * Factory.production_per_worker(self.salary) * len(workers)  # total stock
+        self.stock: int = self.production_cost_per_product * Factory.factory_production(workers, self.salary)  # total stock
         self.last_stock: int = self.stock  # total stock last timestep
         self.avaliable_stock: int = 0  # leftover stock
         self.new_stock: int = 0  # stock created this timestep
@@ -102,7 +102,7 @@ class Factory:
             transfer_capital(self, self.salary, person, "salary")
 
         #produce
-        self.new_stock: int = self.production_cost_per_product * self.production_per_worker(self.salary) * len(self.workers)
+        self.new_stock: int = self.production_cost_per_product * self.factory_production(self.workers, self.salary)
         self.stock = self.new_stock + self.avaliable_stock
 
         #Set price
@@ -176,12 +176,15 @@ class Factory:
             GoodsMarket.luxury_factories.remove(factory)
 
     @staticmethod
-    def production_per_worker(salary: int):
+    def factory_production(workers: List[Person], salary: int):
         from globals import PRODUCTION_PER_PERSON_SCALE,MINIMUM_WAGE
 
         if salary <= MINIMUM_WAGE: #Should not happen
             return 0
-        return (log(salary/MINIMUM_WAGE)) * PRODUCTION_PER_PERSON_SCALE
+        production = 0
+        for person in workers:
+            production += (log(salary/MINIMUM_WAGE)) * PRODUCTION_PER_PERSON_SCALE * (person.essential_satisfaction + 0.1)
+        return production
 
     @staticmethod
     def findNewStockValue(stock: int, leftover_stock: int):

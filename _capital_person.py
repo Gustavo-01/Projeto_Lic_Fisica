@@ -1,7 +1,6 @@
 from __future__ import annotations
-from os import stat
-from re import L
 from typing import Dict, List, Tuple
+from math import ceil
 
 import enum
 from matplotlib import pyplot as plt
@@ -17,7 +16,7 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 100, factory_number: int = 20, max_capital: int = 1000,
+def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int = 1000,
              min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
              burgeoisie_percentage: int = 0.5):
     #--Delete any previous simulation residue--#
@@ -134,19 +133,28 @@ f = open("printOutput/print.txt", "w")
 f.close()
 
 def saveState2(persons: List[Person]):
-    return [p.capital for p in persons]
+    return sorted([p.capital for p in persons],reverse=True)
 
 def run_f(cycles,initial_condition):
+    graph_interval: int = ceil(cycles/6)
+    bufferstates: List[float] = []
+    states: List[List[float]] = []
     startSim(initial_condition = initial_condition)
-    states=[]
     for i in range(0, cycles):
+        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
-        if i % 200 == 0:
-            states.append(saveState2(Person.all_persons))
-            print(i)
+        bufferstates.append(saveState2(Person.all_persons))
+        if i % graph_interval == 0:
+            bufferstate_n = len(bufferstates[0])
+            state = [0] * bufferstate_n
+            for bufferstate in bufferstates:
+                for i in range(0,len(bufferstate)):
+                    state[i] += bufferstate[i]
+            states.append([s/len(bufferstates) for s in state])
+            bufferstates = []
     return states
 
-states = run_f(1001,InitialConditions.EGALITARIANISM)
+states = run_f(5000,InitialConditions.SOLE_OWNERSHIP)
 person_state = []
 """
 for p in range(0,len(Person.all_persons)):
@@ -158,13 +166,13 @@ for person in person_state:
     plt.plot(person)
 """
 i = 1
-plt.subplot(6,1,1)
-plt.title("Egalitarianism")
+plt.subplot(6, 1, 1)
+plt.title("Sole owenrship")
 for state in states:
-    plt.subplot(6,1,i)
-    plt.bar(list(range(0,len(state))),state)
+    plt.subplot(6, 1, i)
+    plt.bar(list(range(0, len(state))), state)
     plt.ylabel("value")
-    l = plt.legend(["cycle = " + str((i-1) * 200)])
+    l = plt.legend(["cycle = " + str((i-1) * 5000/5)])
     l.set_draggable(True)
     i += 1
     ax = plt.gca()

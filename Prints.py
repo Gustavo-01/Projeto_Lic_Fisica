@@ -76,46 +76,90 @@ def process_multistate(runs: Tuple[List[int]],cycle_n):
     return process_state(all_lines, cycle_n)
 
 def plotStates(days: List[int], vals: List[List[float]]):
-    vals_n = len(vals)
-    for i in range(0, vals_n):
-        plt.subplot(vals_n, 1, i+1)
-        plt.plot(days, vals[i])
-        if(i != vals_n-1):
-            ax = plt.gca()
-            ax.get_xaxis().set_visible(False) #hide x axis
-    #"""
-    plt.subplot(vals_n, 1, 1)
+    line_n = 4
+    column_n = 2
+    for i in range(0, line_n):
+        for j in range(0,column_n):
+            plt.subplot(line_n, column_n, column_n*i+j+1)
+            plt.plot(days, vals[column_n*i+j])
+            if(i != line_n-1):
+                ax = plt.gca()
+                ax.get_xaxis().set_visible(False) #hide x axis
+
+    #Initial conditions
+    """
+    plt.subplot(line_n, column_n, 1)
     plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
-    plt.subplot(vals_n, 1, 2)
-    plt.title('Production')
-    plt.ylabel('total stock')
-    plt.subplot(vals_n, 1, 3)
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Total stock')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 5)
+    plt.title('share values gin index')
+    plt.ylabel('value/total')    
+    plt.subplot(line_n, column_n, 7)
+    plt.title('Unemployment')
+    plt.ylabel('unemployed persons')
+    plt.xlabel('cycle')
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Mean salary')
+    plt.ylabel('capital')
+    plt.subplot(line_n, column_n, 4)
     plt.title('Essential satisfaction')
     plt.ylabel('essential/person')
-    plt.subplot(vals_n, 1, 4)
+    plt.subplot(line_n, column_n, 6)
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
+    plt.subplot(line_n, column_n, 8)
+    plt.title('Luxury gini coefficient')
+    plt.ylabel('inequality')
+    plt.xlabel('cycle')
+    #"""
+    #Stock detailed
+    #"""
+    plt.subplot(line_n, column_n, 1)
+    plt.title('Essential Production')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Essential consumption')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 5)
+    plt.title('Essential salaries')
+    plt.ylabel('capital')
+    plt.subplot(line_n, column_n, 7)
+    plt.title('Employees')
+    plt.ylabel('persons')
+    plt.xlabel('cycle')
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Luxury Production')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Luxury consumption')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 6)
+    plt.title('Luxury salaries')
+    plt.ylabel('capital')
+    plt.subplot(line_n, column_n, 8)
+    plt.title('Employees')
+    plt.ylabel('persons')
+    plt.xlabel('cycle')
+    #"""
+    #MONOPOLY alone
+    """
+    plt.subplot(1, 1, 1)
+    plt.title('giri index')
+    plt.ylabel('inequality')
     plt.xlabel('cycle')
     #"""
     """
-    #GRAPHS SEPARATION
     plt.subplot(vals_n, 1, 1)
-    plt.title('Unemployment')
-    plt.ylabel('unemployed')
+    plt.title('essential giri index')
+    plt.ylabel('inequality')
     plt.subplot(vals_n, 1, 2)
-    plt.title('Monopoly%')
-    plt.ylabel('value/total')    
-    plt.subplot(vals_n, 1, 3)
-    plt.title('Mean salary')
-    plt.ylabel('capital')
+    plt.title('luxury giri index')
+    plt.ylabel('inequality')
     plt.xlabel('cycle')
-    #MONOPOLY alone
-    """
-    """
-    plt.subplot(vals_n, 1, 1)
-    plt.title('Monopoly%')
-    plt.ylabel('capital')
-    plt.xlabel('cycle')
-    """
+    #"""
     return plt

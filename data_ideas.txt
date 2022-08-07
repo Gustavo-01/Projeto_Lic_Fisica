@@ -1,5 +1,4 @@
 - No luxury?
 - Mean salary / len(persons)
 
-
 - variate minimum wage, Factory aggressiveness?, production per worker, stock depretiation...

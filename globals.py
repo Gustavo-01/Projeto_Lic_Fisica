@@ -40,7 +40,7 @@ class Government():
     @staticmethod
     def wealth_cap(persons: List[Person]):
         total_capital = sum([p.capital for p in persons]) + sum([f.capital for f in Factory.all_factories])
-        return 4 * total_capital / len(persons)
+        return 0.7 * total_capital
 
 
 def act_government(persons: List[Person]):
@@ -107,34 +107,26 @@ def cleanup(persons: List[Person], factories: List[Factory]):
 #-----------------
 
 def saveState(persons: List[Person], factories: List[Factory]):
+
+    #Initial conditions
+    """
     #Gini index
-    #"""
     g_sum = 0
     for p_i in persons:
         for p_j in persons:
             g_sum += abs(p_i.capital-p_j.capital)
     g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
-
+    
+    #Mean salary
+    mean_salary = WorkersMarket.meanSalary(persons)
+    
     #Total stock production
-    stock = sum([factory.avaliable_stock for factory in factories])
+    stock = sum([factory.stock for factory in factories])
 
     #Essential satisfaction
     essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
 
-    #Luxury satisfaction
-    luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
-    #"""
-
-    """Diferent plot"""
-
-    """
-    #Mean salary
-    mean_salary = WorkersMarket.meanSalary(persons)
-
-    #Unemployment
-    unemployment = len([p for p in Person.all_persons if p.employer == None])
-
-    #Monopoly percentage
+    #gini share index
     def share_vals(p: Person):
         return sum([SharesMarket.share_value(p.share_catalog[f],f) for f in list(p.share_catalog.keys())])
     g_sum_share = 0
@@ -142,8 +134,56 @@ def saveState(persons: List[Person], factories: List[Factory]):
         for p_j in persons:
             g_sum_share += abs(share_vals(p_i)-share_vals(p_j))
     g_sum_share = g_sum_share/(2*sum([share_vals(p) for p in persons])*len(persons))
-    """
+    
+    #Luxury satisfaction
+    luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
+    
+    #Unemployment
+    unemployment = len([p for p in Person.all_persons if p.employer == None])
+    
+    #luxury gini index
+    g_sum_l = 0
+    if sum([p.luxury_satisfaction for p in persons]) == 0:
+        g_sum_l = 0
+    else:
+        for p_i in persons:
+            for p_j in persons:
+                g_sum_l += abs(p_i.luxury_satisfaction-p_j.luxury_satisfaction)
+        g_sum_l = g_sum_l/(2*sum([p.luxury_satisfaction for p in persons])*len(persons))
 
-    return [g_sum, stock, essential_sat, luxury_sat]
-    #return [unemployment,g_sum_share,mean_salary]
-    #return [monopoly_p]
+    return [g_sum, mean_salary, stock, essential_sat, g_sum_share, luxury_sat, unemployment, g_sum_l]
+    #"""
+    
+    # Stock detailed
+    #"""
+    #Essential
+    ess_stock = sum([factory.stock for factory in factories if factory.product_is_essential == True])
+
+    ess_consumption = sum([person.essential_satisfaction for person in persons])
+
+    ess_salaries = sum([factory.salary for factory in factories if factory.product_is_essential == True])
+
+    ess_employee_n = sum([len(factory.workers) for factory in factories if factory.product_is_essential == True])
+
+    #Luxury
+    lux_stock = sum([factory.stock for factory in factories if factory.product_is_essential == False])
+
+    lux_consumption = sum([person.luxury_satisfaction for person in persons])
+
+    lux_salaries = sum([factory.salary for factory in factories if factory.product_is_essential == False])
+
+    lux_employee_n = sum([len(factory.workers) for factory in factories if factory.product_is_essential == False])
+
+    return [ess_stock, lux_stock, ess_consumption, lux_consumption, ess_salaries, lux_salaries, ess_employee_n, lux_employee_n]
+    #"""
+    
+    #Capital gini index
+    """
+    g_sum = 0
+    for p_i in persons:
+        for p_j in persons:
+            g_sum += abs(p_i.capital-p_j.capital)
+    g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
+    
+    return [g_sum]
+    #"""
