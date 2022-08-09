@@ -1,4 +1,8 @@
 - No luxury?
 - Mean salary / len(persons)
 
+- Other taxation methods: salary taxing, wealth percentage taxing, pure comunism (total wealth redistribution)
+
 - variate minimum wage, Factory aggressiveness?, production per worker, stock depretiation...
+
+- production depends on essential satisfaction.

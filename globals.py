@@ -4,6 +4,7 @@ from Factory import Factory
 from Person import Person
 from Markets import GoodsMarket, SharesMarket, WorkersMarket
 from numpy import e, sort
+from math import isnan
 import enum
 
 
@@ -18,7 +19,7 @@ LUXURY_PRODUCION_COST: Literal = 1  # price relative to essencial (defined as 1)
 
 PRODUCTION_PER_PERSON_SCALE: Literal = 1 #if bigger, everyone produces more
 
-FACTORY_STOCK_AGRESSIVENESS: Literal = 0.5  #could be dynamic for every factory
+k: Literal = 0.5  #factory aggressiveness
 
 MINIMUM_WAGE: Literal = 1/e #Workers will not join a factory if the wage is lower than this value
 
@@ -102,6 +103,14 @@ def cleanup(persons: List[Person], factories: List[Factory]):
             person.share_catalog[factory] = value/total
             factory.share_holders[person] = value/total
 
+def set_k(_k: float):
+    global k
+    k = _k
+
+def set_rho(_rho: float):
+    global rho
+    rho = _rho
+
 #-----------------
 #Data collection
 #-----------------
@@ -155,7 +164,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #"""
     
     # Stock detailed
-    #"""
+    """
     #Essential
     ess_stock = sum([factory.stock for factory in factories if factory.product_is_essential == True])
 
@@ -186,4 +195,75 @@ def saveState(persons: List[Person], factories: List[Factory]):
     g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
     
     return [g_sum]
+    #"""
+
+    #deep Stock
+    """
+    ess_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == True])
+    lux_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == False])
+
+    ess_profits = [0] * len([f for f in factories if f.product_is_essential])
+    lux_profits = [0] * (len(factories) - len(ess_profits))
+    i=0
+    j=0
+    for f in factories:
+        if f.product_is_essential and not isnan(f.profit_margin_per_product):
+            ess_profits[i] = f.profit_margin_per_product
+            i += 1
+        elif (not f.product_is_essential) and not isnan(f.profit_margin_per_product):
+            lux_profits[j] = f.profit_margin_per_product
+            j += 1
+    ess_profit_margin = sum(ess_profits)/len(ess_profits)-1
+    lux_profit_margin = sum(lux_profits)/len(lux_profits)-1
+
+    #lux giri index
+    g_sum_l = 0
+    if sum([p.luxury_satisfaction for p in persons]) == 0:
+        g_sum_l = 0
+    else:
+        for p_i in persons:
+            for p_j in persons:
+                g_sum_l += abs(p_i.luxury_satisfaction-p_j.luxury_satisfaction)
+        g_sum_l = g_sum_l/(2*sum([p.luxury_satisfaction for p in persons])*len(persons))
+
+    #ess giri index
+    g_sum_e = 0
+    if sum([p.essential_satisfaction for p in persons]) == 0:
+        g_sum_e = 0
+    else:
+        for p_i in persons:
+            for p_j in persons:
+                g_sum_e += abs(p_i.essential_satisfaction-p_j.essential_satisfaction)
+        g_sum_e = g_sum_e/(2*sum([p.essential_satisfaction for p in persons])*len(persons))
+
+    return [ess_leftover_stock, lux_leftover_stock, g_sum_e, g_sum_l, ess_profit_margin, lux_profit_margin]
+    #"""
+    
+    #Customization analysis
+    #"""
+    #Gini index
+    g_sum = 0
+    for p_i in persons:
+        for p_j in persons:
+            g_sum += abs(p_i.capital-p_j.capital)
+    g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
+    if (2*sum([p.capital for p in persons])*len(persons)) == 0:
+        g_sum = 0
+    
+    #Mean salary
+    mean_salary = WorkersMarket.meanSalary(persons)
+    
+    #Essential satisfaction
+    essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
+    
+    #Luxury satisfaction
+    luxury_sat = sum([person.luxury_satisfaction for person in persons]) / len(persons)
+    
+    ess_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == True])
+    lux_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == False])
+    
+    ess_stock = sum([factory.new_stock for factory in factories if factory.product_is_essential == True])
+    lux_stock = sum([factory.new_stock for factory in factories if factory.product_is_essential == False])
+    
+    return[g_sum, mean_salary, essential_sat, luxury_sat, ess_leftover_stock, lux_leftover_stock, ess_stock, lux_stock]
     #"""

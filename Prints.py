@@ -101,7 +101,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.title('Unemployment')
     plt.ylabel('unemployed persons')
     plt.xlabel('cycle')
-    
+
     plt.subplot(line_n, column_n, 2)
     plt.title('Mean salary')
     plt.ylabel('capital')
@@ -117,7 +117,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #"""
     #Stock detailed
-    #"""
+    """
     plt.subplot(line_n, column_n, 1)
     plt.title('Essential Production')
     plt.ylabel('stock')
@@ -153,13 +153,57 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.ylabel('inequality')
     plt.xlabel('cycle')
     #"""
+    #Deep stock
     """
-    plt.subplot(vals_n, 1, 1)
+    plt.subplot(line_n, column_n, 1)
+    plt.title('essential leftover')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 2)
+    plt.title('luxury leftover')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 3)
     plt.title('essential giri index')
     plt.ylabel('inequality')
-    plt.subplot(vals_n, 1, 2)
+    plt.subplot(line_n, column_n, 4)
     plt.title('luxury giri index')
     plt.ylabel('inequality')
+    plt.subplot(line_n, column_n, 5)
+    plt.title('essential profit margin')
+    plt.ylabel('price %')
+    plt.xlabel('cycle')
+    plt.subplot(line_n, column_n, 6)
+    plt.title('luxury profit margin')
+    plt.ylabel('price %')
     plt.xlabel('cycle')
     #"""
+    #Customization analysis
+    #"""
+    plt.subplot(line_n, column_n, 1)
+    plt.title('capital gini coefficient')
+    plt.ylabel('Inequality')
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Mean salary')
+    plt.ylabel('capital')
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Essential satisfaction')
+    plt.ylabel('essential/person')
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Luxury satisfaction')
+    plt.ylabel('luxury/person')
+    plt.subplot(line_n, column_n, 5)
+    plt.title('essential leftover')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 6)
+    plt.title('luxury leftover')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 7)
+    plt.title('essential production')
+    plt.ylabel('stock')
+    plt.xlabel('cycle')
+    plt.subplot(line_n, column_n, 8)
+    plt.title('luxury production')
+    plt.ylabel('stock')
+    plt.xlabel('cycle')
+    #"""
+
     return plt

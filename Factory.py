@@ -189,7 +189,7 @@ class Factory:
     @staticmethod
     def findNewStockValue(stock: int, leftover_stock: int):
         '''Returns optimal ammount of new stock production'''
-        from globals import FACTORY_STOCK_AGRESSIVENESS, FLOATING_POINT_ERROR_MARGIN
+        from globals import k, FLOATING_POINT_ERROR_MARGIN
 
         if stock > FLOATING_POINT_ERROR_MARGIN:  # division by 0 problem
             leftover_stock_ratio = leftover_stock/stock
@@ -206,7 +206,7 @@ class Factory:
 
             x = leftover_ratio/(1-leftover_ratio)
 
-            return e**(-(x**2)/FACTORY_STOCK_AGRESSIVENESS+FACTORY_STOCK_AGRESSIVENESS)
+            return e**(-(x**2)/k+k)
 
         return stock * stockFunction(leftover_stock_ratio) + 1
 

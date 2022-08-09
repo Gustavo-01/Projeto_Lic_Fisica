@@ -52,13 +52,14 @@ plt.show()
 """
 #"""
 X = np.linspace(0,5,10000)
-k=0.5
-Y = e**(-(X**2)/k+k)
-plt.plot(X,Y)
+for k in linspace(0.1,3,4):
+    Y = e**(-(X**2)/k+k)
+    plt.plot(X,Y)
+    plt.xlabel('stock ratio')
+    plt.ylabel('production/stock')
+    plt.title('production estimation')
+l = plt.legend(["k=0.1", "k=1", "k=2", "k=3"])
 plt.plot([0,5],[0,0],'k--')
-plt.xlabel('stock ratio')
-plt.ylabel('production/stock')
-plt.title('production estimation')
 plt.show()
 #"""
 """
