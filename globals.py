@@ -164,7 +164,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #"""
     
     # Stock detailed
-    """
+    #"""
     #Essential
     ess_stock = sum([factory.stock for factory in factories if factory.product_is_essential == True])
 
@@ -240,7 +240,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #"""
     
     #Customization analysis
-    #"""
+    """
     #Gini index
     g_sum = 0
     for p_i in persons:

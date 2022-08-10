@@ -117,7 +117,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #"""
     #Stock detailed
-    """
+    #"""
     plt.subplot(line_n, column_n, 1)
     plt.title('Essential Production')
     plt.ylabel('stock')
@@ -177,7 +177,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #"""
     #Customization analysis
-    #"""
+    """
     plt.subplot(line_n, column_n, 1)
     plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
