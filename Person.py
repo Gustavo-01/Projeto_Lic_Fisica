@@ -21,8 +21,8 @@ class Person:
         self.essential_satisfaction: float = 1
         self.luxury_satisfaction: float = 0.5
         self.timestep_initial_capital = capital
-        self.LUXURY_CAPITAL_PERCENTAGE: float = 0.4
-        self.SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.4
+        self.LUXURY_CAPITAL_PERCENTAGE: float = 0.4 #TODO change to 0.4
+        self.SHAREMARKET_CAPITAL_PERCENTAGE: float = 0.4 #TODO change to 0.4
         Person.all_persons.append(self)
 
     @staticmethod

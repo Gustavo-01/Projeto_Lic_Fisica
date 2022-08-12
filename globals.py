@@ -130,7 +130,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     mean_salary = WorkersMarket.meanSalary(persons)
     
     #Total stock production
-    stock = sum([factory.stock for factory in factories])
+    stock = sum([factory.new_stock for factory in factories])
 
     #Essential satisfaction
     essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
@@ -164,9 +164,9 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #"""
     
     # Stock detailed
-    #"""
+    """
     #Essential
-    ess_stock = sum([factory.stock for factory in factories if factory.product_is_essential == True])
+    ess_stock = sum([factory.new_stock for factory in factories if factory.product_is_essential == True])
 
     ess_consumption = sum([person.essential_satisfaction for person in persons])
 
@@ -175,7 +175,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     ess_employee_n = sum([len(factory.workers) for factory in factories if factory.product_is_essential == True])
 
     #Luxury
-    lux_stock = sum([factory.stock for factory in factories if factory.product_is_essential == False])
+    lux_stock = sum([factory.new_stock for factory in factories if factory.product_is_essential == False])
 
     lux_consumption = sum([person.luxury_satisfaction for person in persons])
 
@@ -198,7 +198,7 @@ def saveState(persons: List[Person], factories: List[Factory]):
     #"""
 
     #deep Stock
-    """
+    #"""
     ess_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == True])
     lux_leftover_stock = sum([factory.avaliable_stock for factory in factories if factory.product_is_essential == False])
 
@@ -246,9 +246,11 @@ def saveState(persons: List[Person], factories: List[Factory]):
     for p_i in persons:
         for p_j in persons:
             g_sum += abs(p_i.capital-p_j.capital)
-    g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
     if (2*sum([p.capital for p in persons])*len(persons)) == 0:
         g_sum = 0
+    else:
+        g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
+
     
     #Mean salary
     mean_salary = WorkersMarket.meanSalary(persons)
@@ -266,4 +268,43 @@ def saveState(persons: List[Person], factories: List[Factory]):
     lux_stock = sum([factory.new_stock for factory in factories if factory.product_is_essential == False])
     
     return[g_sum, mean_salary, essential_sat, luxury_sat, ess_leftover_stock, lux_leftover_stock, ess_stock, lux_stock]
+    #"""
+    
+    #No luxury analysis
+    """
+    #Gini index
+    g_sum = 0
+    for p_i in persons:
+        for p_j in persons:
+            g_sum += abs(p_i.capital-p_j.capital)
+    g_sum = g_sum/(2*sum([p.capital for p in persons])*len(persons))
+    
+    #Total stock production
+    stock = sum([factory.new_stock for factory in factories])
+    
+    #Essential satisfaction
+    essential_sat = sum([person.essential_satisfaction for person in persons]) / len(persons)
+    
+    #luxury gini index
+    g_sum_e = 0
+    if sum([p.essential_satisfaction for p in persons]) == 0:
+        g_sum_e = 0
+    else:
+        for p_i in persons:
+            for p_j in persons:
+                g_sum_e += abs(p_i.essential_satisfaction-p_j.essential_satisfaction)
+        g_sum_e = g_sum_e/(2*sum([p.essential_satisfaction for p in persons])*len(persons))
+
+    ess_profits = [0] * len([f for f in factories if f.product_is_essential])
+    i=0
+    for f in factories:
+        if not isnan(f.profit_margin_per_product):
+            ess_profits[i] = f.profit_margin_per_product
+            i += 1
+
+    mean_salary = WorkersMarket.meanSalary(persons)
+    
+    unemployment = len([p for p in Person.all_persons if p.employer == None])
+
+    return [g_sum, g_sum_e, stock, essential_sat, mean_salary, unemployment]
     #"""

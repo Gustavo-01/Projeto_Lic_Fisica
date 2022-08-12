@@ -141,6 +141,7 @@ def run_f(cycles,initial_condition):
     for i in range(0, cycles):
         #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
+        nextTimeStep()
         bufferstates.append(saveState(Person.all_persons, Factory.all_factories))
         if i % graph_interval == 0:
             bufferstate_n = len(bufferstates[0])
@@ -162,14 +163,14 @@ def get_plot(runs_n,cycles,initial_condition):
 
 Government.type = Gov.NONE
 initial_condition = InitialConditions.EGALITARIANISM
-get_plot(10,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.BOURGEOISIE
-get_plot(10,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.SOLE_OWNERSHIP
-get_plot(10,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.MONOPOLY
-get_plot(10,5000,initial_condition)
-plt.title("No tax")
+get_plot(30,5000,initial_condition)
+#plt.title("No tax")
 l = plt.legend(["Egalitarianism", "Burgeoisie", "Sole ownership", "Monopoly"])
 l.set_draggable(True)
 plt.show()

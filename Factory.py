@@ -94,7 +94,7 @@ class Factory:
                 return self.labor_avaliable_capital()/len(self.workers)
 
         self.salary = salary()
-
+        
         #Pay salaries
         for person in self.workers:
             if person.employer != self:
@@ -202,7 +202,7 @@ class Factory:
             from numpy import e
 
             if leftover_ratio == 1:
-                return 1
+                return 0
 
             x = leftover_ratio/(1-leftover_ratio)
 

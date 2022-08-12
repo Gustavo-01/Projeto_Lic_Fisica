@@ -129,7 +129,7 @@ def nextTimeStep():
     act_government(Person.all_persons)
 
 
-#f = open("printOutput/print.txt", "w")
+f = open("printOutput/print.txt", "w")
 def run_f(cycles,initial_condition):
     graph_interval: int = ceil(cycles/200)
     bufferstates: List[float] = []
@@ -137,7 +137,7 @@ def run_f(cycles,initial_condition):
     startSim(initial_condition = initial_condition)
     nextTimeStep()
     for i in range(1, cycles):
-        #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
+        Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
         nextTimeStep()
         nextTimeStep()
         bufferstates.append(saveState(Person.all_persons, Factory.all_factories))
@@ -161,17 +161,17 @@ def get_plot(runs_n,cycles,initial_condition):
 
 initial_condition = InitialConditions.EGALITARIANISM
 Government.type = Gov.NONE
-#for k in linspace(0.1,100,4):
+#for k in linspace(0.1,3,4):
 for rho in linspace(0.5,1.1,4):
     #set_k(k)
     #print(k)
     set_rho(rho)
     print(rho)
-    get_plot(1,2000,initial_condition)
+    get_plot(1,1000,initial_condition)
 l = plt.legend(["$\\rho=0.5$", "$\\rho=0.7$", "$\\rho=0.9$", "$\\rho=1.1$"])
-#l = plt.legend(["$k=0.5$", "$k=0.7$", "$k=0.9$", "$k=1.1$"])
+#l = plt.legend(["$k=0.1$", "$k=1$", "$k=2$", "$k=3$"])
 l.set_draggable(True)
 
-#f.close()
+f.close()
 plt.show()
  

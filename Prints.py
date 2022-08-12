@@ -76,7 +76,7 @@ def process_multistate(runs: Tuple[List[int]],cycle_n):
     return process_state(all_lines, cycle_n)
 
 def plotStates(days: List[int], vals: List[List[float]]):
-    line_n = 4
+    line_n = 3
     column_n = 2
     for i in range(0, line_n):
         for j in range(0,column_n):
@@ -92,7 +92,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
     plt.subplot(line_n, column_n, 3)
-    plt.title('Total stock')
+    plt.title('Production')
     plt.ylabel('stock')
     plt.subplot(line_n, column_n, 5)
     plt.title('share values gin index')
@@ -117,7 +117,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #"""
     #Stock detailed
-    #"""
+    """
     plt.subplot(line_n, column_n, 1)
     plt.title('Essential Production')
     plt.ylabel('stock')
@@ -154,7 +154,7 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.xlabel('cycle')
     #"""
     #Deep stock
-    """
+    #"""
     plt.subplot(line_n, column_n, 1)
     plt.title('essential leftover')
     plt.ylabel('stock')
@@ -205,5 +205,27 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.ylabel('stock')
     plt.xlabel('cycle')
     #"""
-
+    # No luxury
+    """
+    plt.subplot(line_n, column_n, 1)
+    plt.title('capital gini coefficient')
+    plt.ylabel('inequality')
+    plt.subplot(line_n, column_n, 2)
+    plt.title('essential gini coefficient')
+    plt.ylabel('inequality')
+    plt.subplot(line_n, column_n, 3)
+    plt.title('essential production')
+    plt.ylabel('stock')
+    plt.subplot(line_n, column_n, 4)
+    plt.title('essential satisfaction')
+    plt.ylabel('essential/person')
+    plt.subplot(line_n, column_n, 5)
+    plt.title('mean salary')
+    plt.ylabel('capital')
+    plt.xlabel('cycle')
+    plt.subplot(line_n, column_n, 6)
+    plt.title('Unemployment')
+    plt.ylabel('unemployed persons')
+    plt.xlabel('cycle')
+    #"""
     return plt

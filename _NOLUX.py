@@ -1,9 +1,9 @@
 from __future__ import annotations
+from math import ceil
 from typing import Dict, List, Tuple
 
 import enum
 from matplotlib import pyplot as plt
-from math import ceil
 
 from globals import Person, Factory, GoodsMarket, WorkersMarket, SharesMarket, cleanup, saveState, act_government, Government, Gov
 import Prints
@@ -91,12 +91,12 @@ def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int 
 
         #Create Factory
         if(len([factory for factory in Factory.all_factories if factory.product_is_essential]) == 0):
-            essential = True
+                essential = True
         elif(len([factory for factory in Factory.all_factories if not factory.product_is_essential]) == 0):
             essential = False
         else:
             essential = bool(round(random.random()))
-        Factory(essential, workers, shares, random.random()*max_capital + min_capital)
+        Factory(True, workers, shares, random.random()*max_capital + min_capital)
 
 def nextTimeStep():
 
@@ -129,13 +129,16 @@ def nextTimeStep():
     act_government(Person.all_persons)
 
 
-f = open("printOutput/print.txt", "w")
-f.close()
+#f = open("printOutput/print.txt", "w")
+#f.close()
+
 def run_f(cycles,initial_condition):
     graph_interval: int = ceil(cycles/200)
     bufferstates: List[float] = []
     states: List[List[float]] = []
     startSim(initial_condition = initial_condition)
+    nextTimeStep()
+    nextTimeStep()
     nextTimeStep()
     for i in range(0, cycles):
         #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
@@ -148,7 +151,7 @@ def run_f(cycles,initial_condition):
                 for i in range(0,len(bufferstate)):
                     state[i] += bufferstate[i]
             states.append([s/len(bufferstates) for s in state])
-            bufferstates = []
+            bufferstates = []    
     return Prints.process_state(states,cycles)
 
 def get_plot(runs_n,cycles,initial_condition):    
@@ -159,17 +162,15 @@ def get_plot(runs_n,cycles,initial_condition):
     (days,vals) = Prints.process_multistate(runs,cycles)
     return Prints.plotStates(days,vals).gca()
 
-initial_condition = InitialConditions.EGALITARIANISM
 Government.type = Gov.NONE
+initial_condition = InitialConditions.EGALITARIANISM
 get_plot(1,5000,initial_condition)
-Government.type = Gov.TRANSATION
+initial_condition = InitialConditions.BOURGEOISIE
 get_plot(1,5000,initial_condition)
-Government.type = Gov.WEALTH_CAP
+initial_condition = InitialConditions.SOLE_OWNERSHIP
 get_plot(1,5000,initial_condition)
-Government.type = Gov.BOTH
+initial_condition = InitialConditions.MONOPOLY
 get_plot(1,5000,initial_condition)
-l = plt.legend(["No tax", "Transaction", "Wealth cap", "Both"])
+l = plt.legend(["Egalitarianism", "Burgeoisie", "Sole ownership", "Monopoly"])
 l.set_draggable(True)
-
-f.close()
 plt.show()

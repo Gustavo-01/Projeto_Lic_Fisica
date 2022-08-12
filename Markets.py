@@ -66,7 +66,8 @@ class GoodsMarket():
                 tradeable_factories = sorted([f for f in GoodsMarket.essential_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
                 if len(tradeable_factories) == 0 or person.capital <= FLOATING_POINT_ERROR_MARGIN:
                     return 1 - needed_essentials
-                idx = sample_from_list(tradeable_factories)
+                #idx = sample_from_list(tradeable_factories)
+                idx=0
                 trade_factory = tradeable_factories[idx]
 
                 traded_ammount = trade_essential(trade_factory, person, needed_essentials)
@@ -93,7 +94,8 @@ class GoodsMarket():
                 tradeable_factories = sorted([f for f in GoodsMarket.luxury_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
                 if len(tradeable_factories) == 0 or max_cost <= FLOATING_POINT_ERROR_MARGIN:
                     return max_cost
-                idx = sample_from_list(tradeable_factories)
+                #idx = sample_from_list(tradeable_factories)
+                idx=0
                 trade_factory = tradeable_factories[idx]
 
                 trade_cost = trade_luxury(trade_factory, person, max_cost)
@@ -121,15 +123,6 @@ class GoodsMarket():
         if len(GoodsMarket.luxury_factories) > 0:
             runLuxuryMarket()
         
-        #TODO delete
-        no_sell = True
-        for f in GoodsMarket.luxury_factories:
-            if f.stock != f.avaliable_stock:
-                no_sell = False
-                break
-        if no_sell:
-            pass
-
 
 #--------------------
 #-- WorkersMarket ---
@@ -142,6 +135,8 @@ class WorkersMarket():
     @staticmethod
     def meanSalary(persons):
         salaries = [p.employer.salary for p in persons if p.employer is not None]
+        if len(salaries) == 0:
+            return 0
         return sum(salaries)/len(salaries)
 
     @staticmethod
@@ -332,9 +327,9 @@ class SharesMarket():
 
         def SecondaryMarket():
             '''Shareholders sell and buy shares'''
-            
+
             from globals import FLOATING_POINT_ERROR_MARGIN, Factory
-            
+
             def secondary_share_sell_attempt(seller:Person, total_share_value:float, factory: Factory, buyer: Person):
                 '''Attempt to sell factory share'''
 
@@ -350,7 +345,7 @@ class SharesMarket():
 
                 if sold_shares < FLOATING_POINT_ERROR_MARGIN:
                     return
-                
+
                 sell_shares(factory,price,sold_shares,buyer,seller)
 
             mean_salary = WorkersMarket.meanSalary(Person.all_persons)
@@ -402,7 +397,7 @@ class SharesMarket():
                         secondary_share_sell_attempt(seller, total_share_value, factory, person)
 
             SharesMarket.shares_for_trade = {} #empty shares for trade
-        
+
         for person in Person.all_persons:
             SharesMarket.avaliable_capital[person] = person.shareMarket_capital_investment_projection()
         for factory in list(SharesMarket.factory_shares):
