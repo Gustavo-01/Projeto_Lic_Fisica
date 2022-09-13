@@ -154,25 +154,19 @@ def run_f(cycles,initial_condition):
             bufferstates = []
     return states
 
-states = run_f(5000,InitialConditions.SOLE_OWNERSHIP)
+Government.type = Gov.NONE
+states = run_f(5000,InitialConditions.MONOPOLY)
 person_state = []
-"""
-for p in range(0,len(Person.all_persons)):
-    person_state.append(list())
-    for i in range(0,len(states)):
-        person_state[p].append(list())
-        person_state[p][i] = states[i][p]
-for person in person_state:
-    plt.plot(person)
-"""
+
 i = 1
 plt.subplot(6, 1, 1)
-plt.title("Sole owenrship")
+plt.title("Monopoly")
+maxY = 0
 for state in states:
     plt.subplot(6, 1, i)
-    plt.bar(list(range(0, len(state))), state)
+    plt.bar(list(range(0, len(state))), state, color='blue')
     plt.ylabel("value")
-    l = plt.legend(["cycle = " + str((i-1) * 5000/5)])
+    l = plt.legend(["cycle = " + str((i-1) * 5000/5) + "Untaxed"])
     l.set_draggable(True)
     i += 1
     ax = plt.gca()
@@ -180,5 +174,38 @@ for state in states:
     if i != len(states)+1:
         ax.get_xaxis().set_visible(False) #hide x axis
     else:
-        plt.xlabel("person ID")
+        plt.xlabel("Sorted ID")
+    if(maxY < max(state)):
+        maxY = max(state)
+        print(maxY)
+    plt.ylim(0, maxY)
+
+#Taxing
+#"""
+Government.type = Gov.WEALTH_CAP
+states = run_f(5000,InitialConditions.MONOPOLY)
+person_state = []
+
+i = 1
+plt.subplot(6, 1, 1)
+plt.title("Monopoly")
+maxY = 0
+for state in states:
+    plt.subplot(6, 1, i)
+    plt.bar(list(range(0, len(state))), state, color='red')
+    plt.ylabel("value")
+    l = plt.legend(["cycle = " + str((i-1) * 5000/5) + "wealth capped"])
+    l.set_draggable(True)
+    i += 1
+    ax = plt.gca()
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    if i != len(states)+1:
+        ax.get_xaxis().set_visible(False) #hide x axis
+    else:
+        plt.xlabel("Sorted ID")
+    if(maxY < max(state)):
+        maxY = max(state)
+        print(maxY)
+    plt.ylim(0, maxY)
 plt.show()
+#"""

@@ -164,13 +164,13 @@ def get_plot(runs_n,cycles,initial_condition):
 
 Government.type = Gov.NONE
 initial_condition = InitialConditions.EGALITARIANISM
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.BOURGEOISIE
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.SOLE_OWNERSHIP
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 initial_condition = InitialConditions.MONOPOLY
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 l = plt.legend(["Egalitarianism", "Burgeoisie", "Sole ownership", "Monopoly"])
 l.set_draggable(True)
 plt.show()

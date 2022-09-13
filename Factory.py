@@ -40,7 +40,10 @@ class Factory:
         self.workers: List[Person] = workers
         for worker in workers:
             worker.employer = self
-        self.salary: int = capital / len(workers)
+        if(len(workers) == 0):
+            self.salary: int = 0
+        else:
+            self.salary: int = capital / len(workers)
         #--Stock variables--
         self.stock: int = self.production_cost_per_product * Factory.factory_production(workers, self.salary)  # total stock
         self.last_stock: int = self.stock  # total stock last timestep
@@ -48,7 +51,10 @@ class Factory:
         self.new_stock: int = 0  # stock created this timestep
         #--Product price---
         self.profit_margin_per_product = 0.4  #determined by leftover stock and factory aggressiveness
-        self.product_price: float = (1+self.profit_margin_per_product) * (self.capital/self.stock)
+        if self.stock > 0:
+            self.product_price: float = (1+self.profit_margin_per_product) * (self.capital/self.stock)
+        else:
+            self.product_price: float = 0
         #-----------
 
     #--------------------------------
@@ -107,7 +113,10 @@ class Factory:
 
         #Set price
         new_total_cost = self.salary * len(self.workers)
-        self.profit_margin_per_product = 0.2 + (self.stock / self.avaliable_stock)
+        if self.avaliable_stock == 0:
+            self.profit_margin_per_product = 0
+        else:
+            self.profit_margin_per_product = 0.2 + (self.stock / self.avaliable_stock)
         if self.profit_margin_per_product > 2:
             self.profit_margin_per_product = 2
         if self.profit_margin_per_product < 1:
@@ -115,7 +124,10 @@ class Factory:
         new_stock_product_price = self.profit_margin_per_product * new_total_cost
 
         from globals import rho
-        self.product_price = (new_stock_product_price * self.new_stock + rho * self.product_price * self.avaliable_stock)/self.stock
+        if self.stock == 0:
+            self.product_price = 0
+        else:
+            self.product_price = (new_stock_product_price * self.new_stock + rho * self.product_price * self.avaliable_stock)/self.stock
         self.avaliable_stock = self.stock
 
         #last stock is this timestep stock

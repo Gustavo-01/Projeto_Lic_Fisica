@@ -16,7 +16,7 @@ class InitialConditions(enum.Enum):
     MONOPOLY = 4
 
 
-def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int = 1000,
+def startSim(people_number: int = 20, factory_number: int = 14, max_capital: int = 1000,
              min_capital: int = 10, initial_condition: InitialConditions = InitialConditions.EGALITARIANISM,
              burgeoisie_percentage: int = 0.5):
     #--Delete any previous simulation residue--#
@@ -29,7 +29,6 @@ def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int 
     WorkersMarket.workers_to_update = {}
 
     #--Resolve initial conditions--#
-    print(initial_condition)
     if initial_condition == InitialConditions.EGALITARIANISM:
         burgeoisie_percentage = 1
     elif initial_condition == InitialConditions.MONOPOLY:
@@ -72,8 +71,8 @@ def startSim(people_number: int = 20, factory_number: int = 6, max_capital: int 
 
     for i in range(factory_number):
         workers: List[Person] = findWorkers(number_workers_list[i])
-        if len(workers) == 0:
-            continue
+#        if len(workers) == 0:
+#            continue
         #Grab random people from first (person_count * burgeoisie_percentage) indices and distribute 100 over them
         if initial_condition == InitialConditions.SOLE_OWNERSHIP:
             owner = Person.all_persons[i]
@@ -132,11 +131,11 @@ def nextTimeStep():
 #f = open("printOutput/print.txt", "w")
 #f.close()
 
-def run_f(cycles,initial_condition):
+def run_f(cycles,initial_condition,p_n):
     graph_interval: int = ceil(cycles/200)
     bufferstates: List[float] = []
     states: List[List[float]] = []
-    startSim(initial_condition = initial_condition)
+    startSim(initial_condition = initial_condition,people_number=p_n)
     nextTimeStep()
     for i in range(0, cycles):
         #Prints.printPersonsAndFactories(Person.all_persons, Factory.all_factories, i, f)
@@ -153,28 +152,41 @@ def run_f(cycles,initial_condition):
             bufferstates = []    
     return Prints.process_state(states,cycles)
 
-def get_plot(runs_n,cycles,initial_condition):    
+def get_plot(runs_n,cycles,initial_condition,p_n):    
     runs: Tuple[List[int], List[List[float]]] = list()
     for i in range(0, runs_n):
-        runs.append(run_f(cycles,initial_condition))
-        print(i)
+        runs.append(run_f(cycles,initial_condition,p_n))
     (days,vals) = Prints.process_multistate(runs,cycles)
-    return Prints.plotStates(days,vals).gca()
-
-cycles_n = 5000
-tries = 30
+    return (vals[0],vals[1])
 
 Government.type = Gov.NONE
 initial_condition = InitialConditions.EGALITARIANISM
-get_plot(tries,cycles_n,initial_condition)
-initial_condition = InitialConditions.BOURGEOISIE
-get_plot(tries,cycles_n,initial_condition)
-initial_condition = InitialConditions.SOLE_OWNERSHIP
-get_plot(tries,cycles_n,initial_condition)
-initial_condition = InitialConditions.MONOPOLY
-get_plot(tries,cycles_n,initial_condition)
-#plt.title("Wealth cap and transaction tax")
-#plt.ylim([0.5, 1])
-l = plt.legend(["Egalitarianism", "Bourgeoisie", "Sole ownership", "Monopoly"])
-l.set_draggable(True)
+salaries = [None] * (80-2)
+productions = [None] * (80-2)
+i=0
+for p_n in range(2,80):
+    (salary,production) = get_plot(10,1000,initial_condition,p_n)
+    salary = sum(salary)/len(salary)
+    production = sum(production)/len(production)
+    print(p_n)
+    salaries[i] = salary
+    productions[i] = production
+    i+=1
+print(salaries)
+print(productions)
+
+for i in range(0, 80-2):
+    plt.subplot(2, 1, 1)
+    plt.bar(i+2, salaries[i],color='blue')
+    plt.subplot(2, 1, 2)
+    plt.bar(i+2, productions[i],color='blue')
+
+plt.subplot(2, 1, 1)
+plt.title('Mean salary')
+plt.ylabel('Capital')
+plt.subplot(2, 1, 2)
+plt.title('Production')
+plt.ylabel('stock')
+
+#l.set_draggable(True)
 plt.show()

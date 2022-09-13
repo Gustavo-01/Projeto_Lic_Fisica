@@ -159,15 +159,15 @@ def get_plot(runs_n,cycles,initial_condition):
     (days,vals) = Prints.process_multistate(runs,cycles)
     return Prints.plotStates(days,vals).gca()
 
-initial_condition = InitialConditions.EGALITARIANISM
+initial_condition = InitialConditions.MONOPOLY
 Government.type = Gov.NONE
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.TRANSATION
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.WEALTH_CAP
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 Government.type = Gov.BOTH
-get_plot(1,5000,initial_condition)
+get_plot(30,5000,initial_condition)
 l = plt.legend(["No tax", "Transaction", "Wealth cap", "Both"])
 l.set_draggable(True)
 

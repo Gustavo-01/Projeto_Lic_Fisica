@@ -66,8 +66,11 @@ class GoodsMarket():
                 tradeable_factories = sorted([f for f in GoodsMarket.essential_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
                 if len(tradeable_factories) == 0 or person.capital <= FLOATING_POINT_ERROR_MARGIN:
                     return 1 - needed_essentials
-                #idx = sample_from_list(tradeable_factories)
-                idx=0
+                
+                idx = sample_from_list(tradeable_factories)
+                #TO SIMULATE PERFECT MARKET, UNCOMENT UNDER THIS (1 of 2):
+                #idx=0
+                
                 trade_factory = tradeable_factories[idx]
 
                 traded_ammount = trade_essential(trade_factory, person, needed_essentials)
@@ -94,8 +97,11 @@ class GoodsMarket():
                 tradeable_factories = sorted([f for f in GoodsMarket.luxury_factories if f.avaliable_stock > 0], key=lambda f: f.product_price)
                 if len(tradeable_factories) == 0 or max_cost <= FLOATING_POINT_ERROR_MARGIN:
                     return max_cost
-                #idx = sample_from_list(tradeable_factories)
-                idx=0
+
+                idx = sample_from_list(tradeable_factories)
+                #TO SIMULATE PERFECT MARKET, UNCOMENT UNDER THIS (2 of 2):
+                #idx=0
+
                 trade_factory = tradeable_factories[idx]
 
                 trade_cost = trade_luxury(trade_factory, person, max_cost)

@@ -76,8 +76,9 @@ def process_multistate(runs: Tuple[List[int]],cycle_n):
     return process_state(all_lines, cycle_n)
 
 def plotStates(days: List[int], vals: List[List[float]]):
-    line_n = 3
-    column_n = 2
+    line_n = 2
+    #column_n = 2
+    column_n = 3
     for i in range(0, line_n):
         for j in range(0,column_n):
             plt.subplot(line_n, column_n, column_n*i+j+1)
@@ -86,17 +87,147 @@ def plotStates(days: List[int], vals: List[List[float]]):
                 ax = plt.gca()
                 ax.get_xaxis().set_visible(False) #hide x axis
 
+    _fontsize = 13;
+    _fontsize_title = 14;
+
+    #FIGURE 3.1:
+    """
+    plt.subplot(line_n, column_n, 1)
+    plt.title('capital gini coefficient', fontsize=_fontsize_title)
+    plt.ylabel('Inequality', fontsize=_fontsize)
+    plt.ylim(0.5, 1)
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Production', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 100)
+    
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Unemployment', fontsize=_fontsize_title)
+    plt.ylabel('unemployed persons', fontsize=_fontsize)
+    plt.ylim(0, 0.5)
+    
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Average salary', fontsize=_fontsize_title)
+    plt.ylabel('capital', fontsize=15)
+    plt.ylim(0, 30)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 5)
+    plt.title('Essential satisfaction', fontsize=_fontsize_title)
+    plt.ylabel('essential/person', fontsize=_fontsize)
+    plt.ylim(0, 1)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 6)
+    plt.title('Luxury satisfaction', fontsize=_fontsize_title)
+    plt.ylabel('luxury/person', fontsize=_fontsize)
+    plt.ylim(0, 2.5)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    #"""
+
+    #Figure 3.2 & 3.13:
+    #"""
+    plt.subplot(line_n, column_n, 1)
+    plt.title('Essential salary', fontsize=_fontsize_title)
+    plt.ylabel('capital', fontsize=_fontsize)
+    plt.ylim(0, 40)
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Essential Employees', fontsize=_fontsize_title)
+    plt.ylabel('persons', fontsize=_fontsize)
+    plt.ylim(0, 18)
+    
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Essential Production', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 50)
+
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Luxury salary', fontsize=_fontsize_title)
+    plt.ylabel('capital', fontsize=_fontsize)
+    plt.ylim(0, 40)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 5)
+    plt.title('Luxury Employees', fontsize=_fontsize_title)
+    plt.ylabel('persons', fontsize=_fontsize)
+    plt.ylim(0, 18)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 6)
+    plt.title('Luxury Production', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 50)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    #"""
+
+    #Figure 3.5 & 3.6:
+    """
+    plt.subplot(line_n, column_n, 1)
+    plt.title('Giri index', fontsize=_fontsize_title)
+    plt.ylabel('inequality', fontsize=_fontsize)
+    plt.ylim(0, 1)
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Production', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 100)
+    
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Consumption', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 100)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Leftover', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 3000)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    #"""
+
+    #figure 3.7 & 3.8:
+    """
+    
+    plt.subplot(line_n, column_n, 1)
+    plt.title('Giri index', fontsize=_fontsize_title)
+    plt.ylabel('inequality', fontsize=_fontsize)
+    plt.ylim(0, 1)
+    
+    plt.subplot(line_n, column_n, 2)
+    plt.title('Production', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 100)
+    
+    plt.subplot(line_n, column_n, 3)
+    plt.title('Consumption', fontsize=_fontsize_title)
+    plt.ylabel('stock', fontsize=_fontsize)
+    plt.ylim(0, 100)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    plt.subplot(line_n, column_n, 4)
+    plt.title('Average salary', fontsize=_fontsize_title)
+    plt.ylabel('capital', fontsize=_fontsize)
+    plt.ylim(0, 30)
+    plt.xlabel('cycle', fontsize=_fontsize)
+    
+    #"""
+
     #Initial conditions
     """
     plt.subplot(line_n, column_n, 1)
     plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
+    plt.ylim(0.5, 1)
     plt.subplot(line_n, column_n, 3)
     plt.title('Production')
     plt.ylabel('stock')
     plt.subplot(line_n, column_n, 5)
     plt.title('share values gin index')
-    plt.ylabel('value/total')    
+    plt.ylabel('Inequality')
+    plt.ylim(0.5, 1)
     plt.subplot(line_n, column_n, 7)
     plt.title('Unemployment')
     plt.ylabel('unemployed persons')
@@ -108,12 +239,15 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(line_n, column_n, 4)
     plt.title('Essential satisfaction')
     plt.ylabel('essential/person')
+    plt.ylim(0, 1)
     plt.subplot(line_n, column_n, 6)
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 8)
     plt.title('Luxury gini coefficient')
     plt.ylabel('inequality')
+    plt.ylim(0.5, 1)
     plt.xlabel('cycle')
     #"""
     #Stock detailed
@@ -121,28 +255,36 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(line_n, column_n, 1)
     plt.title('Essential Production')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 3)
     plt.title('Essential consumption')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 5)
     plt.title('Essential salaries')
     plt.ylabel('capital')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 7)
     plt.title('Employees')
     plt.ylabel('persons')
+    plt.ylim(0, None)
     plt.xlabel('cycle')
     
     plt.subplot(line_n, column_n, 2)
     plt.title('Luxury Production')
+    plt.ylim(0, None)
     plt.ylabel('stock')
     plt.subplot(line_n, column_n, 4)
     plt.title('Luxury consumption')
+    plt.ylim(0, None)
     plt.ylabel('stock')
     plt.subplot(line_n, column_n, 6)
     plt.title('Luxury salaries')
+    plt.ylim(0, None)
     plt.ylabel('capital')
     plt.subplot(line_n, column_n, 8)
     plt.title('Employees')
+    plt.ylim(0, None)
     plt.ylabel('persons')
     plt.xlabel('cycle')
     #"""
@@ -151,10 +293,11 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(1, 1, 1)
     plt.title('giri index')
     plt.ylabel('inequality')
+    plt.ylim(0.5, 1)
     plt.xlabel('cycle')
     #"""
     #Deep stock
-    #"""
+    """
     plt.subplot(line_n, column_n, 1)
     plt.title('essential leftover')
     plt.ylabel('stock')
@@ -164,45 +307,65 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(line_n, column_n, 3)
     plt.title('essential giri index')
     plt.ylabel('inequality')
+    plt.ylim(0, 1)
     plt.subplot(line_n, column_n, 4)
     plt.title('luxury giri index')
     plt.ylabel('inequality')
+    plt.ylim(0, 1)
     plt.subplot(line_n, column_n, 5)
-    plt.title('essential profit margin')
-    plt.ylabel('price %')
-    plt.xlabel('cycle')
+    plt.title('luxury median price')
+    plt.ylabel('capital')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 6)
-    plt.title('luxury profit margin')
-    plt.ylabel('price %')
+    plt.title('essential median price')
+    plt.ylabel('capital')
+    plt.ylim(0, None)
+    plt.subplot(line_n, column_n, 7)
+    plt.title('essential profit margin')
+    plt.ylabel('cost %')
+    plt.ylim(0.2, 0.6)
     plt.xlabel('cycle')
-    #"""
+    plt.subplot(line_n, column_n, 8)
+    plt.title('luxury profit margin')
+    plt.ylabel('cost %')
+    plt.ylim(0.2, 0.6)
+    plt.xlabel('cycle')
+    """
     #Customization analysis
     """
     plt.subplot(line_n, column_n, 1)
     plt.title('capital gini coefficient')
     plt.ylabel('Inequality')
+    plt.ylim(0.5, 1)
     plt.subplot(line_n, column_n, 2)
     plt.title('Mean salary')
     plt.ylabel('capital')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 3)
     plt.title('Essential satisfaction')
     plt.ylabel('essential/person')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 4)
     plt.title('Luxury satisfaction')
     plt.ylabel('luxury/person')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 5)
     plt.title('essential leftover')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 6)
     plt.title('luxury leftover')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 7)
     plt.title('essential production')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.xlabel('cycle')
     plt.subplot(line_n, column_n, 8)
     plt.title('luxury production')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.xlabel('cycle')
     #"""
     # No luxury
@@ -210,22 +373,28 @@ def plotStates(days: List[int], vals: List[List[float]]):
     plt.subplot(line_n, column_n, 1)
     plt.title('capital gini coefficient')
     plt.ylabel('inequality')
+    plt.ylim(0.5, 1)
     plt.subplot(line_n, column_n, 2)
     plt.title('essential gini coefficient')
     plt.ylabel('inequality')
+    plt.ylim(0, 1)
     plt.subplot(line_n, column_n, 3)
     plt.title('essential production')
     plt.ylabel('stock')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 4)
     plt.title('essential satisfaction')
     plt.ylabel('essential/person')
+    plt.ylim(0, None)
     plt.subplot(line_n, column_n, 5)
     plt.title('mean salary')
     plt.ylabel('capital')
+    plt.ylim(0, None)
     plt.xlabel('cycle')
     plt.subplot(line_n, column_n, 6)
     plt.title('Unemployment')
     plt.ylabel('unemployed persons')
+    plt.ylim(0, None)
     plt.xlabel('cycle')
     #"""
     return plt

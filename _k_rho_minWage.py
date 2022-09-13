@@ -161,17 +161,16 @@ def get_plot(runs_n,cycles,initial_condition):
 
 initial_condition = InitialConditions.EGALITARIANISM
 Government.type = Gov.NONE
-#for k in linspace(0.1,3,4):
+#for k in linspace(3, 0.1, 4):
 for rho in linspace(0.5,1.1,4):
     #set_k(k)
     #print(k)
     set_rho(rho)
     print(rho)
-    get_plot(1,1000,initial_condition)
+    get_plot(30,1000,initial_condition)
 l = plt.legend(["$\\rho=0.5$", "$\\rho=0.7$", "$\\rho=0.9$", "$\\rho=1.1$"])
-#l = plt.legend(["$k=0.1$", "$k=1$", "$k=2$", "$k=3$"])
+#l = plt.legend(["$k=3$", "$k=2$", "$k=1$", "$k=0.1$"])
 l.set_draggable(True)
 
 f.close()
 plt.show()
- 
